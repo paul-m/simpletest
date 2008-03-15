@@ -1,5 +1,5 @@
 <?php
-// $Id:
+// $Id$
 
 class PathModuleTestCase extends DrupalTestCase {
   function get_info() {

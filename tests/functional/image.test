@@ -1,6 +1,6 @@
 <?php
+// $Id$
 
-/* $Id$ */
 class ImageModuleTest extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());

@@ -1,5 +1,6 @@
 <?php
-/* $Id$ */
+// $Id$
+
 class UploadPictureTests extends DrupalTestCase {
   
   function get_info() {

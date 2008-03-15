@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+// $Id$
 
 class TaxonomyVocabularyFunctions extends DrupalTestCase {
   function get_info() {

@@ -1,5 +1,6 @@
 <?php
 // $Id$
+
 class NodeRevisionsTest extends DrupalTestCase {
   /**
    * Implementation of get_info() for information

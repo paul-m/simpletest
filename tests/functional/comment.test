@@ -1,5 +1,5 @@
 <?php
-// $Id:
+// $Id$
 
 class CommentModuleTestCase extends DrupalTestCase {
   var $admin_user;
