@@ -230,12 +230,12 @@ class DrupalTestCase extends WebTestCase {
    *    @access public
    */
   function clickLink($label, $index = 0) {
-    $url_before = $this->getUrl();
+    $url_before = str_replace('%', '%%', $this->getUrl());
     $urls = $this->_browser->_page->getUrlsByLabel($label);
     if (count($urls) < $index + 1) {
       $url_target = 'URL NOT FOUND!';
     } else {
-      $url_target = $urls[$index]->asString();
+      $url_target = str_replace('%', '%%', $urls[$index]->asString());
     }
 
     $ret = parent::clickLink(t($label), $index);
