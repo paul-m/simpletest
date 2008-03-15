@@ -35,10 +35,10 @@ class UploadPictureTests extends DrupalTestCase {
     $this->drupalLoginUser($user);
 
     // not a image
-    $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/upload_tests.test");
+    $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/functional/upload.test");
     $edit = array('files[picture_upload]' => $img_path);
     $this->drupalPost('user/'.$user->uid.'/edit', $edit, 'Save' );
-    $this->assertWantedRaw(t('The selected file %file could not be uploaded. Only JPEG, PNG and GIF images are allowed.', array('%file' => 'upload_tests.test')), 'The uploaded file was not an image.');
+    $this->assertWantedRaw(t('The selected file %file could not be uploaded. Only JPEG, PNG and GIF images are allowed.', array('%file' => 'upload.test')), 'The uploaded file was not an image.');
     variable_set('user_pictures', $old_pic_set);
 
     // do we have to check users roles?
