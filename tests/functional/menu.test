@@ -9,7 +9,7 @@ class MenuModuleTestCase extends  DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Menu link creation/deletion'),
-      'desc' => t('Create two links in the Navigation menu, check their data, and delete them using the menu module UI.'),
+      'description' => t('Create two links in the Navigation menu, check their data, and delete them using the menu module UI.'),
       'group' => 'Menu Module Tests',
     );
   }
@@ -89,7 +89,7 @@ class MenuModuleCustomMenuTest extends MenuModuleTestCase {
   function get_info() {
     return array(
       'name' => t('Custom menu creation/deletion'),
-      'desc' => t('Create a custom menu, add a link to it, and delete it using the menu module UI.'),
+      'description' => t('Create a custom menu, add a link to it, and delete it using the menu module UI.'),
       'group' => 'Menu Module Tests',
     );
   }
@@ -140,7 +140,7 @@ class MenuModuleEnable extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Menu enable'),
-      'desc' => 'Enable / disable a menu item',
+      'description' => 'Enable / disable a menu item',
       'group' => 'Menu Module Tests',
     );
   }
@@ -184,7 +184,7 @@ class MenuModuleReset extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Menu reset'),
-      'desc' => 'Edit and reset a menu item',
+      'description' => 'Edit and reset a menu item',
       'group' => 'Menu Module Tests',
     );
   }
@@ -245,7 +245,7 @@ class MenuModuleInvalidPath extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Menu invalid path'),
-      'desc' => 'Try to create a menu item with an invalid / inaccesible path.',
+      'description' => 'Try to create a menu item with an invalid / inaccesible path.',
       'group' => 'Menu Module Tests',
     );
   }

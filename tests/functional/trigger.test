@@ -11,7 +11,7 @@ class ActionsContentTest extends  DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Actions content'),
-      'desc' => t('Perform various tests with content actions.') ,
+      'description' => t('Perform various tests with content actions.') ,
       'group' => 'Actions',
     );
   }

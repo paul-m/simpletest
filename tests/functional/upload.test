@@ -8,7 +8,7 @@ class upload_module_test_case extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Upload functionality'),
-      'desc' => t('Check content uploaded to nodes.'),
+      'description' => t('Check content uploaded to nodes.'),
       'group' => t('Upload Tests'),
     );
   }
@@ -121,7 +121,7 @@ class UploadPictureTests extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => 'Upload user picture',
-      'desc' => 'Assure that dimension check, extension check and image scaling work as designed.',
+      'description' => 'Assure that dimension check, extension check and image scaling work as designed.',
       'group' => 'Upload Tests'
     );
   }

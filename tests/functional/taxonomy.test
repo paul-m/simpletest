@@ -3,7 +3,7 @@
 
 class TaxonomyVocabularyFunctions extends DrupalTestCase {
   function get_info() {
-    return array('name' => 'Vocabulary functions', 'desc' => "Create/Edit/Delete a vocabulary and assert that all fields were properly saved" , 'group' => 'Taxonomy');
+    return array('name' => 'Vocabulary functions', 'description' => "Create/Edit/Delete a vocabulary and assert that all fields were properly saved" , 'group' => 'Taxonomy');
   }
 
   function testVocabularyFunctions() {
@@ -75,7 +75,7 @@ class TaxonomyVocabularyFunctions extends DrupalTestCase {
 
 class TaxonomyTermFunctions extends DrupalTestCase {
   function get_info() {
-    return array('name' => 'Term functions', 'desc' => "Testing save/update/delete terms" , 'group' => 'Taxonomy');
+    return array('name' => 'Term functions', 'description' => "Testing save/update/delete terms" , 'group' => 'Taxonomy');
   }
 
   function testTermsFunctions() {
@@ -236,7 +236,7 @@ class TaxonomyTermFunctions extends DrupalTestCase {
 
 class TaxonomyTestNodeApi extends DrupalTestCase {
   function get_info() {
-    return array('name' => 'Taxonomy nodeapi', 'desc' => "Save & edit a node and assert that taxonomy terms are saved/loaded properly." , 'group' => 'Taxonomy');
+    return array('name' => 'Taxonomy nodeapi', 'description' => "Save & edit a node and assert that taxonomy terms are saved/loaded properly." , 'group' => 'Taxonomy');
   }
 
   function testTaxonomyNode() {

@@ -8,7 +8,7 @@ class NodeRevisionsTest extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Node revisions tests'), 
-      'desc' => t('Creates a node of type page and then a user tries various revision actions such as viewing, reverting to, and deleting revisions.'),
+      'description' => t('Creates a node of type page and then a user tries various revision actions such as viewing, reverting to, and deleting revisions.'),
       'group' => 'Node Tests',
     );
   }
@@ -117,7 +117,7 @@ class NodeTeaserTest extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Node teaser tests'), 
-      'desc' => t('Calls node_teaser() with different strings and lengths.'),
+      'description' => t('Calls node_teaser() with different strings and lengths.'),
       'group' => 'Node Tests',
     );
   }
@@ -267,7 +267,7 @@ class StoryEditTest extends DrupalTestCase {
   function get_info() {
     return array(
       'name'  => 'Story edit test',
-      'desc'  => t('We want a working edit for storys, uh?'),
+      'description'  => t('We want a working edit for storys, uh?'),
       'group' => 'Node Tests');
   }
   function testStoryEdit() {
@@ -318,7 +318,7 @@ class StoryPreviewTest extends DrupalTestCase {
   function get_info() {
     return array(
    'name'  => 'Story preview test',
-   'desc'  => t('We want a working preview for storys, uh?'),
+   'description'  => t('We want a working preview for storys, uh?'),
    'group' => 'Node Tests');
   }
   
@@ -353,7 +353,7 @@ class PageCreationTest extends  DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Page node creation'),
-      'desc' => t('Create a page node and verify its consistency in the database.'),
+      'description' => t('Create a page node and verify its consistency in the database.'),
       'group' => 'Node Tests',
     );
   }
@@ -386,7 +386,7 @@ class PageViewTest extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Unauthorized node view'),
-      'desc' => t('Creates a node of type page and then an unpermissioned user attempts to edit the node, '
+      'description' => t('Creates a node of type page and then an unpermissioned user attempts to edit the node, '
         . 'before tries with an anonymous user. Asserts failure.'
         . '</ br>WARNING: This is based on default registered user permuissions (no administer nodes).')
       , 'group' => 'Node Tests',

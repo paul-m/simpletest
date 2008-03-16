@@ -5,7 +5,7 @@ class BlogAPIModuleTestCase extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('BlogAPI functionality'),
-      'desc' => t('Create, edit, and delete post; upload file; and set/get categories.'),
+      'description' => t('Create, edit, and delete post; upload file; and set/get categories.'),
       'group' => t('Blog API Tests'),
     );
   }

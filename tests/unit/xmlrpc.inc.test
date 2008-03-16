@@ -3,7 +3,7 @@
 class XMLRPCValidator1Test extends DrupalTestCase {
   function get_info() {
     return array('name'  => 'XML-RPC validator1',
-                 'desc'  => t('See !validator-link. note: simpletest_xmlrpc.module must be enabled', array('!validator-link' => l('the xmlrpc validator1 specification', 'http://www.xmlrpc.com/validator1Docs'))),
+                 'description'  => t('See !validator-link. note: simpletest_xmlrpc.module must be enabled', array('!validator-link' => l('the xmlrpc validator1 specification', 'http://www.xmlrpc.com/validator1Docs'))),
                  'group' => 'XML-RPC Tests');
   }
   

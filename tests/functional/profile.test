@@ -4,7 +4,7 @@
 class ProfileModuleTestSingle extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test Single field', 'desc' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
+    return array('name' => 'Test Single field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {
@@ -122,7 +122,7 @@ class ProfileModuleTestSingle extends DrupalTestCase {
 class ProfileModuleTestTextarea extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test Textarea field', 'desc' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
+    return array('name' => 'Test Textarea field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {
@@ -236,7 +236,7 @@ class ProfileModuleTestTextarea extends DrupalTestCase {
 class ProfileModuleTestFreelist extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test Freelist field', 'desc' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
+    return array('name' => 'Test Freelist field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {
@@ -351,7 +351,7 @@ class ProfileModuleTestFreelist extends DrupalTestCase {
 class ProfileModuleTestCheckbox extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test Checkbox field', 'desc' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
+    return array('name' => 'Test Checkbox field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {
@@ -463,7 +463,7 @@ class ProfileModuleTestCheckbox extends DrupalTestCase {
 class ProfileModuleTestUrl extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test Url field', 'desc' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
+    return array('name' => 'Test Url field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {
@@ -578,7 +578,7 @@ class ProfileModuleTestUrl extends DrupalTestCase {
 class ProfileModuleTestSelection extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test Selection field', 'desc' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
+    return array('name' => 'Test Selection field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {
@@ -703,7 +703,7 @@ class ProfileModuleTestSelection extends DrupalTestCase {
 class ProfileModuleTestDate extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test Date field', 'desc' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
+    return array('name' => 'Test Date field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {
@@ -832,7 +832,7 @@ class ProfileModuleTestDate extends DrupalTestCase {
 class ProfileModuleTest2 extends DrupalTestCase {
   function get_info() {
     $modules = (module_list());
-    return array('name' => 'Test other fields', 'desc' => "Testing weight, title page, required" , 'group' => 'Profile Module');
+    return array('name' => 'Test other fields', 'description' => "Testing weight, title page, required" , 'group' => 'Profile Module');
   }
 
   function _rolesApi($op, $edit) {

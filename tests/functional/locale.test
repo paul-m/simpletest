@@ -8,7 +8,7 @@ class LocaleModuleTest extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('String translate'),
-      'desc' => 'Adds a new locale and translates its name',
+      'description' => 'Adds a new locale and translates its name',
       'group' => 'Locale',
     );
   }

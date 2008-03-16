@@ -5,7 +5,7 @@ class ContactModuleTestCase extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Contact functionality'),
-      'desc' => t('Test site-wide contact form and personal contact form functionality.'),
+      'description' => t('Test site-wide contact form and personal contact form functionality.'),
       'group' => t('Contact Tests'),
     );
   }

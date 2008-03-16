@@ -9,7 +9,7 @@ class CommentModuleTestCase extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Comment functionality'),
-      'desc' => t('Thoroughly test comment administration and user interfaces.'),
+      'description' => t('Thoroughly test comment administration and user interfaces.'),
       'group' => t('Comment Tests'),
     );
   }

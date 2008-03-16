@@ -7,7 +7,7 @@
  */
 class UserRegistrationTest extends DrupalTestCase {
   function get_info() {
-    return array('name' => t('User registration'), 'desc' => t('Registers a user, fails login, resets password, successfully logs in with the one time password, changes password, logs out, successfully logs in with the new password, visits profile page.') , 'group' => 'User tests');
+    return array('name' => t('User registration'), 'description' => t('Registers a user, fails login, resets password, successfully logs in with the one time password, changes password, logs out, successfully logs in with the new password, visits profile page.') , 'group' => 'User tests');
   }
 
   function testUserRegistration() {
@@ -111,7 +111,7 @@ class UserRegistrationTest extends DrupalTestCase {
  */
 class UserValidationTest extends DrupalTestCase {
   function get_info() {
-    return array('name' => 'Username/email validation', 'desc' => 'Verify that username/email validity checks behave as designed.' , 'group' => 'User tests');
+    return array('name' => 'Username/email validation', 'description' => 'Verify that username/email validity checks behave as designed.' , 'group' => 'User tests');
   }
 
   // username validation
@@ -159,7 +159,7 @@ class UserAccessTest extends DrupalTestCase {
 
   function get_info() {
     return array('name' => t('User access rules'),
-                 'desc' => t('Assure that negative and positive access rules behave as designed.') ,
+                 'description' => t('Assure that negative and positive access rules behave as designed.') ,
                  'group' => 'User tests'
            );
   }
@@ -226,7 +226,7 @@ class UserAccessTest extends DrupalTestCase {
 
 class UserDeleteTest extends DrupalTestCase {
   function get_info() {
-    return array('name' => t('User delete'), 'desc' => t('Registers a user and deletes it.') , 'group' => 'User tests');
+    return array('name' => t('User delete'), 'description' => t('Registers a user and deletes it.') , 'group' => 'User tests');
   }
 
  function tearDown() {

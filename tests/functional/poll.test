@@ -45,7 +45,7 @@ class PollCreateTest extends PollTests {
    * Implementation of get_info() for information
    */
   function get_info() {
-    return array('name' => t('Poll create'), 'desc' => 'Adds "more choices", previews and creates a poll.', 'group' => 'Poll module tests');
+    return array('name' => t('Poll create'), 'description' => 'Adds "more choices", previews and creates a poll.', 'group' => 'Poll module tests');
   }
   
   function setUp() {
@@ -63,7 +63,7 @@ class PollVoteTest extends PollTests {
    * Implementation of get_info() for information
    */
   function get_info() {
-    return array('name' => t('Poll vote'), 'desc' => 'Vote on a poll', 'group' => 'Poll module tests');
+    return array('name' => t('Poll vote'), 'description' => 'Vote on a poll', 'group' => 'Poll module tests');
   }
     
   function setUp() {

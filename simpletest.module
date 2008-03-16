@@ -162,12 +162,11 @@ function simpletest_overview_form() {
     );
     foreach ($tests as $test) {
       $test_info = $test->get_info();
-      $desc = $test_info['desc'];
       $group['tests'][get_class($test)] = array(
         '#type' => 'checkbox',
         '#title' => $test_info['name'],
         '#default_value' => 0,
-        '#description' => $desc,
+        '#description' => $test_info['description'],
       );
     }
     $output[] = $group + array(

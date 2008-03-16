@@ -7,7 +7,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
   function get_info() {
     return array(
       'name' => t('Translation functionality'),
-      'desc' => t('Create a story with translation, modify the story outdating translation, and update translation.'),
+      'description' => t('Create a story with translation, modify the story outdating translation, and update translation.'),
       'group' => t('Translation Tests'),
     );
   }
