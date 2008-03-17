@@ -1,0 +1,245 @@
+<?php
+// $Id$
+
+class DrupalAggregatorTestCase extends DrupalTestCase {
+  private static $prefix = 'simpletest_aggregator_';
+
+  function setUp() {
+    parent::setUp();
+    $this->drupalModuleEnable('aggregator');
+    $web_user = $this->drupalCreateUserRolePerm(array('administer news feeds', 'access news feeds'));
+    $this->drupalLoginUser($web_user);
+  }
+
+  /**
+   * Create an aggregator feed (simulate form submission on admin/content/aggregator/add/feed)
+   * 
+   * @return $feed - full feed object if possible
+   */  
+  function createFeed() {
+    $edit = $this->getFeedEditArray();
+    $this->drupalPost('admin/content/aggregator/add/feed', $edit, 'Save');
+    $feed = db_fetch_object(db_query("SELECT *  FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $edit['title'], $edit['url'])); 
+    $this->assertTrue(!empty($feed), 'The feed exists');
+    return $feed;
+  }
+
+  function deleteFeed($feed) {
+    $edit['fid'] = $feed->fid;
+    aggregator_save_feed($edit);
+  }
+
+  function getFeedEditArray() {
+    $feed_name = $this->randomName(10, self::$prefix);
+    $feed_url = url(NULL, array('absolute' => TRUE)) .'rss.xml?feed='. $feed_name;
+    $edit = array(
+      'title' => $feed_name,
+      'url' => $feed_url,
+      'refresh' => '900',
+    );
+    return $edit;
+  }
+
+  /**
+   * Update feed items (simulate click to admin/content/aggregator/update/$fid)
+   *
+   * @param object &$feed - feed object with valid fid
+   */
+  function updateFeedItems(&$feed) {    
+    // First, let's ensure we could get to the rss xml
+    $this->drupalGet('rss.xml');
+    $this->assertResponse(200, "rss.xml is reachable.");   
+
+    // our tests are based off of rss.xml, so let's find out how many elements should be related
+    $feed_count = db_result(db_query_range(db_rewrite_sql('SELECT COUNT(*) FROM {node} n WHERE n.promote = 1 AND n.status = 1'), 0, variable_get('feed_default_items', 10)));
+    $feed_count = $feed_count > 10?10:$feed_count;
+
+    // refresh the feed (simulated link click)
+    $this->drupalGet('admin/content/aggregator/update/' . $feed->fid);
+
+    // ensure we have the right number of items
+    $result = db_query('SELECT iid FROM {aggregator_item} WHERE fid = %d', $feed->fid);
+    $items = array();
+    $feed->items = array();
+    while ($item = db_fetch_object($result)) {
+      $feed->items[] = $item->iid;
+    }
+    $feed->item_count = count($feed->items);
+    $this->assertEqual($feed_count, $feed->item_count, t("Total items in feed equal to the total items in database (!val1 != !val2)", array('!val1' => $feed_count, '!val2' => $feed->item_count)));
+  }
+
+  /**
+   * Confirm item removal from a feed
+   *
+   * @param object $feed - feed object with valid fid
+   */
+  function removeFeedItems($feed) {
+    $this->drupalPost('admin/content/aggregator/remove/' . $feed->fid, array(), 'Remove items');
+  }
+
+  /**
+   * Pull feed categories from aggregator_category_feed table
+   *
+   * @param object $feed - feed object with valid fid
+   */
+  function getFeedCategories($feed) {
+    // add the categories to the feed so we can use them
+    $result = db_query('SELECT cid FROM {aggregator_category_feed} WHERE fid = %d', $feed->fid);      
+    while ($category = db_fetch_object($result)) {
+      $feed->categories[] = $category->cid;
+    }
+  }
+
+  function uniqueFeed($feed_name, $feed_url) {
+    $result = db_result(db_query("SELECT count(*) FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $feed_name, $feed_url));
+    return (1 == $result);
+  }
+}
+
+class AddFeedTestCase extends DrupalAggregatorTestCase {
+  /**
+   * Implementation of get_info() for information
+   */
+  function get_info() {
+    return array('name' => t('Aggregator Add Feed functionality'),
+      'description' => t('Add feed test.'),
+      'group' => t('Feed Tests'),);
+  }
+
+  function testAddFeed() {
+    $feed = $this->createFeed();
+    $this->assertWantedRaw(t('The feed %name has been added.', array('%name' => $feed->title)), t('The feed !name has been added.', array('!name' => $feed->title)));
+    $this->assertEqual($this->getUrl(), url('admin/content/aggregator/add/feed', array('absolute' => TRUE)));
+    $this->assertTrue($this->uniqueFeed($feed->title, $feed->url), 'The feed is unique.');
+    $this->drupalGet('aggregator/sources/'.$feed->fid);
+    $this->assertResponse(200);
+    $this->assertText($feed->title, 'Page title');
+    $this->deleteFeed($feed);  
+  }
+}
+
+class UpdateFeedTestCase extends DrupalAggregatorTestCase {
+  /**
+   * Implementation of get_info() for information
+   */
+  function get_info() {
+    return array('name' => t('Aggregator Update Feed functionality'),
+      'description' => t('Update feed test.'),
+      'group' => t('Feed Tests'),);
+  }
+
+  function testUpdateFeed() {
+    $feed = $this->createFeed();
+    $edit = $this->getFeedEditArray();
+    $edit['refresh'] =  1800; // change refresh value
+
+    $this->drupalPost('admin/content/aggregator/edit/feed/'. $feed->fid, $edit, 'Save');
+    $this->assertWantedRaw(t('The feed %name has been updated.', array('%name' => $edit['title'])), t('The feed %name has been updated.', array('%name' => $edit['title'])));
+    $this->assertEqual($this->getUrl(), url('admin/content/aggregator/', array('absolute' => TRUE)));
+    $this->assertTrue($this->uniqueFeed($edit['title'], $edit['url']), 'The feed is unique.');
+    $this->drupalGet('aggregator/sources/'.$feed->fid);
+    $this->assertResponse(200);
+    $this->assertText($edit['title'], 'Page title');
+    $this->deleteFeed($feed);  
+  }
+}
+
+class RemoveFeedTestCase extends DrupalAggregatorTestCase {
+  /**
+   * Implementation of get_info() for information
+   */
+  function get_info() {
+    return array('name' => t('Aggregator Remove Feed functionality'),
+      'description' => t('Remove feed test.'),
+      'group' => t('Feed Tests'),);
+  }
+
+  function testRemoveFeed() {
+    $feed = $this->createFeed();
+    $this->drupalPost('admin/content/aggregator/edit/feed/'.$feed->fid, array(), 'Delete');
+    $this->assertWantedRaw(t('The feed %name has been deleted.', array('%name' => $feed->title)), t('The feed %name has been added.', array('%name' => $feed->title)));
+    $this->drupalGet('aggregator/sources/'. $feed->fid);
+    $this->assertResponse(404);
+    $result = db_result(db_query("SELECT count(*) FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $feed->title, $feed->url));
+    $this->assertFalse($result, 'Feed removed from database');    
+  }
+}
+
+class UpdateFeedItemTestCase extends DrupalAggregatorTestCase {
+  /**
+   * Implementation of get_info() for information
+   */
+  function get_info() {
+    return array('name' => t('Aggregator Update Feed Item functionality'),
+      'description' => t('Update feed items from a feed.'),
+      'group' => t('Feed Tests'),);
+  }
+
+  /**
+   * Test running "update items" from the 'admin/content/aggregator' page
+   */
+  function testUpdateFeedItem() {
+    // create a feed and test updating feed items if possible
+    $feed = $this->createFeed();
+    if (!empty($feed)) {
+      $this->updateFeedItems($feed);
+      $this->removeFeedItems($feed);
+    }
+    $this->deleteFeed($feed);
+  }
+}
+
+class RemoveFeedItemTestCase extends DrupalAggregatorTestCase {
+  /**
+   * Implementation of get_info() for information
+   */
+  function get_info() {
+    return array('name' => t('Aggregator Remove Feed Item functionality'),
+      'description' => t('Remove feed items from a feed.'),
+      'group' => t('Feed Tests'),);
+  }
+
+  /**
+   * Test running "remove items" from the 'admin/content/aggregator' page
+   */
+  function testRemoveFeedItem() {
+    $feed = $this->createFeed();
+    $this->updateFeedItems($feed);
+    $this->removeFeedItems($feed);
+    $count = db_result(db_query("SELECT COUNT(*) FROM {aggregator_item} WHERE fid = %d", $feed->fid));
+    $this->assertTrue($count == 0);
+    $this->deleteFeed($feed);
+  }
+}
+
+class CategorizeFeedItemTestCase extends DrupalAggregatorTestCase {
+  /**
+   * Implementation of get_info() for information
+   */
+  function get_info() {
+    return array('name' => t('Aggregator Categorize Feed Item functionality'),
+      'description' => t('Test feed item categorization.'),
+      'group' => t('Feed Tests'),);
+  }
+
+  /**
+   * If a feed has a category, make sure that the children inherit that
+   * categorization.
+   */
+  function testCategorizeFeedItem() {
+    //TODO: need to add categories to the feed on creation
+    $feed = $this->createFeed();
+    $this->updateFeedItems($feed);
+    $this->getFeedCategories($feed);
+
+    // for each category of a feed, ensure feed items have that category, too
+    if (!empty($feed->categories) && !empty($feed->items)) {      
+      foreach ($feed->categories as $category) {
+        $items_str = implode(', ', $feed->items);    
+        $categorized_count = db_result(db_query("SELECT COUNT(*) FROM {aggregator_category_item} WHERE iid IN (" . $items_str . ")"));
+        $this->assertEqual($feed->item_count, $categorized_count, "Total items in feed equal to the total categorized feed items in database");
+      }
+    }
+    $this->deleteFeed($feed);
+  }
+}
