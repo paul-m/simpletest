@@ -8,6 +8,7 @@
  * WebTestCase would do this.
  */
 class DrupalTestCase extends WebTestCase {
+  var $_logged_in = FALSE;
   var $_content;
   var $_originalModules     = array();
   var $_modules             = array();
@@ -414,12 +415,15 @@ class DrupalTestCase extends WebTestCase {
   }
 
   /**
-   * Logs in a user with the internal browser
+   * Logs in a user with the internal browser. If already logged in then logs out first.
    *
    * @param object user object with pass_raw property!
    * @param $submit value of submit button on log in form
    */
   function drupalLoginUser($user = NULL, $submit = 'Log in') {
+    if ($this->_logged_in) {
+      $this->drupalGet('logout');
+    }
 
     $this->drupalGet('user');
     // Going to the page retrieves the cookie, as the browser should save it
@@ -434,6 +438,8 @@ class DrupalTestCase extends WebTestCase {
     $this->assertText( $user->name, ' [login] found name: ' . $user->name);
     $this->assertNoText(t('The username %name has been blocked.', array('%name' => $user->name)), ' [login] not blocked');
     $this->assertNoText(t('The name %name is a reserved username.', array('%name' => $user->name)), ' [login] not reserved');
+
+    $this->_logged_in = TRUE;
 
     return $user;
   }
