@@ -41,7 +41,7 @@ class DrupalTestCase extends WebTestCase {
       'title'     => $this->randomName(8),
       'comment'   => 2,
       'changed'   => time(),
-      'format'    => 1,
+      'format'    => FILTER_FORMAT_DEFAULT,
       'moderate'  => 0,
       'promote'   => 0,
       'revision'  => 1,
