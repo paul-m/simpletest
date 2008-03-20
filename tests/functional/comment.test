@@ -6,6 +6,9 @@ class CommentModuleTestCase extends DrupalTestCase {
   var $web_user;
   var $node;
 
+  /**
+   * Implementation of get_info().
+   */
   function get_info() {
     return array(
       'name' => t('Comment functionality'),
@@ -14,6 +17,9 @@ class CommentModuleTestCase extends DrupalTestCase {
     );
   }
 
+  /**
+   * Implementation of setUp().
+   */
   function setUp() {
     parent::setUp();
 
@@ -32,49 +38,49 @@ class CommentModuleTestCase extends DrupalTestCase {
   /**
    * Test comment interface.
    */
-//  function testCommentInterface() {
-//    // Set comments to not have subject.
-//    $this->drupalLoginUser($this->admin_user);
-//    $this->set_comment_preview(TRUE);
-//    $this->set_comment_subject(FALSE);
-//    $this->drupalGet('logout');
-//
-//    // Post comment without subject
-//    $this->drupalLoginUser($this->web_user);
-//    $this->drupalGet('comment/reply/'. $this->node->nid);
-//    $this->assertNoPattern('/(input)(.*?)(name="subject")/', 'Subject field not found.');
-//
-//    // Set comments to have subject and preview to required.
-//    $this->drupalGet('logout');
-//    $this->drupalLoginUser($this->admin_user);
-//    $this->set_comment_subject(true);
-//    $this->set_comment_preview(true);
-//    $this->drupalGet('logout');
-//
-//    // Create comment that requires preview.
-//    $this->drupalLoginUser($this->web_user);
-//    $comment = $this->post_comment($this->node, $this->randomName(), $this->randomName());
-//    $this->assertTrue($this->comment_exists($comment), 'Comment found.');
-//
-//    // Reply to comment.
-//    $this->drupalGet('comment/reply/'. $this->node->nid .'/'. $comment->id);
-//    $reply = $this->post_comment(NULL, $this->randomName(), $this->randomName());
-//    $this->assertTrue($this->comment_exists($reply, TRUE), 'Reply found.');
-//
-//    // Edit reply.
-//    $this->drupalGet('comment/edit/'. $reply->id);
-//    $reply = $this->post_comment(NULL, $this->randomName(), $this->randomName());
-//    $this->assertTrue($this->comment_exists($reply, TRUE), 'Modified reply found.');
-//
-//    // Delete comment and make sure that reply is also removed.
-//    $this->drupalGet('logout');
-//    $this->drupalLoginUser($this->admin_user);
-//    $this->delete_comment($comment);
-//
-//    $this->drupalGet('node/'. $this->node->nid);
-//    $this->assertFalse($this->comment_exists($comment), 'Comment not found.');
-//    $this->assertFalse($this->comment_exists($reply, TRUE), 'Reply not found.');
-//  }
+  function testCommentInterface() {
+    // Set comments to not have subject.
+    $this->drupalLoginUser($this->admin_user);
+    $this->set_comment_preview(TRUE);
+    $this->set_comment_subject(FALSE);
+    $this->drupalGet('logout');
+
+    // Post comment without subject
+    $this->drupalLoginUser($this->web_user);
+    $this->drupalGet('comment/reply/'. $this->node->nid);
+    $this->assertNoPattern('/(input)(.*?)(name="subject")/', 'Subject field not found.');
+
+    // Set comments to have subject and preview to required.
+    $this->drupalGet('logout');
+    $this->drupalLoginUser($this->admin_user);
+    $this->set_comment_subject(true);
+    $this->set_comment_preview(true);
+    $this->drupalGet('logout');
+
+    // Create comment that requires preview.
+    $this->drupalLoginUser($this->web_user);
+    $comment = $this->post_comment($this->node, $this->randomName(), $this->randomName());
+    $this->assertTrue($this->comment_exists($comment), 'Comment found.');
+
+    // Reply to comment.
+    $this->drupalGet('comment/reply/'. $this->node->nid .'/'. $comment->id);
+    $reply = $this->post_comment(NULL, $this->randomName(), $this->randomName());
+    $this->assertTrue($this->comment_exists($reply, TRUE), 'Reply found.');
+
+    // Edit reply.
+    $this->drupalGet('comment/edit/'. $reply->id);
+    $reply = $this->post_comment(NULL, $this->randomName(), $this->randomName());
+    $this->assertTrue($this->comment_exists($reply, TRUE), 'Modified reply found.');
+
+    // Delete comment and make sure that reply is also removed.
+    $this->drupalGet('logout');
+    $this->drupalLoginUser($this->admin_user);
+    $this->delete_comment($comment);
+
+    $this->drupalGet('node/'. $this->node->nid);
+    $this->assertFalse($this->comment_exists($comment), 'Comment not found.');
+    $this->assertFalse($this->comment_exists($reply, TRUE), 'Reply not found.');
+  }
 
   /**
    * Test comment form on node page.
@@ -221,7 +227,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $match = array();
     // Get comment ID
     preg_match('/#comment-([^"]+)/', $this->_browser->getURL(), $match);
-    
+
     // get comment
     if ($contact !== TRUE) { // If true then attempting to find error message.
       $this->assertText($subject, 'Comment posted.');
