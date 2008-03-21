@@ -31,7 +31,7 @@ class TaxonomyVocabularyFunctions extends DrupalTestCase {
     $edit = array();
     foreach($_t as $key )
       $edit[$key] = $$key;
-   
+
     // exec save function
     taxonomy_save_vocabulary($edit);
     //after save we use $nodesBak
@@ -91,7 +91,7 @@ class TaxonomyTermFunctions extends DrupalTestCase {
     $relation = 1;
     $edit['name'] = $name;
     taxonomy_save_vocabulary($edit);
-    
+
     // create term
     $termname = $this->randomName(20);
     $termdesc = $this->randomName(200);
@@ -104,7 +104,7 @@ class TaxonomyTermFunctions extends DrupalTestCase {
     $termsyn = implode("\n", $synonyms);
     $data = array('name' => $termname, 'description' => $termdesc, 'weight' => $termweight, 'synonyms' => $termsyn, 'vid' => $edit['vid'], 'tid' => 0, 'relations' => 0);
     taxonomy_save_term($data);
-    
+
     // retrieve term and check all fields
     $_tArray = taxonomy_get_term_by_name($termname);
     $getTerm = $_tArray[0];
@@ -138,12 +138,12 @@ class TaxonomyTermFunctions extends DrupalTestCase {
     foreach($relations as $rTid) {
       $this->assertTrue(array_key_exists($rTid, $related), "Checking relations ($rTid)");
     }
-    
+
     // delete vocabulary
     $edit['name'] = 0;
     taxonomy_save_vocabulary($edit);
   }
-  
+
   function testTermsFunctionsSingleHierarchy() {
     //preparing data
     // vocabulary hierarchy->single
@@ -159,14 +159,14 @@ class TaxonomyTermFunctions extends DrupalTestCase {
     $edit['hierarchy'] = 1;
     $edit['name'] = $name;
     taxonomy_save_vocabulary($edit);
-    
+
     // create 1st term
     $termname = $this->randomName(20);
     $data = array('name' => $termname, 'description' => '', 'weight' => 0, 'synonyms' => '', 'vid' => $edit['vid'], 'tid' => 0, 'relations' => 0);
     taxonomy_save_term($data);
     $_tArray = taxonomy_get_term_by_name($termname);
     $parent = $_tArray[0];
-    
+
     // create 2nd term as a child
     $termname = $this->randomName(20);
     $data = array('name' => $termname, 'description' => '', 'weight' => 0, 'synonyms' => '', 'vid' => $edit['vid'], 'tid' => 0, 'relations' => 0, 'parent' => array($parent->tid));
@@ -179,7 +179,7 @@ class TaxonomyTermFunctions extends DrupalTestCase {
     $getParent = taxonomy_get_parents($children->tid);
     $this->assertEqual($parent,$getParent[$parent->tid], 'Checking parents');
     $this->assertEqual($children,$getChildren[$children->tid], 'Checking children');
-    
+
     // delete vocabulary
     $edit['name'] = 0;
     taxonomy_save_vocabulary($edit);
@@ -198,7 +198,7 @@ class TaxonomyTermFunctions extends DrupalTestCase {
     $edit['hierarchy'] = 1;
     $edit['name'] = $name;
     taxonomy_save_vocabulary($edit);
-    
+
     // create 1st term
     $parent = array();
     $termname = $this->randomName(20);
@@ -206,7 +206,7 @@ class TaxonomyTermFunctions extends DrupalTestCase {
     taxonomy_save_term($data);
     $_tArray = taxonomy_get_term_by_name($termname);
     $parent[] = $_tArray[0]->tid;
-    
+
     // create 2nd term
     $termname = $this->randomName(20);
     $data = array('name' => $termname, 'description' => '', 'weight' => 0, 'synonyms' => '', 'vid' => $edit['vid'], 'tid' => 0, 'relations' => 0);
@@ -226,7 +226,7 @@ class TaxonomyTermFunctions extends DrupalTestCase {
       $this->assertTrue(array_key_exists($p, $getParent), "Checking parents ($p)");
       //$this->assertEqual($parent,$getParent[$parent->tid], 'Checking parents');
     }
-    
+
     // delete vocabulary
     $edit['name'] = 0;
     taxonomy_save_vocabulary($edit);
@@ -240,7 +240,7 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
   }
 
   function testTaxonomyNode() {
-    
+
     //preparing data
     // vocabulary hierarchy->single, multiple -> on
     $edit = array();
@@ -257,10 +257,10 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     $edit['nodes'] = array('story' => 'story');
     taxonomy_save_vocabulary($edit);
     $vid = $edit['vid']; // we need to persist vid after $edit is unset()
-    
+
     $parent = array();
     $patternArray = array();
-    
+
     // create 1st term
     $termname = $this->randomName(20);
     $data = array('name' => $termname, 'description' => '', 'weight' => 0, 'synonyms' => '', 'vid' => $vid, 'tid' => 0, 'relations' => 0);
@@ -268,7 +268,7 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     $_tArray = taxonomy_get_term_by_name($termname);
     $parent[$_tArray[0]->tid] = $_tArray[0]->tid;
     $patternArray['term name 1'] = $termname;
-    
+
     // create 2nd term
     $termname = $this->randomName(20);
     $data = array('name' => $termname, 'description' => '', 'weight' => 0, 'synonyms' => '', 'vid' => $vid, 'tid' => 0, 'relations' => 0);
@@ -281,44 +281,35 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     $perm = array('access content', 'create story content', 'edit own story content', 'delete own story content');
     $account = $this->drupalCreateUserRolePerm($perm);
     $this->drupalLoginUser($account);
-    
+
     // why is this printing out the user profile page?
     // go to node/add/story
-    $this->drupalGet('node/add/story');
-    $req = $this->_browser->getRequest();
-
-    $headers = $this->_browser->getHeaders();
-
-    $content = $this->drupalGetContent();
-//    print($content). "\n\n\n all done \n\n";
-
     // try to create story
     $title = $this->randomName();
     $body = $this->randomName(100);
-    $edit = array('title' => $title, 'body' => $body, 'taxonomy-' . $vid => $parent);
-    
+    $edit = array('title' => $title, 'body' => $body, "taxonomy[$vid][]" => $parent);
+
     // multiple slect box was failing through drupalPost. Use raw POST instead
     // Failing because they were being sent/handled wrong (earnest.berry@gmail.com <Souvent22>)
-    $action = url('node/add/story', array('absolute' => TRUE));
-    $this->drupalPost($action, $edit, 'Save');
-    $content = $this->drupalGetContent();
+    $this->drupalPost('node/add/story', $edit, 'Save');
+
     $patternArray['body text'] = $body;
     $patternArray['title'] = $title;
 
 //    $node = array2object(node_load(array('title' => $title)));
     $node = node_load(array('title' => $title));
-    
-    $this->_browser->get(url("node/$node->nid"));
+
+    $this->drupalGet("node/$node->nid");
     foreach($patternArray as $name => $termPattern) {
       $this->assertText($termPattern, "Checking $name");
     }
-    
+
     // checking database fields
     $result = db_query('SELECT tid FROM {term_node} WHERE nid = %d', $node->nid);
     while ($nodeRow = db_fetch_array($result)) {
       $this->assertTrue(in_array($nodeRow['tid'], $parent), 'Checking database record');
     }
-    
+
     // ok, lets create new terms, and change this node
     //pop array
     array_pop($parent);
@@ -330,7 +321,7 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     $_tArray = taxonomy_get_term_by_name($termname);
     $parent[] = $_tArray[0]->tid;
     $patternArray['term name 2'] = $termname;
-    
+
     // create 2nd term
     $termname = $this->randomName(20);
     $data = array('name' => $termname, 'description' => '', 'weight' => 0, 'synonyms' => '', 'vid' => $vid, 'tid' => 0, 'relations' => 0);
@@ -339,18 +330,19 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     $parent[] = $_tArray[0]->tid;
     $patternArray['term name 3'] = $termname;
 
-    $edit = array('title' => $title, 'body' => $body, 'taxonomy-' . $vid => $parent);
-    
+    $edit = array('title' => $title, 'body' => $body, "taxonomy[$vid][]" => $parent);
+
     $this->drupalPost('node/'. $node->nid .'/edit', $edit, 'Save');
-    
+
     // TODO Do a MUCH better check here of the information msg
     $patternArray['information message'] = 'been updated';
     foreach($patternArray as $name => $termPattern) {
       $this->assertText($termPattern, "Checking $name");
     }
-    
+
     // checking database fields
-    $result = db_query('SELECT tid FROM {term_node} WHERE nid = %d', $node->nid);
+    $node = node_load(array('title' => $title));
+    $result = db_query('SELECT tid FROM {term_node} WHERE vid = %d', $node->vid);
     while ($nodeRow = db_fetch_array($result)) {
       $this->assertTrue(in_array($nodeRow['tid'], $parent), 'Checking database field');
     }
@@ -358,7 +350,7 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     // delete node through browser
     $this->drupalPost('node/'. $node->nid .'/delete', array(), 'Delete' );
     // checking after delete
-    $this->_browser->get(url("node/".$node->nid));
+    $this->drupalGet("node/".$node->nid);
     $this->assertNoUnwantedText($termname, "Checking if node exists");
     // checking database fields
     $num_rows = db_result(db_query('SELECT COUNT(*) FROM {term_node} WHERE nid = %d', $node->nid));
@@ -373,9 +365,6 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     $edit['name'] = 0;
     $edit['vid'] = $vid;
     taxonomy_save_vocabulary($edit);
-
-    // restoring status
-    $this->drupalModuleDisable('story');
   }
 
 }

@@ -39,7 +39,7 @@ class EnableCoreModuleTest extends DrupalTestCase {
       'translation',
       'trigger',
       'update',
-      'upload',       	
+      'upload',
     );
 
     // Get a list of the currently enabled modules
@@ -166,7 +166,7 @@ class DisableUninstallCoreModuleTest extends DrupalTestCase {
       'translation',
       'trigger',
       'update',
-      'upload',           
+      'upload',
     );
 
     // Get a list of the currently enabled modules
@@ -216,7 +216,7 @@ class DisableUninstallCoreModuleTest extends DrupalTestCase {
 
     $this->drupalPost('admin/build/modules/uninstall/confirm', $edit, 'Uninstall');
     // We need to confirm this by clicking again
-    $this->_browser->clickSubmit(t('Uninstall'));
+    $this->drupalPost(NULL, array(), t('Uninstall'));
     $this->assertWantedRaw(t('The selected modules have been uninstalled.'), 'Check to ensure that the modules have been removed');
 
     // Now, we check the tables for each module

@@ -57,20 +57,22 @@ class UserRegistrationTest extends DrupalTestCase {
     $url = user_pass_reset_url($user);
     /* TODO: find a better way, we currently have to do it that way, see user.module line 1041. */
     sleep(1);
-    $this->_browser->get($url);
+    $this->drupalGet($url);
 
     // Will proabaly not work localised as the text is sent to tranlate wrapped in <p> usually
 
     $this->assertText(t('This login can be used only once.'), "Check for 'used only once' notice");
 
-    $this->_browser->clickSubmit(t('Log in'));
+    $this->drupalPost(NULL, array(), t('Log in'));
     $this->assertText(t('You have just used your one-time login link. It is no longer necessary to use this link to login. Please change your password.'), "Check for one time login notice after clicking Login button.");
 
     /* now lets change our password */
     $new_pass = user_password();
-    $this->assertTrue($this->_browser->setField('pass[pass1]', $new_pass), 'Pass1 field set.');
-    $this->assertTrue($this->_browser->setField('pass[pass2]', $new_pass), 'Pass2 field set.');
-    $this->_browser->clickSubmit(t('Save'));
+    $edit = array(
+      'pass[pass1]' => $new_pass,
+      'pass[pass2]' => $new_pass,
+    );
+    $this->drupalPost(NULL, $edit, t('Save'));
     $this->assertText(t('The changes have been saved.'), "Changed password to '$new_pass'");
 
     /* Check if the password changes are present in db */
@@ -94,7 +96,7 @@ class UserRegistrationTest extends DrupalTestCase {
     $this->assertNoUnwantedRaw(t('The username %name has been blocked.', array('%name' => $pname)), 'Not blocked');
     $this->assertNoUnwantedRaw(t('The name %name is a reserved username.', array('%name' => $pname)), 'Access granted');
 
-    $this->_browser->get(url('user'), array('absolute' => TRUE));
+    $this->drupalGet('user');
     $this->assertText($pname, 'user as auth lands on the user profile');
     $this->assertText(t('View'), 'View tab on the profile page');
     $this->assertText(t('Edit'), 'Edit tab on the profile page');
@@ -197,15 +199,14 @@ class UserAccessTest extends DrupalTestCase {
     $this->assertNoUnWantedText(t('Your password and further instructions have been sent to your e-mail address.'), 'blocked user: Your password and further instructions - not found');
     $this->assertText(t('The name @name has been denied access.', array('@name' => $name)), 'blocked user: denied access - found');
 
-    /* Lets make a new browser for new cookies */
-    $this->setBrowser($this->createBrowser());
-
     /* now try allowed user */
     $name = $this->randomName(2, 'simpletest_block_allow_');
     $mail = "$name@example.com";
     $edit = array('name' => $name,
                   'mail' => $mail);
 
+    /* We need new cookies */
+    unset($this->ch);
     $this->drupalPost('user/register', $edit, 'Create new account');
 
     $this->assertText(t('Your password and further instructions have been sent to your e-mail address.'), 'access user: Your password and further instructions - found');
@@ -250,11 +251,11 @@ class UserDeleteTest extends DrupalTestCase {
     $uid = $user_to_delete->uid;
     $web_user = $this->drupalCreateUserRolePerm(array('administer users'));
     $this->drupalLoginUser($web_user);
-    $this->_browser->get(url('user/'. $uid .'/edit', array('absolute' => TRUE)));
-    $this->_browser->clickSubmit(t('Delete'));
+    $this->drupalGet(url('user/'. $uid .'/edit', array('absolute' => TRUE)));
+    $this->drupalPost(NULL, array(), t('Delete'));
     $this->assertWantedRaw(t('Are you sure you want to delete the account %name?', array('%name' => $name)), 'Confirm title');
     $this->assertText(t('All submissions made by this user will be attributed to the anonymous account. This action cannot be undone.'), 'Confirm text');
-    $this->_browser->clickSubmit(t('Delete'));
+    $this->drupalPost(NULL, array(), t('Delete'));
     $this->assertWantedRaw(t('%name has been deleted.', array('%name' => $name)), 'User deleted');
     $this->assertFalse(user_load($edit), 'User is not found in the database');
   }

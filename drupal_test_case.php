@@ -3,39 +3,45 @@
 
 /**
  * Test case for typical Drupal tests.
- * Extends WebTestCase for comfortable browser usage
- * but also implements all UnitTestCase methods, I wish
- * WebTestCase would do this.
  */
-class DrupalTestCase extends WebTestCase {
-  var $_logged_in = FALSE;
-  var $_content;
-  var $_originalModules     = array();
-  var $_modules             = array();
-  var $_cleanupVariables    = array();
-  var $_cleanupUsers        = array();
-  var $_cleanupRoles        = array();
-  var $_cleanupNodes        = array();
-  var $_cleanupContentTypes = array();
+class DrupalTestCase extends UnitTestCase {
+  protected $_logged_in = FALSE;
+  protected $_content;
+  protected $plain_text;
+  protected $_originalModules     = array();
+  protected $_modules             = array();
+  protected $_cleanupVariables    = array();
+  protected $_cleanupUsers        = array();
+  protected $_cleanupRoles        = array();
+  protected $_cleanupNodes        = array();
+  protected $_cleanupContentTypes = array();
+  protected $ch;
+  // We do not reuse the cookies in further runs, so we do not need a file
+  // but we still need cookie handling, so we set the jar to NULL
+  protected $cookie_file = NULL;
+  // Overwrite this any time to supply cURL options as necessary,
+  // DrupalTestCase itself never sets this but always obeys whats set.
+  protected $curl_options         = array();
 
-
-  function DrupalTestCase($label = NULL) {
-    if (! $label) {
+  function __construct($label = NULL) {
+    if (!$label) {
       if (method_exists($this, 'get_info')) {
         $info  = $this->get_info();
         $label = $info['name'];
       }
     }
-    $this->WebTestCase($label);
+    parent::__construct($label);
   }
-  
+
   /**
    * Creates a node based on default settings.
    *
-   * @param settings An array of settings to change from the defaults, in the form of 'body' => 'Hello, world!'
+   * @param settings
+   *   An assocative array of settings to change from the defaults, keys are
+   *   node properties, for example 'body' => 'Hello, world!'.
    */
   function drupalCreateNode($settings = array()) {
- 
+
     // Populate defaults array
     $defaults = array(
       'body'      => $this->randomName(32),
@@ -58,16 +64,15 @@ class DrupalTestCase extends WebTestCase {
     if (isset($defaults['created'])) {
       $defaults['date'] = format_date($defaults['created'], 'custom', 'Y-m-d H:i:s O');
     }
-    
     if (empty($settings['uid'])) {
       global $user;
       $defaults['uid'] = $user->uid;
     }
     $node = ($settings + $defaults);
     $node = (object)$node;
- 
+
     node_save($node);
-    
+
     // small hack to link revisions to our test user
     db_query('UPDATE {node_revisions} SET uid = %d WHERE vid = %d', $node->uid, $node->vid);
     $this->_cleanupNodes[] = $node->nid;
@@ -77,7 +82,9 @@ class DrupalTestCase extends WebTestCase {
   /**
    * Creates a custom content type based on default settings.
    *
-   * @param settings An array of settings to change from the defaults, in the form of 'type' => 'foo'
+   * @param settings
+   *   An array of settings to change from the defaults.
+   *   Example: 'type' => 'foo'.
    */
   function drupalCreateContentType($settings = array()) {
     // find a non-existent random type name.
@@ -117,143 +124,6 @@ class DrupalTestCase extends WebTestCase {
   }
 
   /**
-   * @abstract Checks to see if we need to send
-   * a http-auth header to authenticate
-   * when browsing a site.
-   *
-   * @param status Boolean pass true if you want to know if we are using
-   * HTTP-AUTH
-   * @return void
-   */
-  function drupalCheckAuth($status = false) {
-    $check = variable_get('simpletest_httpauth', false);
-    if( $status ) {
-      return $check;
-    }
-    if( variable_get('simpletest_httpauth', false) ) {
-      $html = $this->authenticate(variable_get('simpletest_httpauth_username', ''), variable_get('simpletest_httpauth_pass', ''));
-    }
-    return $html;
-  }
-
-  /**
-   * @abstract Broker for the get function
-   * adds the authentication headers if necessary
-   * @author Earnest Berry III <earnest.berry@gmail.com>
-   *
-   * @param $path string Drupal path or url to load into internal browser
-   * @param array $options Options to be forwarded to url().
-   * @return void
-   */
-  function drupalGet($path, $options = array()) {
-    $url = url($path, array_merge($options, array('absolute' => TRUE)));
-    $html = $this->_browser->get($url);
-
-    if ($this->drupalCheckAuth(true)) {
-      $html .= $this->drupalCheckAuth();
-    }
-
-    $this->_content = $this->_browser->getContent();
-
-    return $html;
-  }
-
-  /**
-   * @abstract Broker for the post function
-   * adds the authentication headers if
-   * necessary
-   * @author Earnest Berry III <earnest.berry@gmail.com>
-   *
-   * @param url string Url to retch
-   * @return void
-   */
-  function drupalRawPost($action, $edit = array()) {
-    $html = $this->_browser->post($action, $edit);
-
-    if( $this->drupalCheckAuth(true) ) {
-      $html .= $this->drupalCheckAuth();
-    }
-
-    $this->_content = $this->_browser->getContent();
-
-    return $html;
-  }
-
-
-
-  /**
-   * Do a post request on a drupal page.
-   * It will be done as usual post request with SimpleBrowser
-   * By $reporting you specify if this request does assertions or not
-   * Warning: empty ("") returns will cause fails with $reporting
-   *
-   * @param string  $path
-   *   Location of the post form. Either a Drupal path or an absolute path or
-   *   NULL to post to the current page.
-   * @param array $edit
-   *   Field data in an assocative array. Changes the current input fields
-   *   (where possible) to the values indicated. A checkbox can be set to
-   *   TRUE to be checked and FALSE to be unchecked.
-   * @param string $submit
-   *   Untranslated value, id or name of the submit button.
-   */
-  function drupalPost($path, $edit = array(), $submit) {
-    if (isset($path)) {
-      $ret = $this->drupalGet($path);
-      $this->assertTrue($ret, t(' [browser] GET path "@path"', array('@path' => $path)));
-    }
-
-    foreach ($edit as $field_name => $field_value) {
-      $ret = $this->_browser->setFieldByName($field_name, $field_value)
-          || $this->_browser->setFieldById("edit-$field_name", $field_value);
-      $this->assertTrue($ret, " [browser] Setting $field_name=\"$field_value\"");
-    }
-
-    $ret = $this->_browser->clickSubmit(t($submit))  || $this->_browser->clickSubmitById($submit) || $this->_browser->clickSubmitByName($submit) || $this->_browser->clickImageByName($submit);
-    $this->assertTrue($ret, ' [browser] POST by click on ' . t($submit));
-    $this->_content = $this->_browser->getContent();
-  }
-
-  /**
-   *    Follows a link by name.
-   *
-   *    Will click the first link found with this link text by default, or a
-   *    later one if an index is given. Match is case insensitive with
-   *    normalized space. The label is translated label. There is an assert
-   *    for successful click.
-   *    WARNING: Assertion fails on empty ("") output from the clicked link
-   *
-   *    @param string $label      Text between the anchor tags.
-   *    @param integer $index     Link position counting from zero.
-   *    @param boolean $reporting Assertions or not
-   *    @return boolean/string    Page on success.
-   *
-   *    @access public
-   */
-  function clickLink($label, $index = 0) {
-    $url_before = str_replace('%', '%%', $this->getUrl());
-    $urls = $this->_browser->_page->getUrlsByLabel($label);
-    if (count($urls) < $index + 1) {
-      $url_target = 'URL NOT FOUND!';
-    } else {
-      $url_target = str_replace('%', '%%', $urls[$index]->asString());
-    }
-
-    $ret = parent::clickLink(t($label), $index);
-
-    $this->assertTrue($ret, ' [browser] clicked link '. t($label) . " ($url_target) from $url_before");
-
-    return $ret;
-  }
-
-  /**
-   * @TODO: needs documentation
-   */
-  function drupalGetContent() {
-    return $this->_content;
-  }
-
-  /**
    * Generates a random string, to be used as name or whatever
    * @param integer $number   number of characters
    * @return random string
@@ -284,7 +154,7 @@ class DrupalTestCase extends WebTestCase {
       $this->_modules[$name] = $name;
       $form_state['values'] = array('status' => $this->_modules, 'op' => t('Save configuration'));
       drupal_execute('system_modules', $form_state);
-      
+
       //rebuilding all caches
       drupal_rebuild_theme_registry();
       node_types_rebuild();
@@ -310,7 +180,7 @@ class DrupalTestCase extends WebTestCase {
       unset($this->_modules[$key]);
       $form_state['values'] = array('status' => $this->_modules, 'op' => t('Save configuration'));
       drupal_execute('system_modules', $form_state);
-      
+
       //rebuilding all caches
       drupal_rebuild_theme_registry();
       node_types_rebuild();
@@ -332,7 +202,7 @@ class DrupalTestCase extends WebTestCase {
       $this->_modules = $this->_originalModules;
     }
   }
-  
+
   /**
    * Set a drupal variable and keep track of the changes for tearDown()
    * @param string $name name of the value
@@ -425,10 +295,7 @@ class DrupalTestCase extends WebTestCase {
       $this->drupalGet('logout');
     }
 
-    $this->drupalGet('user');
-    // Going to the page retrieves the cookie, as the browser should save it
-
-    if ($user === NULL) {
+    if (!isset($user)) {
       $user = $this->drupalCreateUserRolePerm();
     }
 
@@ -452,15 +319,15 @@ class DrupalTestCase extends WebTestCase {
     if ($this->_modules != $this->_originalModules) {
       $form_state['values'] = array('status' => $this->_originalModules, 'op' => t('Save configuration'));
       drupal_execute('system_modules', $form_state);
-      
+
       //rebuilding all caches
       drupal_rebuild_theme_registry();
       node_types_rebuild();
       menu_rebuild();
       cache_clear_all('schema', 'cache');
       module_rebuild_cache();
-    
-      $this->_modules = $this->_originalModules; 
+
+      $this->_modules = $this->_originalModules;
     }
 
     foreach ($this->_cleanupVariables as $name => $value) {
@@ -471,7 +338,7 @@ class DrupalTestCase extends WebTestCase {
       }
     }
     $this->_cleanupVariables = array();
-    
+
     //delete nodes
     foreach ($this->_cleanupNodes as $nid) {
       node_delete($nid);
@@ -526,301 +393,412 @@ class DrupalTestCase extends WebTestCase {
     array_pop($reporter->test_info_stack);
   }
 
-
-        /**
-         *    Will trigger a pass if the raw text is found on the loaded page
-         *    Fail otherwise.
-         *    @param string $raw        Raw string to look for
-         *    @param string $message    Message to display.
-         *    @return boolean           True on pass
-         *    @access public
-         */
-        function assertWantedRaw($raw, $message = "%s") {
-          return $this->assertExpectation(
-                  new TextExpectation($raw),
-                  $this->_browser->getContent(),
-                  $message);
+  /**
+   * Initializes the cURL connection and gets a session cookie.
+   *
+   * This function will add authentaticon headers as specified in
+   * simpletest_httpauth_username and simpletest_httpauth_pass variables.
+   * Also, see the description of $curl_options among the properties.
+   */
+  protected function curlConnect() {
+    global $base_url;
+    if (!isset($this->ch)) {
+      $this->ch = curl_init();
+      $curl_options = $this->curl_options + array(
+        CURLOPT_COOKIEJAR => $this->cookie_file,
+        CURLOPT_URL => $base_url,
+        CURLOPT_FOLLOWLOCATION => TRUE,
+        CURLOPT_RETURNTRANSFER => TRUE,
+      );
+      if (!isset($curl_options[CURLOPT_USERPWD]) && ($auth = variable_get('simpletest_httpauth_username', ''))) {
+        if ($pass = variable_get('simpletest_httpauth_pass', '')) {
+          $auth .= ':'. $pass;
         }
+        $curl_options[CURLOPT_USERPWD] = $auth;
+      }
+      return $this->curlExec($curl_options);
+    }
+  }
 
+  protected function curlExec($curl_options) {
+    $this->curlConnect();
+    $url = empty($curl_options[CURLOPT_URL]) ? curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL) : $curl_options[CURLOPT_URL];
+    curl_setopt_array($this->ch, $this->curl_options + $curl_options);
+    $this->_content = curl_exec($this->ch);
+    $this->plain_text = FALSE;
+    $this->elements = FALSE;
+    $this->assertTrue($this->_content, t(' [browser] !method to !url, response is !length bytes.', array('!method' => isset($curl_options[CURLOPT_POSTFIELDS]) ? 'POST' : 'GET', '!url' => $url, '!length' => strlen($this->_content))));
+    return $this->_content;
+  }
 
-        /**
-         *    Will trigger a pass if the raw text is NOT found on the loaded page
-         *    Fail otherwise.
-         *    @param string $raw        Raw string to look for
-         *    @param string $message    Message to display.
-         *    @return boolean           True on pass
-         *    @access public
-         */
-        function assertNoUnwantedRaw($raw, $message = "%s") {
-          return $this->assertExpectation(
-                  new NoTextExpectation($raw),
-                  $this->_browser->getContent(),
-                  $message);
+  protected function parse() {
+    if (!$this->elements) {
+      // DOM can load HTML soup. But, HTML soup can throw warnings, supress
+      // them.
+      @$htmlDom = DOMDocument::loadHTML($this->_content);
+      if ($htmlDom) {
+        $this->assertTrue(TRUE, t(' [browser] Valid HTML found on "@path"', array('@path' => $this->getUrl())));
+        // It's much easier to work with simplexml than DOM, luckily enough
+        // we can just simply import our DOM tree.
+        $this->elements = simplexml_import_dom($htmlDom);
+      }
+    }
+    return $this->elements;
+  }
+
+  /**
+   * Retrieves a Drupal path or an absolute path.
+   *
+   * @param $path
+   *   string Drupal path or url to load into internal browser
+   * @param array
+   *   $options Options to be forwarded to url().
+   * @return
+   *   The retrieved HTML string, also available as $this->drupalGetContent()
+   */
+  function drupalGet($path, $options = array()) {
+    $options['absolute'] = TRUE;
+    return $this->curlExec(array(CURLOPT_URL => url($path, $options)));
+  }
+
+  /**
+   * Do a post request on a drupal page.
+   * It will be done as usual post request with SimpleBrowser
+   * By $reporting you specify if this request does assertions or not
+   * Warning: empty ("") returns will cause fails with $reporting
+   *
+   * @param string  $path
+   *   Location of the post form. Either a Drupal path or an absolute path or
+   *   NULL to post to the current page.
+   * @param array $edit
+   *   Field data in an assocative array. Changes the current input fields
+   *   (where possible) to the values indicated. A checkbox can be set to
+   *   TRUE to be checked and FALSE to be unchecked.
+   * @param string $submit
+   *   Untranslated value, id or name of the submit button.
+   * @param $tamper
+   *   If this is set to TRUE then you can post anything, otherwise hidden and
+   *   nonexistent fields are not posted.
+   */
+  function drupalPost($path, $edit, $submit, $tamper = FALSE) {
+    if (isset($path)) {
+      $html = $this->drupalGet($path);
+    }
+    if ($this->parse()) {
+      $edit_save = $edit;
+      // Let's iterate over all the forms.
+      $forms = $this->elements->xpath('//form');
+      foreach ($forms as $form) {
+        if ($tamper) {
+          // @TODO: this will be Drupal specific. One needs to add the build_id
+          // and the token to $edit then $post that.
         }
-  /* Taken from UnitTestCase */
-        /**
-         *    Will be true if the value is null.
-         *    @param null $value       Supposedly null value.
-         *    @param string $message   Message to display.
-         *    @return boolean                        True on pass
-         *    @access public
-         */
-        function assertNull($value, $message = "%s") {
-            $dumper = &new SimpleDumper();
-            $message = sprintf(
-                    $message,
-                    "[" . $dumper->describeValue($value) . "] should be null");
-            return $this->assertTrue(! isset($value), $message);
+        else {
+          // We try to set the fields of this form as specified in $edit.
+          $edit = $edit_save;
+          $post = array();
+          $submit_matches = $this->handleForm($post, $edit, $submit, $form);
+          $action = isset($form['action']) ? $this->getAbsoluteUrl($form['action']) : $this->getUrl();
         }
-
-        /**
-         *    Will be true if the value is set.
-         *    @param mixed $value           Supposedly set value.
-         *    @param string $message        Message to display.
-         *    @return boolean               True on pass.
-         *    @access public
-         */
-        function assertNotNull($value, $message = "%s") {
-            $dumper = &new SimpleDumper();
-            $message = sprintf(
-                    $message,
-                    "[" . $dumper->describeValue($value) . "] should not be null");
-            return $this->assertTrue(isset($value), $message);
-        }
-
-        /**
-         *    Type and class test. Will pass if class
-         *    matches the type name or is a subclass or
-         *    if not an object, but the type is correct.
-         *    @param mixed $object         Object to test.
-         *    @param string $type          Type name as string.
-         *    @param string $message       Message to display.
-         *    @return boolean              True on pass.
-         *    @access public
-         */
-        function assertIsA($object, $type, $message = "%s") {
-            return $this->assertExpectation(
-                    new IsAExpectation($type),
-                    $object,
-                    $message);
-        }
-
-        /**
-         *    Type and class mismatch test. Will pass if class
-         *    name or underling type does not match the one
-         *    specified.
-         *    @param mixed $object         Object to test.
-         *    @param string $type          Type name as string.
-         *    @param string $message       Message to display.
-         *    @return boolean              True on pass.
-         *    @access public
-         */
-        function assertNotA($object, $type, $message = "%s") {
-            return $this->assertExpectation(
-                    new NotAExpectation($type),
-                    $object,
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if the two parameters have
-         *    the same value only. Otherwise a fail.
-         *    @param mixed $first          Value to compare.
-         *    @param mixed $second         Value to compare.
-         *    @param string $message       Message to display.
-         *    @return boolean              True on pass
-         *    @access public
-         */
-        function assertEqual($first, $second, $message = "%s") {
-            return $this->assertExpectation(
-                    new EqualExpectation($first),
-                    $second,
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if the two parameters have
-         *    a different value. Otherwise a fail.
-         *    @param mixed $first           Value to compare.
-         *    @param mixed $second          Value to compare.
-         *    @param string $message        Message to display.
-         *    @return boolean               True on pass
-         *    @access public
-         */
-        function assertNotEqual($first, $second, $message = "%s") {
-            return $this->assertExpectation(
-                    new NotEqualExpectation($first),
-                    $second,
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if the two parameters have
-         *    the same value and same type. Otherwise a fail.
-         *    @param mixed $first           Value to compare.
-         *    @param mixed $second          Value to compare.
-         *    @param string $message        Message to display.
-         *    @return boolean               True on pass
-         *    @access public
-         */
-        function assertIdentical($first, $second, $message = "%s") {
-            return $this->assertExpectation(
-                    new IdenticalExpectation($first),
-                    $second,
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if the two parameters have
-         *    the different value or different type.
-         *    @param mixed $first           Value to compare.
-         *    @param mixed $second          Value to compare.
-         *    @param string $message        Message to display.
-         *    @return boolean               True on pass
-         *    @access public
-         */
-        function assertNotIdentical($first, $second, $message = "%s") {
-            return $this->assertExpectation(
-                    new NotIdenticalExpectation($first),
-                    $second,
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if both parameters refer
-         *    to the same object. Fail otherwise.
-         *    @param mixed $first           Object reference to check.
-         *    @param mixed $second          Hopefully the same object.
-         *    @param string $message        Message to display.
-         *    @return boolean               True on pass
-         *    @access public
-         */
-        function assertReference(&$first, &$second, $message = "%s") {
-            $dumper = &new SimpleDumper();
-            $message = sprintf(
-                    $message,
-                    "[" . $dumper->describeValue($first) .
-                            "] and [" . $dumper->describeValue($second) .
-                            "] should reference the same object");
-            return $this->assertTrue(
-                    SimpleTestCompatibility::isReference($first, $second),
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if both parameters refer
-         *    to different objects. Fail otherwise.
-         *    @param mixed $first           Object reference to check.
-         *    @param mixed $second          Hopefully not the same object.
-         *    @param string $message        Message to display.
-         *    @return boolean               True on pass
-         *    @access public
-         */
-        function assertCopy(&$first, &$second, $message = "%s") {
-            $dumper = &new SimpleDumper();
-            $message = sprintf(
-                    $message,
-                    "[" . $dumper->describeValue($first) .
-                            "] and [" . $dumper->describeValue($second) .
-                            "] should not be the same object");
-            return $this->assertFalse(
-                    SimpleTestCompatibility::isReference($first, $second),
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if the Perl regex pattern
-         *    is found in the subject. Fail otherwise.
-         *    @param string $pattern    Perl regex to look for including
-         *                              the regex delimiters.
-         *    @param string $subject    String to search in.
-         *    @param string $message    Message to display.
-         *    @return boolean           True on pass
-         *    @access public
-         */
-        function assertWantedPattern($pattern, $subject, $message = "%s") {
-            return $this->assertExpectation(
-                    new WantedPatternExpectation($pattern),
-                    $subject,
-                    $message);
-        }
-
-        /**
-         *    Will trigger a pass if the Perl regex pattern
-         *    is not present in subject. Fail if found.
-         *    @param string $pattern    Perl regex to look for including
-         *                              the regex delimiters.
-         *    @param string $subject    String to search in.
-         *    @param string $message    Message to display.
-         *    @return boolean           True on pass
-         *    @access public
-         */
-        function assertNoUnwantedPattern($pattern, $subject, $message = "%s") {
-            return $this->assertExpectation(
-                    new UnwantedPatternExpectation($pattern),
-                    $subject,
-                    $message);
-        }
-
-        /**
-         *    Confirms that no errors have occurred so
-         *    far in the test method.
-         *    @param string $message    Message to display.
-         *    @return boolean           True on pass
-         *    @access public
-         */
-        function assertNoErrors($message = "%s") {
-            $queue = &SimpleErrorQueue::instance();
-            return $this->assertTrue(
-                    $queue->isEmpty(),
-                    sprintf($message, "Should be no errors"));
-        }
-
-        /**
-         *    Confirms that an error has occurred and
-         *    optionally that the error text matches exactly.
-         *    @param string $expected   Expected error text or
-         *                              false for no check.
-         *    @param string $message    Message to display.
-         *    @return boolean           True on pass
-         *    @access public
-         */
-        function assertError($expected = false, $message = "%s") {
-            $queue = &SimpleErrorQueue::instance();
-            if ($queue->isEmpty()) {
-                $this->fail(sprintf($message, "Expected error not found"));
-                return;
+        // We post only if we managed to handle every field in edit and the
+        // submit button matches;
+        if (!$edit && $submit_matches) {
+          $encoded_post = '';
+          foreach ($post as $key => $value) {
+            if (is_array($value)) {
+              foreach ($value as $v) {
+                $encoded_post .= $key .'='. rawurlencode($v) .'&';
+              }
             }
-            list($severity, $content, $file, $line, $globals) = $queue->extract();
-            $severity = SimpleErrorQueue::getSeverityAsString($severity);
-            return $this->assertTrue(
-                    ! $expected || ($expected == $content),
-                    "Expected [$expected] in PHP error [$content] severity [$severity] in [$file] line [$line]");
-        }
-
-        /**
-         *    Confirms that an error has occurred and
-         *    that the error text matches a Perl regular
-         *    expression.
-         *    @param string $pattern   Perl regular expression to
-         *                              match against.
-         *    @param string $message    Message to display.
-         *    @return boolean           True on pass
-         *    @access public
-         */
-        function assertErrorPattern($pattern, $message = "%s") {
-            $queue = &SimpleErrorQueue::instance();
-            if ($queue->isEmpty()) {
-                $this->fail(sprintf($message, "Expected error not found"));
-                return;
+            else {
+              $encoded_post .= $key .'='. rawurlencode($value) .'&';
             }
-            list($severity, $content, $file, $line, $globals) = $queue->extract();
-            $severity = SimpleErrorQueue::getSeverityAsString($severity);
-            return $this->assertTrue(
-                    (boolean)preg_match($pattern, $content),
-                    "Expected pattern match [$pattern] in PHP error [$content] severity [$severity] in [$file] line [$line]");
+          }
+          return $this->curlExec(array(CURLOPT_URL => $action, CURLOPT_POSTFIELDS => $encoded_post));
         }
+      }
+      // We have not found a form which contained all fields of $edit.
+      $this->fail(t('Found the requested form'));
+      $this->assertTrue($submit_matches, t('Found the @submit button', array('@submit' => $submit)));
+      foreach ($edit as $name => $value) {
+        $this->fail(t('Failed to set field @name to @value', array('@name' => $name, '@value' => $value)));
+      }
+    }
+  }
 
+  protected function handleForm(&$post, &$edit, $submit, $form) {
+    // Retrieve the form elements.
+    $elements = $form->xpath('.//input|.//textarea|.//select');
+    $submit_matches = FALSE;
+    foreach ($elements as $element) {
+      // SimpleXML objects need string casting all the time.
+      $name = (string)$element['name'];
+      // This can either be the type of <input> or the name of the tag itself
+      // for <select> or <textarea>.
+      $type = isset($element['type']) ? (string)$element['type'] : $element->getName();
+      $value = isset($element['value']) ? (string)$element['value'] : '';
+      if (isset($edit[$name])) {
+        switch ($type) {
+          case 'text':
+          case 'textarea':
+          case 'password':
+            $post[$name] = $edit[$name];
+            unset($edit[$name]);
+            break;
+          case 'radio':
+            if ($edit[$name] == $value) {
+              $post[$name] = $edit[$name];
+              unset($edit[$name]);
+            }
+            break;
+          case 'checkbox':
+            // To prevent checkbox from being checked.pass in a FALSE,
+            // otherwise the checkbox will be set to its value regardless
+            // of $edit.
+            if ($edit[$name] === FALSE) {
+              unset($edit[$name]);
+              continue 2;
+            }
+            else {
+              unset($edit[$name]);
+              $post[$name] = $value;
+            }
+            break;
+          case 'select':
+            $new_value = $edit[$name];
+            foreach ($element->option as $option) {
+              if (is_array($new_value)) {
+                $option_value= (string)$option['value'];
+                if (in_array($option_value, $new_value)) {
+                  $post[$name][] = $option_value;
+                  unset($edit[$name]);
+                }
+              }
+              elseif ($new_value == $option['value']) {
+                $post[$name] = $new_value;
+                unset($edit[$name]);
+              }
+            }
+        }
+      }
+      if (($type == 'submit' || $type == 'image') && $submit == $value) {
+        $post[$name] = $value;
+        $submit_matches = TRUE;
+      }
+      if (!isset($post[$name])) {
+        switch ($type) {
+          case 'textarea':
+            $post[$name] = (string)$element;
+            break;
+          case 'select':
+            $single = empty($element['multiple']);
+            foreach ($element->option as $key => $option) {
+              // For single select, we load the first option, if there is a
+              // selected option that will overwrite it later.
+              if ($option['selected'] || (!$key && $single)) {
+                if ($single) {
+                  $post[$name] = (string)$option['value'];
+                }
+                else {
+                  $post[$name][] = (string)$option['value'];
+                }
+              }
+            }
+            break;
+          case 'radio':
+          case 'checkbox':
+            if (!isset($element['checked'])) {
+              break;
+            }
+            // Deliberate no break.
+          default:
+            $post[$name] = $value;
+        }
+      }
+    }
+    return $submit_matches;
+  }
+
+  /**
+   *    Follows a link by name.
+   *
+   *    Will click the first link found with this link text by default, or a
+   *    later one if an index is given. Match is case insensitive with
+   *    normalized space. The label is translated label. There is an assert
+   *    for successful click.
+   *    WARNING: Assertion fails on empty ("") output from the clicked link
+   *
+   *  @param string $label      Text between the anchor tags.
+   *  @param integer $index     Link position counting from zero.
+   *  @param boolean $reporting Assertions or not
+   *    @return boolean/string    Page on success.
+   *
+   *    @access public
+   */
+  function clickLink($label, $index = 0) {
+    $url_before = $this->getUrl();
+    $ret = FALSE;
+    if ($this->parse()) {
+      $urls = $this->elements->xpath('//a[text()="'. $label .'"]');
+      if (isset($urls[$index])) {
+        $url_target = $this->getAbsoluteUrl($urls[$index]['href']);
+        $curl_options = array(CURLOPT_URL => $url_target);
+        $ret = $this->curlExec($curl_options);
+      }
+      $this->assertTrue($ret, ' [browser] clicked link '. t($label) . " ($url_target) from $url_before");
+    }
+    return $ret;
+  }
+
+  /**
+   * Takes a path and returns an absolute path.
+   *
+   * @param @path
+   *   The path, can be a Drupal path or a site-relative path. It might have a
+   *   query, too. Can even be an absolute path which is just passed through.
+   * @return
+   *   An absolute path.
+   */
+  function getAbsoluteUrl($path) {
+    $options = array('absolute' => TRUE);
+    $parts = parse_url($path);
+    // This is more crude than the menu_is_external but enough here.
+    if (empty($parts['host'])) {
+      $path = $parts['path'];
+      $base_path = base_path();
+      $n = strlen($base_path);
+      if (substr($path, 0, $n) == $base_path) {
+        $path = substr($path, $n);
+      }
+      if (isset($parts['query'])) {
+        $options['query'] = $parts['query'];
+      }
+      $path = url($path, $options);
+    }
+    return $path;
+  }
+
+  function getUrl() {
+    return curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL);
+  }
+
+  /**
+   * Gets the current raw HTML.
+   */
+  function drupalGetContent() {
+    return $this->_content;
+  }
+
+  /**
+   *    Pass if the raw text IS found on the loaded page, fail otherwise.
+   *
+   *  @param string $raw
+   *    Raw string to look for
+   *  @param string $message
+   *    Message to display.
+   *    @return
+   *    TRUE on pass
+   */
+  function assertWantedRaw($raw, $message = "%s") {
+    return $this->assertFalse(strpos($this->_content, $raw) === FALSE, $message);
+  }
+
+  /**
+   *    Pass if the raw text is NOT found on the loaded page, fail otherwise.
+   *
+   *  @param string $raw
+   *    Raw string to look for
+   *  @param string $message
+   *    Message to display.
+   *    @return
+   *    TRUE on pass
+   */
+  function assertNoUnwantedRaw($raw, $message = "%s") {
+    return $this->assertTrue(strpos($this->_content, $raw) === FALSE, $message);
+  }
+
+
+  /**
+   *    Pass if the raw text IS found on the text version of the page.
+   *
+   *  @param string $raw
+   *    Text string to look for
+   *  @param string $message
+   *    Message to display.
+   *    @return
+   *    TRUE on pass
+   */
+  function assertText($text, $message) {
+    return $this->assertTextHelper($text, $message, FALSE);
+  }
+
+  function assertWantedText($text, $message) {
+    return $this->assertTextHelper($text, $message, FALSE);
+  }
+
+  /**
+   *  Pass if the raw text is NOT found on the text version of the page.
+   *
+   *  @param string $raw
+   *    Text string to look for
+   *  @param string $message
+   *    Message to display.
+   *    @return
+   *    TRUE on pass
+   */
+  function assertNoText($text, $message) {
+    return $this->assertTextHelper($text, $message, TRUE);
+  }
+  function assertNoUnwantedText($text, $message) {
+    return $this->assertTextHelper($text, $message, TRUE);
+  }
+
+
+  protected function assertTextHelper($text, $message, $not_exists) {
+    if ($this->plain_text === FALSE) {
+      $this->plain_text = filter_xss($this->_content, array());
+    }
+    return $this->assertTrue($not_exists == (strpos($this->plain_text, $text) === FALSE), $message);
+  }
+
+  /**
+   *  Pass if the page title is the given string.
+   *
+   *  @param $title
+   *    Text string to look for
+   *  @param $message
+   *    Message to display.
+   *  @return
+   *    TRUE on pass
+   */
+  function assertTitle($title, $message) {
+    $this->assertTrue($this->parse() && $this->elements->xpath('//title[text()="'. $title .'"]'), $message);
+  }
+
+  function assertFieldByXPath($xpath, $value, $message) {
+    $fields = array();
+    if ($this->parse()) {
+      $fields = $this->elements->xpath($xpath);
+    }
+    $this->assertTrue($fields && (!$value || $fields[0]['value'] == $value), $message);
+  }
+
+  function assertFieldByName($name, $value = '', $message = '') {
+    $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] found field by name @name', array('@name' => $name)));
+  }
+  function assertFieldById($id, $value = '', $message = '') {
+    $this->assertFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $name)));
+  }
+  function assertField($id, $message = '') {
+    $this->assertFieldByXPath($this->_constructFieldXpath('name', $name) .'|'. $this->_constructFieldXpath('id', $id), '', $message);
+  }
+  function _constructFieldXpath($attribute, $value) {
+    return '//textarea[@'. $attribute .'="'. $value .'"]|//input[@'. $attribute .'="'. $value .'"]|//select[@'. $attribute .'="'. $value .'"]';
+  }
+
+  function assertResponse($code) {
+    $curl_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
+    $this->assertTrue($curl_code == $code, t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
+  }
 
 }
-?>

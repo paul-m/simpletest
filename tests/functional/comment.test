@@ -97,7 +97,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $form_comment = $this->post_comment(NULL, $this->randomName(), $this->randomName());
     $this->assertTrue($this->comment_exists($form_comment), 'Form comment found.');
 
-    // Disable comment form on node page. 
+    // Disable comment form on node page.
     $this->drupalGet('logout');
     $this->drupalLoginUser($this->admin_user);
     $this->set_comment_form(FALSE);
@@ -199,7 +199,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Post comment.
-   * 
+   *
    * @param object $node Node to post comment on.
    * @param string $subject Comment subject.
    * @param string $comment Comment body.
@@ -226,8 +226,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
     $match = array();
     // Get comment ID
-    preg_match('/#comment-([^"]+)/', $this->_browser->getURL(), $match);
-
+    preg_match('/#comment-([^"]+)/', $this->getURL(), $match);
     // get comment
     if ($contact !== TRUE) { // If true then attempting to find error message.
       $this->assertText($subject, 'Comment posted.');
@@ -236,14 +235,11 @@ class CommentModuleTestCase extends DrupalTestCase {
     if (isset($match[1])) {
       return (object) array('id' => $match[1], 'subject' => $subject, 'comment' => $comment);
     }
-    else {
-      return NULL;
-    }
   }
 
   /**
    * Checks current pag for specified comment.
-   * 
+   *
    * @param object $comment Comment object.
    * @param boolean $reply The comment is a reply to another comment.
    * @return boolean Comment found.
@@ -265,7 +261,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Delete comment.
-   * 
+   *
    * @param object $comment Comment to delete.
    */
   function delete_comment($comment) {
@@ -275,7 +271,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Set comment subject setting.
-   * 
+   *
    * @param boolean $enabled Subject value.
    */
   function set_comment_subject($enabled) {
@@ -284,7 +280,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Set comment preview setting.
-   * 
+   *
    * @param boolean $required Preview value.
    */
   function set_comment_preview($required) {
@@ -293,7 +289,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Set comment form setting.
-   * 
+   *
    * @param boolean $enabled Form value.
    */
   function set_comment_form($enabled) {
@@ -302,7 +298,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Set comment anonymous level setting.
-   * 
+   *
    * @param integer $level Anonymous level.
    */
   function set_comment_anonymous($level) {
@@ -311,7 +307,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Set comment setting for story content type.
-   * 
+   *
    * @param string $name Name of variable.
    * @param string $vale Value of variable.
    * @param string $message Status message to display.
@@ -323,22 +319,22 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Set anonymous comment setting.
-   * 
+   *
    * @param boolean $enabled Allow anonymous commenting.
    * @param boolean $without_approval Allow anonymous commenting without approval.
    */
   function set_anonymous_user_comment($enabled, $without_approval) {
     $edit = array();
-    $edit['1-access-comments'] = $enabled;
-    $edit['1-post-comments'] = $enabled;
-    $edit['1-post-comments-without-approval'] = $without_approval;
+    $edit['1[access comments]'] = $enabled;
+    $edit['1[post comments]'] = $enabled;
+    $edit['1[post comments without approval]'] = $without_approval;
     $this->drupalPost('admin/user/permissions', $edit, 'Save permissions');
     $this->assertText(t('The changes have been saved.'), 'Anonymous user comments '. ($enabled ? 'enabled' : 'disabled') .'.');
   }
 
   /**
    * Check for contact info.
-   * 
+   *
    * @return boolean Contact info is avialable.
    */
   function comment_contact_info_available() {
@@ -347,7 +343,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Perform the specified operation on the specified comment.
-   * 
+   *
    * @param object $comment Comment to perform operation on.
    * @param string $operation Operation to perform.
    * @param boolean $aproval Operation is found on approval page.
@@ -369,7 +365,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
   /**
    * Get the comment id for an unaproved comment.
-   * 
+   *
    * @param string $subject Comment subject to find.
    * @return integer Comment id.
    */

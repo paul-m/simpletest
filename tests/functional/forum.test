@@ -174,7 +174,7 @@ class AddTopicToForum extends DrupalForumTestCase {
     $web_user = $this->drupalCreateUserRolePerm(array(
       'access administration pages',
       'administer forums',
-      'create forum topics'
+      'create forum content'
     ));
     $this->drupalLoginUser($web_user);
 
@@ -185,7 +185,7 @@ class AddTopicToForum extends DrupalForumTestCase {
     // Generate a random subject/body
     $title = $this->randomName(20);
     $description = $this->randomName(200);
- 
+
     $edit = array(
       'title' => $title,
       'body' => $description
@@ -217,7 +217,7 @@ class AddTopicToForum extends DrupalForumTestCase {
     $web_user = $this->drupalCreateUserRolePerm(array(
       'access administration pages',
       'administer forums',
-      'create forum topics'
+      'create forum content'
     ));
     $this->drupalLoginUser($web_user);
 
@@ -254,8 +254,8 @@ class AddTopicToForum extends DrupalForumTestCase {
     $web_user = $this->drupalCreateUserRolePerm(array(
       'access administration pages',
       'administer forums',
-      'create forum topics',
-      'edit any forum topic'
+      'create forum content',
+      'edit any forum content'
     ));
     $this->drupalLoginUser($web_user);
 
@@ -311,8 +311,8 @@ class AddTopicToForum extends DrupalForumTestCase {
     $web_user = $this->drupalCreateUserRolePerm(array(
       'access administration pages',
       'administer forums',
-      'create forum topics',
-      'edit any forum topic'
+      'create forum content',
+      'edit any forum content'
     ));
     $this->drupalLoginUser($web_user);
 

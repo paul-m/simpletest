@@ -22,7 +22,7 @@ class ContactModuleTestCase extends DrupalTestCase {
   /**
    * Test configuration options and site-wide contact form.
    */
-  function test_site_wide_contact() {    
+  function test_site_wide_contact() {
     // Create and login administative user.
     $admin_user = $this->drupalCreateUserRolePerm(array('administer site-wide contact form', 'administer permissions'));
     $this->drupalLoginUser($admin_user);
@@ -67,7 +67,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     $this->drupalGet('logout');
 
     $this->drupalGet('contact');
-    $this->assertResponse(array(403), 'Access denied to anonymous user without permission.');
+    $this->assertResponse(403, 'Access denied to anonymous user without permission.');
 
     // Give anonymous user permission and see that page is viewable.
     $this->drupalLoginUser($admin_user);
@@ -75,7 +75,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     $this->drupalGet('logout');
 
     $this->drupalGet('contact');
-    $this->assertResponse(array(200), 'Access granted to anonymous user with permission.');
+    $this->assertResponse(200, 'Access granted to anonymous user with permission.');
 
     // Check that "Additional information" is displayed on the page.
     $this->assertText($edit['contact_form_information'], 'Contact information displayed.');

@@ -7,7 +7,7 @@ class NodeRevisionsTest extends DrupalTestCase {
    */
   function get_info() {
     return array(
-      'name' => t('Node revisions tests'), 
+      'name' => t('Node revisions tests'),
       'description' => t('Creates a node of type page and then a user tries various revision actions such as viewing, reverting to, and deleting revisions.'),
       'group' => 'Node Tests',
     );
@@ -19,7 +19,7 @@ class NodeRevisionsTest extends DrupalTestCase {
    * If $log is TRUE, then a log message will be recorded.
    */
   function prepareRevisions($log = FALSE) {
-  
+
     $returnarray = array();
     $numtimes = 3; // First, middle, last.
     for ($i = 0; $i < $numtimes; $i++) {
@@ -116,22 +116,22 @@ class NodeTeaserTest extends DrupalTestCase {
    */
   function get_info() {
     return array(
-      'name' => t('Node teaser tests'), 
+      'name' => t('Node teaser tests'),
       'description' => t('Calls node_teaser() with different strings and lengths.'),
       'group' => 'Node Tests',
     );
   }
-  
+
   function setUp() {
   	parent::setUp();
   }
-  
+
   function tearDown() {
   	parent::tearDown();
   }
 
   /**
-   * Simpletest test. Tests an edge case where if the first sentence is a 
+   * Simpletest test. Tests an edge case where if the first sentence is a
    * question and subsequent sentences are not.
    * This failed in drupal 5.
    * Test and patch for drupal 6 (committed) from
@@ -160,7 +160,7 @@ class NodeTeaserTest extends DrupalTestCase {
     // This body string tests a number of edge cases.
     $body = "<p>\nHi\n</p>\n<p>\nfolks\n<br />\n!\n</p>";
 
-    // The teasers we expect node_teaser() to return when $size is the index 
+    // The teasers we expect node_teaser() to return when $size is the index
     // of each array item.
     // Using an input format with no line-break filter:
     $teasers = array(
@@ -262,7 +262,6 @@ class NodeTeaserTest extends DrupalTestCase {
   }
 }
 
-
 class StoryEditTest extends DrupalTestCase {
   function get_info() {
     return array(
@@ -271,7 +270,7 @@ class StoryEditTest extends DrupalTestCase {
       'group' => 'Node Tests');
   }
   function testStoryEdit() {
-  
+
     /* Prepare settings */
     $this->drupalVariableSet('node_options_story', array('status', 'promote'));
     /* Prepare a user to do the stuff */
@@ -281,30 +280,28 @@ class StoryEditTest extends DrupalTestCase {
 	  'title' => '!SimpleTest! test title' . $this->randomName(20),
 	  'body' => '!SimpleTest! test body' . $this->randomName(200),
 	);
-	
+
     //Create the page to edit
     $this->drupalPost('node/add/story', $edit, 'Save');
 
     $node = node_load(array('title' => $edit['title']));
     $this->assertNotNull($node, 'Node found in database');
-	
+
     $this->clickLink('Edit');
-	
-	$editurl = url("node/$node->nid/edit", array('absolute' => true));
-	$acturl = $this->_browser->getURL();
-	
-	$this->assertEqual($editurl, $acturl);
-	
+    $editurl = url("node/$node->nid/edit", array('absolute' => true));
+    $acturl = $this->getURL();
+    $this->assertEqual($editurl, $acturl);
+
     $this->assertWantedText(t('Edit'), 'Edit text is here');
     $this->assertWantedText(t($edit['title']), 'Hello, the random title');
     $this->assertWantedText(t($edit['body']), 'test is over, the body\'s still there');
-		
+
     $edit = array(
 	  'title' => '!SimpleTest! test title' . $this->randomName(20),
 	  'body' => '!SimpleTest! test body' . $this->randomName(200),
 	);
 
-	
+
     //edit the content of the page
     $this->drupalPost("node/$node->nid/edit", $edit, 'Save');
 
@@ -321,14 +318,14 @@ class StoryPreviewTest extends DrupalTestCase {
    'description'  => t('We want a working preview for storys, uh?'),
    'group' => 'Node Tests');
   }
-  
+
   function testStoryPreview() {
     /* Prepare settings */
     $this->drupalVariableSet('node_options_story', array('status', 'promote'));
     /* Prepare a user to do the stuff */
     $web_user = $this->drupalCreateUserRolePerm(array('edit own story content', 'create story content'));
     $this->drupalLoginUser($web_user);
-  
+
     $edit = array(
       'title'=>'!SimpleTest! title' . $this->randomName(20),
       'body'=>'!SimpleTest! body' . $this->randomName(200),
@@ -338,15 +335,15 @@ class StoryPreviewTest extends DrupalTestCase {
     $this->assertWantedText(t('Preview'), 'Preview text is here');
     $this->assertWantedText(t($edit['title']), 'Hello, the random title');
     $this->assertWantedText(t($edit['body']), 'test is over, the body\'s still there');
-  
+
     $this->assertFieldByName('title', $edit['title'], 'The title is on it\'s place');
-  
+
   }
 
 }
 
 class PageCreationTest extends  DrupalTestCase {
-  
+
   /**
    * Implementation of get_info() for information
    */
@@ -357,25 +354,25 @@ class PageCreationTest extends  DrupalTestCase {
       'group' => 'Node Tests',
     );
   }
-  
+
   function testPageCreation() {
     /* Prepare settings */
     $this->drupalVariableSet('node_options_page', array('status', 'promote'));
-   
+
     /* Prepare a user to do the stuff */
     $web_user = $this->drupalCreateUserRolePerm(array('edit own page content', 'create page content'));
     $this->drupalLoginUser($web_user);
-    
+
     $edit = array();
     $edit['title']    = '!SimpleTest test node! ' . $this->randomName(10);
     $edit['body']     = '!SimpleTest test body! ' . $this->randomName(32) . ' ' . $this->randomName(32);
     $this->drupalPost('node/add/page', $edit, 'Save');
-    
+
     $this->assertWantedRaw(t('!post %title has been created.', array ('!post' => 'Page', '%title' => $edit['title'])), 'Page created');
-    
+
     $node = node_load(array('title' => $edit['title']));
     $this->assertNotNull($node, t('Node !title found in database.', array ('!title' => $edit['title'])));
-    
+
   }
 }
 
@@ -392,7 +389,7 @@ class PageViewTest extends DrupalTestCase {
       , 'group' => 'Node Tests',
   );
   }
-  
+
   function testPageView() {
     /* Prepare a node to view */
     global $user;
@@ -402,14 +399,14 @@ class PageViewTest extends DrupalTestCase {
     /* Tries to edit with anonymous user */
     $html = $this->drupalGet("node/$node->nid/edit");
     $this->assertResponse(403);
-    
+
     /* Prepare a user to request the node view */
     $test_user = $this->drupalCreateUserRolePerm(array('access content'));
     $this->drupalLoginUser($test_user);
-    
+
     $html = $this->drupalGet("node/$node->nid/edit");
     $this->assertResponse(403);
-    
+
     $test_user = $this->drupalCreateUserRolePerm(array('administer nodes'));
     //TODO: Add edit page attempt with administer nodes user
     node_delete($node->nid);

@@ -33,21 +33,23 @@ class PollTests extends DrupalTestCase {
       }
     }
     $this->drupalPost(NULL, $edit, 'Save');
-    $this->nid = preg_replace('/\D/', '', $this->getUrl());
+    $node = node_load(array('title' => $title));
+    $this->nid = $node->nid;
     $this->assertWantedRaw(t('@type %title has been created.', array('@type' => node_get_types('name', 'poll'), '%title' => $title)), 'Poll has been created.');
+    $this->assertTrue($this->nid, t('Poll has been found in the database'));
   }
 
 }
 
 class PollCreateTest extends PollTests {
-  
+
   /**
    * Implementation of get_info() for information
    */
   function get_info() {
     return array('name' => t('Poll create'), 'description' => 'Adds "more choices", previews and creates a poll.', 'group' => 'Poll module tests');
   }
-  
+
   function setUp() {
     parent::setUp();
     $this->drupalModuleEnable('poll');
@@ -65,7 +67,7 @@ class PollVoteTest extends PollTests {
   function get_info() {
     return array('name' => t('Poll vote'), 'description' => 'Vote on a poll', 'group' => 'Poll module tests');
   }
-    
+
   function setUp() {
     parent::setUp();
     $this->drupalModuleEnable('poll');
