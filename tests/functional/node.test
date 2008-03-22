@@ -50,8 +50,8 @@ class NodeRevisionsTest extends DrupalTestCase {
   function testNodeRevisions() {
     extract( $this->prepareRevisions() );
 
-    $test_user = $this->drupalCreateUserRolePerm(array('view revisions'));
-    $this->drupalLoginUser($test_user);
+    $test_user = $this->drupalCreateUser(array('view revisions'));
+    $this->drupalLogin($test_user);
     $this->drupalGet("node/$node->nid/revisions/$vid/view");
     $this->assertText($text, 'Check to make sure correct revision text appears on "view revisions" page.');
 
@@ -64,8 +64,8 @@ class NodeRevisionsTest extends DrupalTestCase {
   function testLogMessage() {
     extract( $this->prepareRevisions(TRUE) );
 
-    $test_user = $this->drupalCreateUserRolePerm(array('view revisions'));
-    $this->drupalLoginUser($test_user);
+    $test_user = $this->drupalCreateUser(array('view revisions'));
+    $this->drupalLogin($test_user);
     $this->drupalGet("node/$node->nid/revisions");
     $this->assertText($log, 'Check to make sure log message is properly displayed.');
 
@@ -78,8 +78,8 @@ class NodeRevisionsTest extends DrupalTestCase {
   function testRevisionRevert() {
     extract( $this->prepareRevisions() );
 
-    $test_user = $this->drupalCreateUserRolePerm(array('revert revisions', 'edit any page content'));
-    $this->drupalLoginUser($test_user);
+    $test_user = $this->drupalCreateUser(array('revert revisions', 'edit any page content'));
+    $this->drupalLogin($test_user);
     $this->drupalPost("node/$node->nid/revisions/$vid/revert", array(), t('Revert'));
     $newnode = node_load($node->nid);
     $this->assertTrue(($text == $newnode->body), 'Check to make sure reversions occur properly');
@@ -93,8 +93,8 @@ class NodeRevisionsTest extends DrupalTestCase {
   function testRevisionDelete() {
     extract( $this->prepareRevisions() );
 
-    $test_user = $this->drupalCreateUserRolePerm(array('delete revisions', 'delete any page content'));
-    $this->drupalLoginUser($test_user);
+    $test_user = $this->drupalCreateUser(array('delete revisions', 'delete any page content'));
+    $this->drupalLogin($test_user);
     $this->drupalPost("node/$node->nid/revisions/$vid/delete", array(), t('Delete'));
     $this->assertTrue(db_result(db_query('SELECT COUNT(vid) FROM {node_revisions} WHERE nid = %d and VID = %d', $node->nid, $vid)) == 0, 'Check to make sure revisions delete properly');    $this->cleanup($node->nid);
 
@@ -274,8 +274,8 @@ class StoryEditTest extends DrupalTestCase {
     /* Prepare settings */
     $this->drupalVariableSet('node_options_story', array('status', 'promote'));
     /* Prepare a user to do the stuff */
-    $web_user = $this->drupalCreateUserRolePerm(array('edit own story content', 'create story content'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('edit own story content', 'create story content'));
+    $this->drupalLogin($web_user);
     $edit = array(
 	  'title' => '!SimpleTest! test title' . $this->randomName(20),
 	  'body' => '!SimpleTest! test body' . $this->randomName(200),
@@ -323,8 +323,8 @@ class StoryPreviewTest extends DrupalTestCase {
     /* Prepare settings */
     $this->drupalVariableSet('node_options_story', array('status', 'promote'));
     /* Prepare a user to do the stuff */
-    $web_user = $this->drupalCreateUserRolePerm(array('edit own story content', 'create story content'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('edit own story content', 'create story content'));
+    $this->drupalLogin($web_user);
 
     $edit = array(
       'title'=>'!SimpleTest! title' . $this->randomName(20),
@@ -360,8 +360,8 @@ class PageCreationTest extends  DrupalTestCase {
     $this->drupalVariableSet('node_options_page', array('status', 'promote'));
 
     /* Prepare a user to do the stuff */
-    $web_user = $this->drupalCreateUserRolePerm(array('edit own page content', 'create page content'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content'));
+    $this->drupalLogin($web_user);
 
     $edit = array();
     $edit['title']    = '!SimpleTest test node! ' . $this->randomName(10);
@@ -401,13 +401,13 @@ class PageViewTest extends DrupalTestCase {
     $this->assertResponse(403);
 
     /* Prepare a user to request the node view */
-    $test_user = $this->drupalCreateUserRolePerm(array('access content'));
-    $this->drupalLoginUser($test_user);
+    $test_user = $this->drupalCreateUser(array('access content'));
+    $this->drupalLogin($test_user);
 
     $html = $this->drupalGet("node/$node->nid/edit");
     $this->assertResponse(403);
 
-    $test_user = $this->drupalCreateUserRolePerm(array('administer nodes'));
+    $test_user = $this->drupalCreateUser(array('administer nodes'));
     //TODO: Add edit page attempt with administer nodes user
     node_delete($node->nid);
   }

@@ -81,11 +81,11 @@ class AddForumTest extends DrupalForumTestCase {
 
   function testAddForumContainer() {
     // Attempt to create a forum container
-    $web_user = $this->drupalCreateUserRolePerm(array(
+    $web_user = $this->drupalCreateUser(array(
       'access administration pages',
       'administer forums',
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     // Create the container, all the assertions are handled in the function
     $container = $this->createForumContainer();
@@ -97,11 +97,11 @@ class AddForumTest extends DrupalForumTestCase {
 
   function testAddForum() {
     // Attempt to create a forum
-    $web_user = $this->drupalCreateUserRolePerm(array(
+    $web_user = $this->drupalCreateUser(array(
       'access administration pages',
       'administer forums',
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     // Create the forum, all assertions are handled in the function
     $forum = $this->createForum();
@@ -122,11 +122,11 @@ class EditForumTaxonomyTest extends DrupalForumTestCase {
 
   function testEditForumTaxonomy() {
     // Attempt to edit the forum taxonomy
-    $web_user = $this->drupalCreateUserRolePerm(array(
+    $web_user = $this->drupalCreateUser(array(
       'access administration pages',
       'administer taxonomy',
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     $vid = variable_get('forum_nav_vocabulary', '');
     $original_settings = taxonomy_vocabulary_load($vid);
@@ -171,12 +171,12 @@ class AddTopicToForum extends DrupalForumTestCase {
 
   function testAddTopicToForum() {
     // Attempt to create a forum
-    $web_user = $this->drupalCreateUserRolePerm(array(
+    $web_user = $this->drupalCreateUser(array(
       'access administration pages',
       'administer forums',
       'create forum content'
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     // Generate a forum
     $forum = $this->createForum();
@@ -214,12 +214,12 @@ class AddTopicToForum extends DrupalForumTestCase {
 
   function testAddTopicToContainer() {
     // Attempt to create a forum container
-    $web_user = $this->drupalCreateUserRolePerm(array(
+    $web_user = $this->drupalCreateUser(array(
       'access administration pages',
       'administer forums',
       'create forum content'
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     // Create the container
     $container = $this->createForumContainer();
@@ -251,13 +251,13 @@ class AddTopicToForum extends DrupalForumTestCase {
 
   function testMoveTopicToForum() {
     // Attempt to create a forum
-    $web_user = $this->drupalCreateUserRolePerm(array(
+    $web_user = $this->drupalCreateUser(array(
       'access administration pages',
       'administer forums',
       'create forum content',
       'edit any forum content'
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     $forum1 = $this->createForum();
     $forum2 = $this->createForum();
@@ -308,13 +308,13 @@ class AddTopicToForum extends DrupalForumTestCase {
 
   function testMoveTopicWithCopyToForum() {
     // Attempt to create a forum
-    $web_user = $this->drupalCreateUserRolePerm(array(
+    $web_user = $this->drupalCreateUser(array(
       'access administration pages',
       'administer forums',
       'create forum content',
       'edit any forum content'
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     $forum1 = $this->createForum();
     $forum2 = $this->createForum();

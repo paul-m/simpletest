@@ -37,8 +37,8 @@ class ActionsContentTest extends  DrupalTestCase {
     
     // Test 1: Assign an action to a trigger, then pull the trigger, and make sure the actions fire. (Wow, those metaphors work out nicely).
 
-    $test_user = $this->drupalCreateUserRolePerm(array('administer actions', 'create page content'));
-    $this->drupalLoginUser($test_user);
+    $test_user = $this->drupalCreateUser(array('administer actions', 'create page content'));
+    $this->drupalLogin($test_user);
 
     // Set action id to "publish post".
     $edit = array('aid' => $hash);

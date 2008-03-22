@@ -248,68 +248,75 @@ class DrupalTestCase extends UnitTestCase {
     }
   }
 
-
   /**
-   * Create a role / perm combination specified by permissions
+   * Create a user with a given set of permissions.
    *
-   * @param  array $permissions Array of the permission strings
-   * @return integer role-id
+   * @param $permissions
+   *   Array of permission names to assign to user.
+   * @return
+   *   A fully loaded user object with pass_raw property, or FALSE if account
+   *   creation fails.
    */
-  function drupalCreateRolePerm($permissions = NULL) {
-    if ($permissions === NULL) {
-      $permstring = 'access comments, access content, post comments, post comments without approval';
-    } else {
-      $permstring = implode(', ', $permissions);
-    }
-    /* Create role */
-    $role_name = $this->randomName();
-    db_query("INSERT INTO {role} (name) VALUES ('%s')", $role_name);
-    $role = db_fetch_object(db_query("SELECT * FROM {role} WHERE name = '%s'", $role_name));
-    $this->assertTrue($role, " [role] created name: $role_name, id: " . (isset($role->rid) ? $role->rid : '-n/a-'));
-    if ($role && !empty($role->rid)) {
-      /* Create permissions */
-      db_query("INSERT INTO {permission} (rid, perm) VALUES (%d, '%s')", $role->rid, $permstring);
-      $this->assertTrue(db_affected_rows(), ' [role] created permissions: ' . $permstring);
-      $this->_cleanupRoles[] = $role->rid;
-      return $role->rid;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Creates a user / role / permissions combination specified by permissions
-   *
-   * @param  array $permissions Array of the permission strings
-   * @return array/boolean false if fails. fully loaded user object with added pass_raw property
-   */
-  function drupalCreateUserRolePerm($permissions = NULL) {
-    /* Create role */
-    $rid = $this->drupalCreateRolePerm($permissions);
+  function drupalCreateUser($permissions = NULL) {
+    // Create a role with the given permission set.
+    $rid = $this->_drupalCreateRole($permissions);
     if (!$rid) {
       return FALSE;
     }
-    /* Create user */
-    $ua = array();
-    $ua['name']   = $this->randomName();
-    $ua['mail']   = $ua['name'] . '@example.com';
-    $ua['roles']  = array($rid=>$rid);
-    $ua['pass']   = user_password();
-    $ua['status'] = 1;
 
-    $u = user_save('', $ua);
+    // Create a user assigned to that role.
+    $edit = array();
+    $edit['name']   = $this->randomName();
+    $edit['mail']   = $edit['name'] .'@example.com';
+    $edit['roles']  = array($rid => $rid);
+    $edit['pass']   = user_password();
+    $edit['status'] = 1;
 
-    $this->assertTrue(!empty($u->uid), " [user] name: $ua[name] pass: $ua[pass] created");
-    if (empty($u->uid)) {
+    $account = user_save('', $edit);
+
+    $this->assertTrue(!empty($account->uid), " [user] name: $edit[name] pass: $edit[pass] created");
+    if (empty($account->uid)) {
       return FALSE;
     }
 
-    /* Add to cleanup list */
-    $this->_cleanupUsers[] = $u->uid;
+    // Add to list of users to remove when testing is completed.
+    $this->_cleanupUsers[] = $account->uid;
 
-    /* Add the raw password */
-    $u->pass_raw = $ua['pass'];
-    return $u;
+    // Add the raw password so that we can log in as this user.
+    $account->pass_raw = $edit['pass'];
+    return $account;
+  }
+
+  /**
+   * Internal helper function; Create a role with specified permissions.
+   *
+   * @param $permissions
+   *   Array of permission names to assign to role.
+   * @return integer
+   *   Role ID of newly created role, or FALSE if role creation failed.
+   */
+  private function _drupalCreateRole($permissions = NULL) {
+    // Generate string version of permissions list.
+    if ($permissions === NULL) {
+      $permission_string = 'access comments, access content, post comments, post comments without approval';
+    } else {
+      $permission_string = implode(', ', $permissions);
+    }
+
+    // Create new role.
+    $role_name = $this->randomName();
+    db_query("INSERT INTO {role} (name) VALUES ('%s')", $role_name);
+    $role = db_fetch_object(db_query("SELECT * FROM {role} WHERE name = '%s'", $role_name));
+    $this->assertTrue($role, " [role] created name: $role_name, id: " . (isset($role->rid) ? $role->rid : t('-n/a-')));
+    if ($role && !empty($role->rid)) {
+      // Assign permissions to role and mark it for clean-up.
+      db_query("INSERT INTO {permission} (rid, perm) VALUES (%d, '%s')", $role->rid, $permission_string);
+      $this->assertTrue(db_affected_rows(), ' [role] created permissions: ' . $permission_string);
+      $this->_cleanupRoles[] = $role->rid;
+      return $role->rid;
+    } else {
+      return FALSE;
+    }
   }
 
   /**
@@ -318,13 +325,13 @@ class DrupalTestCase extends UnitTestCase {
    * @param object user object with pass_raw property!
    * @param $submit value of submit button on log in form
    */
-  function drupalLoginUser($user = NULL, $submit = 'Log in') {
+  function drupalLogin($user = NULL, $submit = 'Log in') {
     if ($this->_logged_in) {
-      $this->drupalGet('logout');
+      $this->drupalLogout();
     }
 
     if (!isset($user)) {
-      $user = $this->drupalCreateUserRolePerm();
+      $user = $this->_drupalCreateRole();
     }
 
     $edit = array('name' => $user->name, 'pass' => $user->pass_raw);
@@ -337,6 +344,18 @@ class DrupalTestCase extends UnitTestCase {
     $this->_logged_in = TRUE;
 
     return $user;
+  }
+  
+  /*
+  * Logs a user out of the internal browser, then check the login page to confirm logout.
+  */
+  function drupalLogout() {
+      //make a request to the logout page
+      $this->drupalGet('logout');
+      //load the user page, the idea being if you were properly logged out you should be seeing a login screen
+      $this->drupalGet('user');
+      $this->assertField("name");
+      $this->assertField("pass");
   }
 
   /**

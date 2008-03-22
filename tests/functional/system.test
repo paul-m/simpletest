@@ -45,11 +45,11 @@ class EnableCoreModuleTest extends DrupalTestCase {
     // Get a list of the currently enabled modules
     $enabled_modules = module_list(true, false);
 
-    $web_user = $this->drupalCreateUserRolePerm(array (
+    $web_user = $this->drupalCreateUser(array (
       'access administration pages',
       'administer site configuration',
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     $edit = array();
     // We temporarily disable any modules we're testing so that we can re-enable them for testing
@@ -111,11 +111,11 @@ class EnableModuleWithoutDependencyTest extends DrupalTestCase {
     }
 
     // Attempt to enable forum module, which should fail because comment and taxonomy are not enabled
-    $web_user = $this->drupalCreateUserRolePerm(array (
+    $web_user = $this->drupalCreateUser(array (
       'access administration pages',
       'administer site configuration',
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     $edit = array (
       'status[forum]' => 'forum',
@@ -183,11 +183,11 @@ class DisableUninstallCoreModuleTest extends DrupalTestCase {
     module_enable($modules_to_test);
     drupal_install_modules($modules_to_test);
 
-    $web_user = $this->drupalCreateUserRolePerm(array (
+    $web_user = $this->drupalCreateUser(array (
       'access administration pages',
       'administer site configuration',
     ));
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     // Disable/uninstall the given modules: we keep every other module enabled
     // We do this loop because for each level of dependency, we need one more request

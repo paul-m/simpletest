@@ -23,10 +23,10 @@ class upload_module_test_case extends DrupalTestCase {
    * Create node; upload files to node; and edit, and delete uploads.
    */
   function test_node_upload() {
-    $admin_user = $this->drupalCreateUserRolePerm(array('administer site configuration'));
-    $web_user = $this->drupalCreateUserRolePerm(array('access content', 'edit any page content', 'upload files', 'view uploaded files'));
+    $admin_user = $this->drupalCreateUser(array('administer site configuration'));
+    $web_user = $this->drupalCreateUser(array('access content', 'edit any page content', 'upload files', 'view uploaded files'));
 
-    $this->drupalLoginUser($admin_user);
+    $this->drupalLogin($admin_user);
 
     // Setup upload settings.
     $edit = array();
@@ -38,7 +38,7 @@ class upload_module_test_case extends DrupalTestCase {
     $this->assertText('The configuration options have been saved.', 'Upload setting saved.');
 
     $this->drupalGet('logout');
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     // Create a node and attempt to attach files.
     $node = $this->drupalCreateNode();
@@ -149,8 +149,8 @@ class UploadPictureTests extends DrupalTestCase {
     variable_set('user_pictures', 1);
 
     /* Prepare a user to do the stuff */
-    $user = $this->drupalCreateUserRolePerm(array('access content'));
-    $this->drupalLoginUser($user);
+    $user = $this->drupalCreateUser(array('access content'));
+    $this->drupalLogin($user);
 
     // not a image
     $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/functional/upload.test");
@@ -184,8 +184,8 @@ class UploadPictureTests extends DrupalTestCase {
         variable_set('user_pictures', 1);
 
         /* Prepare a user to do the stuff */
-        $user = $this->drupalCreateUserRolePerm(array('access content'));
-        $this->drupalLoginUser($user);
+        $user = $this->drupalCreateUser(array('access content'));
+        $this->drupalLogin($user);
 
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
@@ -240,8 +240,8 @@ class UploadPictureTests extends DrupalTestCase {
         variable_set('user_pictures', 1);
 
         /* Prepare a user to do the stuff */
-        $user = $this->drupalCreateUserRolePerm(array('access content'));
-        $this->drupalLoginUser($user);
+        $user = $this->drupalCreateUser(array('access content'));
+        $this->drupalLogin($user);
 
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
@@ -294,8 +294,8 @@ class UploadPictureTests extends DrupalTestCase {
         variable_set('user_pictures', 1);
 
         /* Prepare a user to do the stuff */
-        $user = $this->drupalCreateUserRolePerm(array('access content'));
-        $this->drupalLoginUser($user);
+        $user = $this->drupalCreateUser(array('access content'));
+        $this->drupalLogin($user);
 
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
@@ -343,8 +343,8 @@ class UploadPictureTests extends DrupalTestCase {
         variable_set('user_pictures', 1);
 
         /* Prepare a user to do the stuff */
-        $user = $this->drupalCreateUserRolePerm(array('access content'));
-        $this->drupalLoginUser($user);
+        $user = $this->drupalCreateUser(array('access content'));
+        $this->drupalLogin($user);
 
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
@@ -389,8 +389,8 @@ class UploadPictureTests extends DrupalTestCase {
       variable_set('user_pictures', 1);
 
       /* Prepare a user to do the stuff */
-      $user = $this->drupalCreateUserRolePerm(array('access content'));
-      $this->drupalLoginUser($user);
+      $user = $this->drupalCreateUser(array('access content'));
+      $this->drupalLogin($user);
 
       // changing actual setting;
       $old_dim = variable_get('user_picture_dimensions', '85x85');

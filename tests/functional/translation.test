@@ -22,10 +22,10 @@ class TranslationModuleTestCase extends DrupalTestCase {
 
   function test_content_translation() {
     // Setup users.
-    $admin_user = $this->drupalCreateUserRolePerm(array('administer languages', 'administer content types', 'access administration pages'));
-    $translator = $this->drupalCreateUserRolePerm(array('create story content', 'edit own story content', 'translate content'));
+    $admin_user = $this->drupalCreateUser(array('administer languages', 'administer content types', 'access administration pages'));
+    $translator = $this->drupalCreateUser(array('create story content', 'edit own story content', 'translate content'));
 
-    $this->drupalLoginUser($admin_user);
+    $this->drupalLogin($admin_user);
 
     // Add languages.
     $this->add_language('en');
@@ -36,7 +36,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $this->assertWantedRaw(t('The content type %type has been updated.', array('%type' => 'Story')), 'Story content type has been updated.');
 
     $this->drupalGet('logout');
-    $this->drupalLoginUser($translator);
+    $this->drupalLogin($translator);
 
     // Create story in English.
     $node_title = 'Test Translation '. $this->randomName();

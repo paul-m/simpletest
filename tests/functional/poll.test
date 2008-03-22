@@ -5,8 +5,8 @@ class PollTests extends DrupalTestCase {
 
   function pollCreate($standalone = TRUE) {
     $this->assertTrue(TRUE, 'Poll create' . $standalone);
-    $web_user = $this->drupalCreateUserRolePerm(array('create poll content', 'access content'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('create poll content', 'access content'));
+    $this->drupalLogin($web_user);
     $title = $this->randomName();
     $edit = array (
       'title' => $title,
@@ -80,8 +80,8 @@ class PollVoteTest extends PollTests {
   function testPollVote() {
     $this->pollCreate(FALSE);
     $this->drupalGet('logout');
-    $web_user = $this->drupalCreateUserRolePerm(array('cancel own vote', 'inspect all votes', 'vote on polls', 'access content'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('cancel own vote', 'inspect all votes', 'vote on polls', 'access content'));
+    $this->drupalLogin($web_user);
     $edit = array (
       'choice' => '1',
     );

@@ -279,8 +279,8 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
 
     // create test user and login
     $perm = array('access content', 'create story content', 'edit own story content', 'delete own story content');
-    $account = $this->drupalCreateUserRolePerm($perm);
-    $this->drupalLoginUser($account);
+    $account = $this->drupalCreateUser($perm);
+    $this->drupalLogin($account);
 
     // why is this printing out the user profile page?
     // go to node/add/story

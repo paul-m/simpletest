@@ -19,8 +19,8 @@ class PathModuleTestCase extends DrupalTestCase {
    $this->drupalModuleEnable('path');
 
     // create and login user
-    $web_user = $this->drupalCreateUserRolePerm(array('edit own page content', 'create page content', 'administer url aliases', 'create url aliases'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content', 'administer url aliases', 'create url aliases'));
+    $this->drupalLogin($web_user);
   }
 
   /**

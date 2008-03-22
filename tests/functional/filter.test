@@ -26,10 +26,10 @@ class FilterModuleTestCase extends DrupalTestCase {
     $second_filter = ($version_five ? 2 : 1); // line filter
 
     // Create users.
-    $admin_user = $this->drupalCreateUserRolePerm(array('administer filters'));
-    $web_user = $this->drupalCreateUserRolePerm(array('create page content'));
+    $admin_user = $this->drupalCreateUser(array('administer filters'));
+    $web_user = $this->drupalCreateUser(array('create page content'));
 
-    $this->drupalLoginUser($admin_user);
+    $this->drupalLogin($admin_user);
 
     list($filtered, $full) = $this->check_filter_formats();
 
@@ -110,7 +110,7 @@ class FilterModuleTestCase extends DrupalTestCase {
 
     // Switch user.
     $this->drupalGet('logout');
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
 
     $this->drupalGet('node/add/page');
     $this->assert_format($full, 'Full HTML filter accessible.');
@@ -135,7 +135,7 @@ class FilterModuleTestCase extends DrupalTestCase {
 
     // Switch user.
     $this->drupalGet('logout');
-    $this->drupalLoginUser($admin_user);
+    $this->drupalLogin($admin_user);
 
     // Clean up.
     // Allowed tags

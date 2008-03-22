@@ -22,8 +22,8 @@ class MenuModuleTestCase extends  DrupalTestCase {
 
   function testCreateCheckDelete() {
 
-    $web_user = $this->drupalCreateUserRolePerm(array('access content', 'administer menu', 'access administration pages',));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('access content', 'administer menu', 'access administration pages',));
+    $this->drupalLogin($web_user);
 
     $mlid1 = $this->uiCreateLink();
     $mlid2 = $this->uiCreateLink($mlid1);
@@ -105,8 +105,8 @@ class MenuModuleCustomMenuTest extends MenuModuleTestCase {
   }
 
   function testCreateCheckDelete() {
-    $web_user = $this->drupalCreateUserRolePerm(array('access content', 'administer menu', 'access administration pages',));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('access content', 'administer menu', 'access administration pages',));
+    $this->drupalLogin($web_user);
 
     $this->drupalGet('admin/build/menu/add');
     $name = substr(md5($this->randomName(16)), 0, 20);
@@ -156,8 +156,8 @@ class MenuModuleEnable extends DrupalTestCase {
   }
 
   function testMenuModuleEnable() {
-    $web_user = $this->drupalCreateUserRolePerm(array('administer menu'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('administer menu'));
+    $this->drupalLogin($web_user);
     $this->drupalGet('admin/build/menu-customize/navigation');
     $this->clickLink(t('edit'), 0);
     $url = $this->getUrl();
@@ -200,8 +200,8 @@ class MenuModuleReset extends DrupalTestCase {
   }
 
   function testMenuModuleReset() {;
-    $web_user = $this->drupalCreateUserRolePerm(array('administer menu'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('administer menu'));
+    $this->drupalLogin($web_user);
     $form_state = array();
     $menu['menu_name'] = 'navigation';
     require_once drupal_get_path('module', 'menu') .'/menu.admin.inc';
@@ -261,8 +261,8 @@ class MenuModuleInvalidPath extends DrupalTestCase {
   }
 
   function testMenuModuleInvalidPath() {
-    $web_user = $this->drupalCreateUserRolePerm(array('administer menu'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('administer menu'));
+    $this->drupalLogin($web_user);
     foreach (array('-&-', 'admin/user/permissions') as $invalid_path) {
       $edit = array (
         'menu[link_path]' => $invalid_path,

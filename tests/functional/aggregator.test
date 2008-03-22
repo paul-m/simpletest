@@ -7,8 +7,8 @@ class DrupalAggregatorTestCase extends DrupalTestCase {
   function setUp() {
     parent::setUp();
     $this->drupalModuleEnable('aggregator');
-    $web_user = $this->drupalCreateUserRolePerm(array('administer news feeds', 'access news feeds'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('administer news feeds', 'access news feeds'));
+    $this->drupalLogin($web_user);
   }
 
   /**

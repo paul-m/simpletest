@@ -26,10 +26,10 @@ class CommentModuleTestCase extends DrupalTestCase {
     $this->drupalModuleEnable('comment');
 
     // Create users.
-    $this->admin_user = $this->drupalCreateUserRolePerm(array('administer content types', 'administer comments', 'administer permissions'));
-    $this->web_user = $this->drupalCreateUserRolePerm(array('access comments', 'post comments', 'create story content'));
+    $this->admin_user = $this->drupalCreateUser(array('administer content types', 'administer comments', 'administer permissions'));
+    $this->web_user = $this->drupalCreateUser(array('access comments', 'post comments', 'create story content'));
 
-    $this->drupalLoginUser($this->web_user);
+    $this->drupalLogin($this->web_user);
     $this->node = $this->drupalCreateNode(array('type' => 'story'));
     $this->assertTrue($this->node, 'Story node created.');
     $this->drupalGet('logout');
@@ -40,25 +40,25 @@ class CommentModuleTestCase extends DrupalTestCase {
    */
   function testCommentInterface() {
     // Set comments to not have subject.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->set_comment_preview(TRUE);
     $this->set_comment_subject(FALSE);
     $this->drupalGet('logout');
 
     // Post comment without subject
-    $this->drupalLoginUser($this->web_user);
+    $this->drupalLogin($this->web_user);
     $this->drupalGet('comment/reply/'. $this->node->nid);
     $this->assertNoPattern('/(input)(.*?)(name="subject")/', 'Subject field not found.');
 
     // Set comments to have subject and preview to required.
     $this->drupalGet('logout');
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->set_comment_subject(true);
     $this->set_comment_preview(true);
     $this->drupalGet('logout');
 
     // Create comment that requires preview.
-    $this->drupalLoginUser($this->web_user);
+    $this->drupalLogin($this->web_user);
     $comment = $this->post_comment($this->node, $this->randomName(), $this->randomName());
     $this->assertTrue($this->comment_exists($comment), 'Comment found.');
 
@@ -74,7 +74,7 @@ class CommentModuleTestCase extends DrupalTestCase {
 
     // Delete comment and make sure that reply is also removed.
     $this->drupalGet('logout');
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->delete_comment($comment);
 
     $this->drupalGet('node/'. $this->node->nid);
@@ -87,19 +87,19 @@ class CommentModuleTestCase extends DrupalTestCase {
    */
   function testFormOnPage() {
     // Enabled comment form on node page.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->set_comment_form(TRUE);
     $this->drupalGet('logout');
 
     // Submit comment through node form.
-    $this->drupalLoginUser($this->web_user);
+    $this->drupalLogin($this->web_user);
     $this->drupalGet('node/'. $this->node->nid);
     $form_comment = $this->post_comment(NULL, $this->randomName(), $this->randomName());
     $this->assertTrue($this->comment_exists($form_comment), 'Form comment found.');
 
     // Disable comment form on node page.
     $this->drupalGet('logout');
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->set_comment_form(FALSE);
   }
 
@@ -107,7 +107,7 @@ class CommentModuleTestCase extends DrupalTestCase {
    * Test anonymous comment functionality.
    */
   function testAnonymous() {
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     // Enabled anonymous user comments.
     $this->set_anonymous_user_comment(TRUE, TRUE);
     $this->set_comment_anonymous('0'); // Ensure that doesn't require contact info.
@@ -118,7 +118,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $this->assertTrue($this->comment_exists($anonymous_comment1), 'Anonymous comment without contact info found.');
 
     // Allow contact info.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->set_comment_anonymous('1');
     $this->drupalGet('logout');
 
@@ -130,7 +130,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $this->assertTrue($this->comment_exists($anonymous_comment2), 'Anonymous comment with contact info (optional) found.');
 
     // Require contact info.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->set_comment_anonymous('2');
     $this->drupalGet('logout');
 
@@ -147,7 +147,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $this->assertTrue($this->comment_exists($anonymous_comment3), 'Anonymous comment with contact info (required) found.');
 
     // Unpublish comment.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->perform_comment_operation($anonymous_comment3, 'unpublish');
 
     $this->drupalGet('admin/content/comment/approval');
@@ -177,7 +177,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $this->assertText(t('Your comment has been queued for moderation by site administrators and will be published after approval.'), 'Comment requires approval.');
 
     // Get unaproved comment id.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $anonymous_comment4 = $this->get_unaproved_comment($subject);
     $anonymous_comment4 = (object) array('id' => $anonymous_comment4, 'subject' => $subject, 'comment' => $body);
     $this->drupalGet('logout');
@@ -185,7 +185,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $this->assertFalse($this->comment_exists($anonymous_comment4), 'Anonymous comment was not published.');
 
     // Approve comment.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->perform_comment_operation($anonymous_comment4, 'publish', TRUE);
     $this->drupalGet('logout');
 
@@ -193,7 +193,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $this->assertTrue($this->comment_exists($anonymous_comment4), 'Anonymous comment visible.');
 
     // Reset.
-    $this->drupalLoginUser($this->admin_user);
+    $this->drupalLogin($this->admin_user);
     $this->set_anonymous_user_comment(FALSE, FALSE);
   }
 

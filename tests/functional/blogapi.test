@@ -20,8 +20,8 @@ class BlogAPIModuleTestCase extends DrupalTestCase {
   
   function test_blog_API() {
     // Create admin user and taxononmy for later use.
-    $admin_user = $this->drupalCreateUserRolePerm(array('administer taxonomy'));
-    $this->drupalLoginUser($admin_user);
+    $admin_user = $this->drupalCreateUser(array('administer taxonomy'));
+    $this->drupalLogin($admin_user);
     
     $vid = $this->add_vocabulary('simpletest_vocab');
     
@@ -30,8 +30,8 @@ class BlogAPIModuleTestCase extends DrupalTestCase {
     $this->drupalGet('logout');
     
     // Create user.
-    $web_user = $this->drupalCreateUserRolePerm(array('create blog entries', 'delete own blog entries', 'edit own blog entries', 'administer content with blog api'));
-    $this->drupalLoginUser($web_user);
+    $web_user = $this->drupalCreateUser(array('create blog entries', 'delete own blog entries', 'edit own blog entries', 'administer content with blog api'));
+    $this->drupalLogin($web_user);
     
     // Init common variables.
     $local = url('xmlrpc.php', array('absolute' => TRUE));
@@ -106,7 +106,7 @@ class BlogAPIModuleTestCase extends DrupalTestCase {
     $this->drupalGet('logout');
     
     // Remove taxonmy vocab.
-    $this->drupalLoginUser($admin_user);
+    $this->drupalLogin($admin_user);
     
     $this->drupalPost('admin/content/taxonomy/edit/vocabulary/'. $vid, array(), t('Delete'));
     $this->drupalPost(NULL, array(), t('Delete'));

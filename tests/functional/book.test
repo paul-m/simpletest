@@ -23,11 +23,11 @@ class BookModuleTestCase extends DrupalTestCase {
    */
   function testBook() {
     // create users
-    $book_author = $this->drupalCreateUserRolePerm(array('create new books', 'create book content', 'add content to books'));
-    $web_user = $this->drupalCreateUserRolePerm(array('access printer-friendly version'));
+    $book_author = $this->drupalCreateUser(array('create new books', 'create book content', 'add content to books'));
+    $web_user = $this->drupalCreateUser(array('access printer-friendly version'));
     
     // create new book
-    $this->drupalLoginUser($book_author);
+    $this->drupalLogin($book_author);
     
     $this->book = $this->createBookNode('new');
     $book = $this->book;
@@ -51,7 +51,7 @@ class BookModuleTestCase extends DrupalTestCase {
     $this->drupalGet('logout');
     
     // check to make sure that book pages display properly
-    $this->drupalLoginUser($web_user);
+    $this->drupalLogin($web_user);
     
     $this->checkBookNode($book, array($nodes[0], $nodes[3], $nodes[4]), false, false, $nodes[0]);
     $this->checkBookNode($nodes[0], array($nodes[1], $nodes[2]), $book, $book, $nodes[1]);

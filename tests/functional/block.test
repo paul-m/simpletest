@@ -17,8 +17,8 @@ class BlockModuleTestCase extends DrupalTestCase {
     parent::setUp();
 
     // Create and login user
-    $admin_user = $this->drupalCreateUserRolePerm(array('administer blocks'));
-    $this->drupalLoginUser($admin_user);
+    $admin_user = $this->drupalCreateUser(array('administer blocks'));
+    $this->drupalLogin($admin_user);
   }
 
   /**
