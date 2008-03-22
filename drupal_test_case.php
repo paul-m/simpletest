@@ -124,6 +124,34 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
+   * Get a file that can be used in tests.
+   *
+   * @param string $type File type, possible values: 'binary', 'html', 'image', 'javascript', 'php', 'sql', 'text'.
+   * @param integer $size File size in bytes to match. Please check the tests/files folder.
+   * @return array List of files that match filter.
+   */
+  function drupalGetTestFiles($type, $size = NULL) {
+    $files = array();
+
+    // Make sure type is valid.
+    if (in_array($type, array('binary', 'html', 'image', 'javascript', 'php', 'sql', 'text'))) {
+      $path = file_directory_path() .'/simpletest';
+      $files = file_scan_directory($path, $type .'\-.*');
+
+      // If size is set then remove any files that are not of that size.
+      if ($size !== NULL) {
+        foreach ($files as $file) {
+          $stats = stat($file->filename);
+          if ($stats['size'] != $size) {
+            unset($files[$file->filename]);
+          }
+        }
+      }
+    }
+    return $files;
+  }
+
+  /**
    * Generates a random string, to be used as name or whatever
    * @param integer $number   number of characters
    * @return random string
