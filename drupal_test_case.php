@@ -836,8 +836,8 @@ class DrupalTestCase extends UnitTestCase {
   function assertFieldById($id, $value = '', $message = '') {
     $this->assertFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $name)));
   }
-  function assertField($id, $message = '') {
-    $this->assertFieldByXPath($this->_constructFieldXpath('name', $name) .'|'. $this->_constructFieldXpath('id', $id), '', $message);
+  function assertField($field, $message = '') {
+    $this->assertFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
   }
   function _constructFieldXpath($attribute, $value) {
     return '//textarea[@'. $attribute .'="'. $value .'"]|//input[@'. $attribute .'="'. $value .'"]|//select[@'. $attribute .'="'. $value .'"]';
