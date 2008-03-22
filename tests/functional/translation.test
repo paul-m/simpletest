@@ -32,7 +32,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $this->add_language('es');
 
     // Set story content type to use multilingual support with translation.
-    $this->drupalPost('admin/content/node-type/story', array('language_content_type' => "2"), 'Save content type');
+    $this->drupalPost('admin/content/node-type/story', array('language_content_type' => "2"), t('Save content type'));
     $this->assertWantedRaw(t('The content type %type has been updated.', array('%type' => 'Story')), 'Story content type has been updated.');
 
     $this->drupalGet('logout');
@@ -50,7 +50,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $edit = array();
     $edit['body'] = 'Node body. Additional Text.';
     $edit['translation[retranslate]'] = TRUE;
-    $this->drupalPost('node/'. $node->nid .'/edit', $edit, 'Save');
+    $this->drupalPost('node/'. $node->nid .'/edit', $edit, t('Save'));
     $this->assertWantedRaw(t('Story %title has been updated.', array('%title' => $node_title)), 'Original node updated.');
 
     // Check to make sure that interface shows translation as outdated
@@ -61,7 +61,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $edit = array();
     $edit['body'] = 'Nodo cuerpo. Texto adicional.';
     $edit['translation[status]'] = FALSE;
-    $this->drupalPost('node/'. $node_trans->nid .'/edit', $edit, 'Save');
+    $this->drupalPost('node/'. $node_trans->nid .'/edit', $edit, t('Save'));
     $this->assertWantedRaw(t('Story %title has been updated.', array('%title' => $node_trans_title)), 'Translated node updated.');
   }
 
@@ -79,7 +79,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
       // Doesn't have language installed so add it.
       $edit = array();
       $edit['langcode'] = $language_code;
-      $this->drupalPost('admin/settings/language/add', $edit, 'Add language');
+      $this->drupalPost('admin/settings/language/add', $edit, t('Add language'));
 
       $languages = language_list('language', TRUE); // make sure not using cached version
       $this->assertTrue(array_key_exists($language_code, $languages), 'Language was installed successfully.');
@@ -91,7 +91,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     else {
       // Ensure that it is enabled.
       $this->assertTrue(true, 'Language ['. $language_code .'] already installed.');
-      $this->drupalPost(NULL, array('enabled['. $language_code .']' => TRUE), 'Save configuration');
+      $this->drupalPost(NULL, array('enabled['. $language_code .']' => TRUE), t('Save configuration'));
 
       $this->assertWantedRaw(t('Configuration saved.'), 'Language successfully enabled.');
     }
@@ -111,7 +111,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $edit['title'] = $title;
     $edit['body'] = $body;
     $edit['language'] = $language;
-    $this->drupalPost('node/add/story', $edit, 'Save');
+    $this->drupalPost('node/add/story', $edit, t('Save'));
 
     $this->assertWantedRaw(t('Story %title has been created.', array('%title' => $edit['title'])), 'Story created.');
 
@@ -137,7 +137,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $edit['title'] = $title;
     $edit['body'] = $body;
 
-    $this->drupalPost(NULL, $edit, 'Save');
+    $this->drupalPost(NULL, $edit, t('Save'));
 
     $this->assertWantedRaw(t('Story %title has been created.', array('%title' => $edit['title'])), 'Translation created.');
 

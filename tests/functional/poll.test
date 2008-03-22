@@ -13,7 +13,7 @@ class PollTests extends DrupalTestCase {
       'choice[0][chtext]' => 'choice 1',
       'choice[1][chtext]' => 'choice 2',
     );
-    $this->drupalPost('node/add/poll', $edit, 'More choices');
+    $this->drupalPost('node/add/poll', $edit, t('More choices'));
     $edit = array(
       'title' => $title,
       'choice[0][chtext]' => 'choice 1',
@@ -25,14 +25,14 @@ class PollTests extends DrupalTestCase {
       'choice[6][chtext]' => 'choice 7',
     );
     if ($standalone) {
-      $this->drupalPost(NULL, $edit, 'Preview');
+      $this->drupalPost(NULL, $edit, t('Preview'));
       for ($i = 0; $i <= 6; $i++) {
         $bar = theme('poll_bar', $edit['choice['. $i .'][chtext]'], NULL, 0, FALSE, FALSE);
         $this->assertTrue($bar, "bar $i is themed");
         $this->assertWantedRaw($bar, "bar $i found in preview");
       }
     }
-    $this->drupalPost(NULL, $edit, 'Save');
+    $this->drupalPost(NULL, $edit, t('Save'));
     $node = node_load(array('title' => $title));
     $this->nid = $node->nid;
     $this->assertWantedRaw(t('@type %title has been created.', array('@type' => node_get_types('name', 'poll'), '%title' => $title)), 'Poll has been created.');
@@ -85,7 +85,7 @@ class PollVoteTest extends PollTests {
     $edit = array (
       'choice' => '1',
     );
-    $this->drupalPost('node/'. $this->nid, $edit, 'Vote');
+    $this->drupalPost('node/'. $this->nid, $edit, t('Vote'));
     $this->assertText('Your vote was recorded.', 'Your vote was recorded.');
     $this->drupalGet("node/$this->nid/votes");
     $this->assertText(t('This table lists all the recorded votes for this poll. If anonymous users are allowed to vote, they will be identified by the IP address of the computer they used when they voted.'), 'Vote table text.');

@@ -220,9 +220,9 @@ class CommentModuleTestCase extends DrupalTestCase {
     if ($preview) {
       $this->assertFieldById('edit-comment');
       $this->assertNoPattern('/(input)(.*?)(value="Save")/', 'Save button not found.'); // Preview required so no save button should be found.
-      $this->drupalPost(NULL, $edit, 'Preview');
+      $this->drupalPost(NULL, $edit, t('Preview'));
     }
-    $this->drupalPost(NULL, array(), 'Save');
+    $this->drupalPost(NULL, array(), t('Save'));
 
     $match = array();
     // Get comment ID
@@ -265,7 +265,7 @@ class CommentModuleTestCase extends DrupalTestCase {
    * @param object $comment Comment to delete.
    */
   function delete_comment($comment) {
-    $this->drupalPost('comment/delete/'. $comment->id, array(), 'Delete');
+    $this->drupalPost('comment/delete/'. $comment->id, array(), t('Delete'));
     $this->assertWantedText(t('The comment and all its replies have been deleted.'), 'Comment deleted.');
   }
 
@@ -328,7 +328,7 @@ class CommentModuleTestCase extends DrupalTestCase {
     $edit['1[access comments]'] = $enabled;
     $edit['1[post comments]'] = $enabled;
     $edit['1[post comments without approval]'] = $without_approval;
-    $this->drupalPost('admin/user/permissions', $edit, 'Save permissions');
+    $this->drupalPost('admin/user/permissions', $edit, t('Save permissions'));
     $this->assertText(t('The changes have been saved.'), 'Anonymous user comments '. ($enabled ? 'enabled' : 'disabled') .'.');
   }
 
@@ -352,10 +352,10 @@ class CommentModuleTestCase extends DrupalTestCase {
     $edit = array();
     $edit['operation'] = $operation;
     $edit['comments['. $comment->id .']'] = TRUE;
-    $this->drupalPost('admin/content/comment'. ($approval ? '/approval' : ''), $edit, 'Update');
+    $this->drupalPost('admin/content/comment'. ($approval ? '/approval' : ''), $edit, t('Update'));
 
     if ($operation == 'delete') {
-      $this->drupalPost(NULL, array(), 'Delete comments');
+      $this->drupalPost(NULL, array(), t('Delete comments'));
       $this->assertText(t('The comments have been deleted.'), 'Operation "'. $operation .'" was performed on comment.');
     }
     else {

@@ -673,7 +673,7 @@ class DrupalTestCase extends UnitTestCase {
         $curl_options = array(CURLOPT_URL => $url_target);
         $ret = $this->curlExec($curl_options);
       }
-      $this->assertTrue($ret, ' [browser] clicked link '. t($label) . " ($url_target) from $url_before");
+      $this->assertTrue($ret, " [browser] clicked link $label ($url_target) from $url_before");
     }
     return $ret;
   }

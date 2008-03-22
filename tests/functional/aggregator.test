@@ -18,7 +18,7 @@ class DrupalAggregatorTestCase extends DrupalTestCase {
    */  
   function createFeed() {
     $edit = $this->getFeedEditArray();
-    $this->drupalPost('admin/content/aggregator/add/feed', $edit, 'Save');
+    $this->drupalPost('admin/content/aggregator/add/feed', $edit, t('Save'));
     $feed = db_fetch_object(db_query("SELECT *  FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $edit['title'], $edit['url'])); 
     $this->assertTrue(!empty($feed), 'The feed exists');
     return $feed;
@@ -74,7 +74,7 @@ class DrupalAggregatorTestCase extends DrupalTestCase {
    * @param object $feed - feed object with valid fid
    */
   function removeFeedItems($feed) {
-    $this->drupalPost('admin/content/aggregator/remove/' . $feed->fid, array(), 'Remove items');
+    $this->drupalPost('admin/content/aggregator/remove/' . $feed->fid, array(), t('Remove items'));
   }
 
   /**
@@ -133,7 +133,7 @@ class UpdateFeedTestCase extends DrupalAggregatorTestCase {
     $edit = $this->getFeedEditArray();
     $edit['refresh'] =  1800; // change refresh value
 
-    $this->drupalPost('admin/content/aggregator/edit/feed/'. $feed->fid, $edit, 'Save');
+    $this->drupalPost('admin/content/aggregator/edit/feed/'. $feed->fid, $edit, t('Save'));
     $this->assertWantedRaw(t('The feed %name has been updated.', array('%name' => $edit['title'])), t('The feed %name has been updated.', array('%name' => $edit['title'])));
     $this->assertEqual($this->getUrl(), url('admin/content/aggregator/', array('absolute' => TRUE)));
     $this->assertTrue($this->uniqueFeed($edit['title'], $edit['url']), 'The feed is unique.');
@@ -156,7 +156,7 @@ class RemoveFeedTestCase extends DrupalAggregatorTestCase {
 
   function testRemoveFeed() {
     $feed = $this->createFeed();
-    $this->drupalPost('admin/content/aggregator/edit/feed/'.$feed->fid, array(), 'Delete');
+    $this->drupalPost('admin/content/aggregator/edit/feed/'.$feed->fid, array(), t('Delete'));
     $this->assertWantedRaw(t('The feed %name has been deleted.', array('%name' => $feed->title)), t('The feed %name has been added.', array('%name' => $feed->title)));
     $this->drupalGet('aggregator/sources/'. $feed->fid);
     $this->assertResponse(404);

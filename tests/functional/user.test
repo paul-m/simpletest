@@ -21,7 +21,7 @@ class UserRegistrationTest extends DrupalTestCase {
     $mail = "$name@example.com";
     $edit = array('name' => $name,
                   'mail' => $mail);
-    $this->drupalPost('user/register', $edit, 'Create new account');
+    $this->drupalPost('user/register', $edit, t('Create new account'));
 
     $this->assertText(t('Your password and further instructions have been sent to your e-mail address.'), 'Your password and further instructions ... found');
     $this->assertNoText(t('The name %name has been denied access.', array('%name' => $name)), 'not denied access');
@@ -52,7 +52,7 @@ class UserRegistrationTest extends DrupalTestCase {
 
     /* We try to login with a wrong password */
     $login_edit = array('name' => $name, 'pass' => 'foo');
-    $this->drupalPost('user', $login_edit, 'Log in');
+    $this->drupalPost('user', $login_edit, t('Log in'));
     $this->assertText(t('Sorry, unrecognized username or password. Have you forgotten your password?'), 'Test for failed Login');
     $url = user_pass_reset_url($user);
     /* TODO: find a better way, we currently have to do it that way, see user.module line 1041. */
@@ -80,12 +80,12 @@ class UserRegistrationTest extends DrupalTestCase {
     $this->assertEqual($user->pass, md5($new_pass), 'Correct password in database');
 
     /* logout */
-    $this->clickLink('Log out');
+    $this->clickLink(t('Log out'));
     $this->assertNoText($user->name, 'Logged out');
 
     /* login again */
     $login_edit['pass'] = $new_pass;
-    $this->drupalPost('user', $login_edit, 'Log in');
+    $this->drupalPost('user', $login_edit, t('Log in'));
 
     $pname = $user->name;
 
@@ -194,7 +194,7 @@ class UserAccessTest extends DrupalTestCase {
     $edit = array('name' => $name,
                   'mail' => $mail);
 
-    $this->drupalPost('user/register', $edit, 'Create new account');
+    $this->drupalPost('user/register', $edit, t('Create new account'));
 
     $this->assertNoUnWantedText(t('Your password and further instructions have been sent to your e-mail address.'), 'blocked user: Your password and further instructions - not found');
     $this->assertText(t('The name @name has been denied access.', array('@name' => $name)), 'blocked user: denied access - found');
@@ -207,7 +207,7 @@ class UserAccessTest extends DrupalTestCase {
 
     /* We need new cookies */
     unset($this->ch);
-    $this->drupalPost('user/register', $edit, 'Create new account');
+    $this->drupalPost('user/register', $edit, t('Create new account'));
 
     $this->assertText(t('Your password and further instructions have been sent to your e-mail address.'), 'access user: Your password and further instructions - found');
     $this->assertNoText(t('The name @name has been denied access.', array('@name' => $name)), 'access user: denied access - not found');
@@ -246,7 +246,7 @@ class UserDeleteTest extends DrupalTestCase {
     $mail = "$name@example.com";
     $edit = array('name' => $name,
                   'mail' => $mail);
-    $this->drupalPost('user/register', $edit, 'Create new account');
+    $this->drupalPost('user/register', $edit, t('Create new account'));
     $user_to_delete = user_load($edit);
     $uid = $user_to_delete->uid;
     $web_user = $this->drupalCreateUserRolePerm(array('administer users'));

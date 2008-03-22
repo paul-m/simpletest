@@ -291,7 +291,7 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
 
     // multiple slect box was failing through drupalPost. Use raw POST instead
     // Failing because they were being sent/handled wrong (earnest.berry@gmail.com <Souvent22>)
-    $this->drupalPost('node/add/story', $edit, 'Save');
+    $this->drupalPost('node/add/story', $edit, t('Save'));
 
     $patternArray['body text'] = $body;
     $patternArray['title'] = $title;
@@ -332,7 +332,7 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
 
     $edit = array('title' => $title, 'body' => $body, "taxonomy[$vid][]" => $parent);
 
-    $this->drupalPost('node/'. $node->nid .'/edit', $edit, 'Save');
+    $this->drupalPost('node/'. $node->nid .'/edit', $edit, t('Save'));
 
     // TODO Do a MUCH better check here of the information msg
     $patternArray['information message'] = 'been updated';
@@ -348,7 +348,7 @@ class TaxonomyTestNodeApi extends DrupalTestCase {
     }
 
     // delete node through browser
-    $this->drupalPost('node/'. $node->nid .'/delete', array(), 'Delete' );
+    $this->drupalPost('node/'. $node->nid .'/delete', array(), t('Delete'));
     // checking after delete
     $this->drupalGet("node/".$node->nid);
     $this->assertNoUnwantedText($termname, "Checking if node exists");

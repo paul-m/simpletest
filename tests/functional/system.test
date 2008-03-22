@@ -60,7 +60,7 @@ class EnableCoreModuleTest extends DrupalTestCase {
       $edit['status['. $module .']'] = $module;
     }
 
-    $this->drupalPost('admin/build/modules/list/confirm', $edit, 'Save configuration');
+    $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
     $this->assertWantedRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
 
     // Now, we check the tables for each module
@@ -121,7 +121,7 @@ class EnableModuleWithoutDependencyTest extends DrupalTestCase {
       'status[forum]' => 'forum',
     );
 
-    $this->drupalPost('admin/build/modules/list/confirm', $edit, 'Save configuration');
+    $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
     $this->assertWantedRaw(t('Some required modules must be enabled'), t('Make sure the dependency error is shown'));
 
     $this->assertFalse(module_exists('forum'), t('Check to make sure that the module has not somehow become enabled'));
@@ -200,7 +200,7 @@ class DisableUninstallCoreModuleTest extends DrupalTestCase {
         $edit['status['. $module .']'] = $module;
       }
 
-      $this->drupalPost('admin/build/modules/list/confirm', $edit, 'Save configuration');
+      $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
       $this->assertWantedRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
     }
 
@@ -214,7 +214,7 @@ class DisableUninstallCoreModuleTest extends DrupalTestCase {
         $edit['uninstall['. $module .']'] = $module;
     }
 
-    $this->drupalPost('admin/build/modules/uninstall/confirm', $edit, 'Uninstall');
+    $this->drupalPost('admin/build/modules/uninstall/confirm', $edit, t('Uninstall'));
     // We need to confirm this by clicking again
     $this->drupalPost(NULL, array(), t('Uninstall'));
     $this->assertWantedRaw(t('The selected modules have been uninstalled.'), 'Check to ensure that the modules have been removed');

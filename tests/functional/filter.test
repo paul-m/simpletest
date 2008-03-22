@@ -36,7 +36,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     // Change default filter.
     $edit = array();
     $edit['default'] = $full;
-    $this->drupalPost('admin/settings/filters', $edit, $version_seven ? 'Save changes' : 'Set default format');
+    $this->drupalPost('admin/settings/filters', $edit, t('Save changes'));
     $this->assertText(t('Default format updated.'), 'Default filter updated successfully.');
 
     $this->assertNoUnwantedRaw('admin/settings/filters/delete/'. $full, 'Delete link not found.');
@@ -44,7 +44,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     // Add an additional tag.
     $edit = array();
     $edit['allowed_html_1'] = '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>'.' <quote>'; // Adding <quote> tag.
-    $this->drupalPost('admin/settings/filters/'. $filtered .'/configure', $edit, 'Save configuration');
+    $this->drupalPost('admin/settings/filters/'. $filtered .'/configure', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'), 'Allowed HTML tag added.');
 
     $this->assertWantedRaw(htmlentities($edit['allowed_html_1']), 'Tag displayed.');
@@ -56,7 +56,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     $edit = array();
     $edit['weights[filter/'. $second_filter .']'] = 1;
     $edit['weights[filter/'. $first_filter .']'] = 2;
-    $this->drupalPost('admin/settings/filters/'. $filtered .'/order', $edit, 'Save configuration');
+    $this->drupalPost('admin/settings/filters/'. $filtered .'/order', $edit, t('Save configuration'));
     $this->assertText(t('The filter ordering has been saved.'), 'Order saved successfully.');
     
     $result = db_query('SELECT * FROM {filters} WHERE format = %d ORDER BY weight ASC', $filtered);
@@ -74,7 +74,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     $edit['roles[2]'] = TRUE;
     $edit['filters[filter/'. $second_filter .']'] = TRUE;
     $edit['filters[filter/'. $first_filter .']'] = TRUE;
-    $this->drupalPost('admin/settings/filters/add', $edit, 'Save configuration');
+    $this->drupalPost('admin/settings/filters/add', $edit, t('Save configuration'));
     $this->assertWantedRaw(t('Added input format %format.', array('%format' => $edit['name'])), 'New filter created.');
 
     $format = $this->get_filter($edit['name']);
@@ -90,14 +90,14 @@ class FilterModuleTestCase extends DrupalTestCase {
       $this->assert_checkbox('filters\[filter\/'. $first_filter .'\]', 'Url filter found.');
 
       // Delete new filter.
-      $this->drupalPost('admin/settings/filters/delete/'. $format->format, array(), 'Delete');
+      $this->drupalPost('admin/settings/filters/delete/'. $format->format, array(), t('Delete'));
       $this->assertWantedRaw(t('Deleted input format %format.', array('%format' => $edit['name'])), 'Format successfully deleted.');
     }
 
     // Change default filter back.
     $edit = array();
     $edit['default'] = $filtered;
-    $this->drupalPost('admin/settings/filters', $edit, $version_seven ? 'Save changes' : 'Set default format');
+    $this->drupalPost('admin/settings/filters', $edit, t('Save changes'));
     $this->assertText(t('Default format updated.'), 'Default filter updated successfully.');
 
     $this->assertNoUnwantedRaw('admin/settings/filters/delete/'. $filtered, 'Delete link not found.');
@@ -105,7 +105,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     // Allow authenticated users on full HTML.
     $edit = array();
     $edit['roles[2]'] = TRUE;
-    $this->drupalPost('admin/settings/filters/'. $full, $edit, 'Save configuration');
+    $this->drupalPost('admin/settings/filters/'. $full, $edit, t('Save configuration'));
     $this->assertText(t('The input format settings have been updated.'), 'Full HTML format successfully updated.');
 
     // Switch user.
@@ -123,7 +123,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     $edit['title'] = $this->randomName();
     $edit['body'] = $body .'<random>'. $extra_text .'</random>';
     $edit['format'] = $filtered;
-    $this->drupalPost('node/add/page', $edit, ($version_five ? 'Submit' : 'Save'));
+    $this->drupalPost('node/add/page', $edit, t('Save'));
     $message = ($version_five ? t('Your %post has been created.', array('%post' => 'Page')) : t('Page %title has been created.', array('%title' => $edit['title'])));
     $this->assertWantedRaw($message, 'Filtered node created.');
 
@@ -141,20 +141,20 @@ class FilterModuleTestCase extends DrupalTestCase {
     // Allowed tags
     $edit = array();
     $edit['allowed_html_1'] = '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>';
-    $this->drupalPost('admin/settings/filters/'. $filtered .'/configure', $edit, 'Save configuration');
+    $this->drupalPost('admin/settings/filters/'. $filtered .'/configure', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'), 'Changes reverted.');
 
     // Full HTML
     $edit = array();
     $edit['roles[2]'] = FALSE;
-    $this->drupalPost('admin/settings/filters/'. $full, $edit, 'Save configuration');
+    $this->drupalPost('admin/settings/filters/'. $full, $edit, t('Save configuration'));
     $this->assertText(t('The input format settings have been updated.'), 'Full HTML format successfully reverted.');
 
     // Filter order
     $edit = array();
     $edit['weights[filter/'. $second_filter .']'] = 2;
     $edit['weights[filter/'. $first_filter .']'] = 1;
-    $this->drupalPost('admin/settings/filters/'. $filtered .'/order', $edit, 'Save configuration');
+    $this->drupalPost('admin/settings/filters/'. $filtered .'/order', $edit, t('Save configuration'));
     $this->assertText(t('The filter ordering has been saved.'), 'Order successfully reverted.');
   }
 

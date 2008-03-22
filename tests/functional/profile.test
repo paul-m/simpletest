@@ -57,7 +57,7 @@ class ProfileModuleTestSingle extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in');
+    $this->drupalPost('user', $edit, t('Log in'));
 
     //wartosci
     $my_category = 'Simpletest';
@@ -70,7 +70,7 @@ class ProfileModuleTestSingle extends DrupalTestCase {
                   'name' => $form_name,
                   'explanation' => $explanation,
                   );
-    $this->drupalPost('admin/user/profile/add/textfield', $edit, 'Save field',0);
+    $this->drupalPost('admin/user/profile/add/textfield', $edit, t('Save field'), 0);
     $fid = db_result(db_query('SELECT fid FROM {profile_fields} WHERE title = "%s"', $title));
     $single_field = array('title' => $title, 'form_name' => $form_name, 'explanation' => $explanation);
 
@@ -89,7 +89,7 @@ class ProfileModuleTestSingle extends DrupalTestCase {
     $edit = array();
     $checking = array();
     $edit[$form_name] = $this->randomName(20);
-    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, 'Save' , 0);
+    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save') , 0);
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
@@ -97,11 +97,11 @@ class ProfileModuleTestSingle extends DrupalTestCase {
     $this->assertWantedText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
-    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field') , 0);
     $this->drupalGet("admin/user/profile");
     $this->assertWantedText($new_title, "Checking updated field");
     // deleting field
-    $this->drupalPost("admin/user/profile/delete/$fid", array(), 'Delete' , 0);
+    $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
 
@@ -175,7 +175,7 @@ class ProfileModuleTestTextarea extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in',0 );
+    $this->drupalPost('user', $edit, t('Log in'), 0 );
 
     //wartosci
     $my_category = 'Simpletest';
@@ -184,7 +184,7 @@ class ProfileModuleTestTextarea extends DrupalTestCase {
     $form_name = 'profile_' . $title;
     $explanation = $this->randomName(50);
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'explanation' => $explanation);
-    $this->drupalPost("admin/user/profile/add/textarea", $edit, 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/add/textarea", $edit, t('Save field'), 0);
     $fid = db_result(db_query('SELECT fid FROM {profile_fields} WHERE title = "%s"', $title));
     $single_field = array('title' => $title, 'form_name' => $form_name, 'explanation' => $explanation);
 
@@ -203,7 +203,7 @@ class ProfileModuleTestTextarea extends DrupalTestCase {
     $edit = array();
     $checking = array();
     $edit[$form_name] = $this->randomName(20);
-    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, 'Save' , 0);
+    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save'), 0);
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
@@ -211,11 +211,11 @@ class ProfileModuleTestTextarea extends DrupalTestCase {
     $this->assertWantedText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
-    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertWantedText($new_title, "Checking updated field");
     // deleting field
-    $this->drupalPost("admin/user/profile/delete/$fid", array(), 'Delete' , 0);
+    $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
 
@@ -289,7 +289,7 @@ class ProfileModuleTestFreelist extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in',0 );
+    $this->drupalPost('user', $edit, t('Log in'), 0 );
 
     //wartosci
     $my_category = 'Simpletest';
@@ -298,7 +298,7 @@ class ProfileModuleTestFreelist extends DrupalTestCase {
     $form_name = 'profile_' . $title;
     $explanation = $this->randomName(50);
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'explanation' => $explanation);
-    $this->drupalPost("admin/user/profile/add/list", $edit, 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/add/list", $edit, t('Save field'), 0);
     $fid = db_result(db_query('SELECT fid FROM {profile_fields} WHERE title = "%s"', $title));
     $single_field = array('title' => $title, 'form_name' => $form_name, 'explanation' => $explanation);
 
@@ -317,7 +317,7 @@ class ProfileModuleTestFreelist extends DrupalTestCase {
     $edit = array();
     $checking = array();
     $edit[$form_name] = $this->randomName(20);
-    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, 'Save' , 0);
+    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save'), 0);
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
@@ -325,11 +325,11 @@ class ProfileModuleTestFreelist extends DrupalTestCase {
     $this->assertWantedText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
-    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertWantedText($new_title, "Checking updated field");
     // deleting field
-    $this->drupalPost("admin/user/profile/delete/$fid", array(), 'Delete' , 0);
+    $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
 
@@ -404,7 +404,7 @@ class ProfileModuleTestCheckbox extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in',0 );
+    $this->drupalPost('user', $edit, t('Log in'), 0);
 
     //wartosci
     $my_category = 'Simpletest';
@@ -413,7 +413,7 @@ class ProfileModuleTestCheckbox extends DrupalTestCase {
     $form_name = 'profile_' . $title;
     $explanation = $this->randomName(50);
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'explanation' => $explanation);
-    $this->drupalPost("admin/user/profile/add/checkbox", $edit, 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/add/checkbox", $edit, t('Save field'), 0);
     $fid = db_result(db_query('SELECT fid FROM {profile_fields} WHERE title = "%s"', $title));
     $single_field = array('title' => $title, 'form_name' => $form_name, 'explanation' => $explanation);
 
@@ -432,18 +432,18 @@ class ProfileModuleTestCheckbox extends DrupalTestCase {
     $edit = array();
     $checking = array();
     $edit[$form_name] = 1;
-    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, 'Save' , 0);
+    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save'), 0);
     $this->drupalGet("user/". $user->uid);
     // checking profile page
     $this->assertWantedText($title, "Checking checkbox");
     $this->assertWantedText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(10);
-    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertWantedText($new_title, "Checking updated field");
     // deleting field
-    $this->drupalPost("admin/user/profile/delete/$fid", array(), 'Delete' , 0);
+    $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
 
@@ -517,7 +517,7 @@ class ProfileModuleTestUrl extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in',0 );
+    $this->drupalPost('user', $edit, t('Log in'), 0);
 
     //wartosci
     $my_category = 'Simpletest';
@@ -526,7 +526,7 @@ class ProfileModuleTestUrl extends DrupalTestCase {
     $form_name = 'profile_' . $title;
     $explanation = $this->randomName(50);
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'explanation' => $explanation);
-    $this->drupalPost("admin/user/profile/add/url", $edit, 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/add/url", $edit, t('Save field'), 0);
     $fid = db_result(db_query("SELECT fid FROM {profile_fields} WHERE title = '%s'", $title));
     $single_field = array('title' => $title, 'form_name' => $form_name, 'explanation' => $explanation);
 
@@ -545,7 +545,7 @@ class ProfileModuleTestUrl extends DrupalTestCase {
     $edit = array();
     $checking = array();
     $edit[$form_name] = 'http://www.' . $this->randomName(10). '.org';
-    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, 'Save' , 0);
+    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save'), 0);
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
@@ -553,11 +553,11 @@ class ProfileModuleTestUrl extends DrupalTestCase {
     $this->assertWantedText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
-    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertWantedText($new_title, "Checking updated field");
     // deleting field
-    $this->drupalPost("admin/user/profile/delete/$fid", array(), 'Delete' , 0);
+    $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
 
@@ -631,7 +631,7 @@ class ProfileModuleTestSelection extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in',0 );
+    $this->drupalPost('user', $edit, t('Log in'), 0);
 
     //wartosci
     $my_category = 'Simpletest';
@@ -643,7 +643,7 @@ class ProfileModuleTestSelection extends DrupalTestCase {
     for($i = 0; $i < 3; $i++)
       $options .= $this->randomName(8) . "\n";
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'explanation' => $explanation, 'options' => $options);
-    $this->drupalPost("admin/user/profile/add/selection", $edit, 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/add/selection", $edit, t('Save field'), 0);
     $fid = db_result(db_query("SELECT fid FROM {profile_fields} WHERE title = '%s'", $title));
     $single_field = array('title' => $title, 'form_name' => $form_name, 'explanation' => $explanation);
 
@@ -668,7 +668,7 @@ class ProfileModuleTestSelection extends DrupalTestCase {
     $element = rand(0,2);
     $key = $form_name;
     $edit[$key] = rtrim($op_tab[$element]);
-    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, 'Save' , 0);
+    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save'), 0);
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
@@ -676,11 +676,11 @@ class ProfileModuleTestSelection extends DrupalTestCase {
     $this->assertWantedText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
-    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertWantedText($new_title, "Checking updated field");
     // deleting field
-    $this->drupalPost("admin/user/profile/delete/$fid", array(), 'Delete' , 0);
+    $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
 
@@ -756,7 +756,7 @@ class ProfileModuleTestDate extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in',0 );
+    $this->drupalPost('user', $edit, t('Log in'), 0);
 
     //wartosci
     $my_category = 'Simpletest';
@@ -768,7 +768,7 @@ class ProfileModuleTestDate extends DrupalTestCase {
     for($i = 0; $i < 3; $i++)
       $options .= $this->randomName(8) . "\n";*/
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'explanation' => $explanation);
-    $this->drupalPost("admin/user/profile/add/date", $edit, 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/add/date", $edit, t('Save field'), 0);
     $fid = db_result(db_query("SELECT fid FROM {profile_fields} WHERE title = '%s'", $title));
     $single_field = array('title' => $title, 'form_name' => $form_name, 'explanation' => $explanation);
 
@@ -797,7 +797,7 @@ class ProfileModuleTestDate extends DrupalTestCase {
                        'M' => map_month(1),
                        'Y' => 1983);
     $data = strtr($format, $replace);
-    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, 'Save' , 0);
+    $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save'), 0);
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
@@ -805,11 +805,11 @@ class ProfileModuleTestDate extends DrupalTestCase {
     $this->assertWantedText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
-    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), 'Save field' , 0);
+    $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertWantedText($new_title, "Checking updated field");
     // deleting field
-    $this->drupalPost("admin/user/profile/delete/$fid", array(), 'Delete' , 0);
+    $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
     $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
 
@@ -886,7 +886,7 @@ class ProfileModuleTest2 extends DrupalTestCase {
     $user = user_save('', array('name' => $name, 'pass' => $pass, 'init' => $mail, 'mail' => $mail, 'roles' => $edit['roles'], 'status' => 1));
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in', 0);
+    $this->drupalPost('user', $edit, t('Log in'), 0);
     //wartosci
     $my_category = $this->randomName(10);
     //single line textfield
@@ -895,7 +895,7 @@ class ProfileModuleTest2 extends DrupalTestCase {
     // weight
     $weight = 3;
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'weight' => $weight, 'required' => 1);
-    $this->drupalPost("admin/user/profile/add/textfield", $edit, 'Save field', 0);
+    $this->drupalPost("admin/user/profile/add/textfield", $edit, t('Save field'), 0);
     $fid = db_result(db_query('SELECT fid FROM {profile_fields} WHERE title = "%s"', $title));
     $sfield1 = array('fid'=> $fid, 'title' => $title);
     //second one line textfield
@@ -904,7 +904,7 @@ class ProfileModuleTest2 extends DrupalTestCase {
     // weight
     $weight = -2;
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'weight' => $weight, 'register' => 1, 'required' => 1);
-    $this->drupalPost("admin/user/profile/add/textfield", $edit, 'Save field', 0);
+    $this->drupalPost("admin/user/profile/add/textfield", $edit, t('Save field'), 0);
     $fid = db_result(db_query('SELECT fid FROM {profile_fields} WHERE title = "%s"', $title));
     $sfield2 = array('fid'=> $fid, 'title' => $title);
     // checking
@@ -927,12 +927,12 @@ class ProfileModuleTest2 extends DrupalTestCase {
     $fmail = "$fname@drupaltest.example.com";
     $edit = array('name' => $fname,
                'mail' => $fmail);
-    $this->drupalPost('user/register', $edit, 'Create new account', 0);
+    $this->drupalPost('user/register', $edit, t('Create new account'), 0);
     //$key = t('The field %field is required.', array('%field' => $title));
     //$this->assertWantedText($key, 'Checking error message');
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
-    $this->drupalPost('user', $edit, 'Log in', 0);
+    $this->drupalPost('user', $edit, t('Log in'), 0);
     // TITLE
     //selection
     $title =  $this->randomName(10);
@@ -942,7 +942,7 @@ class ProfileModuleTest2 extends DrupalTestCase {
     for($i = 0; $i < 3; $i++)
       $options .= $this->randomName(8) . "\n";
     $edit = array('category' => $my_category, 'title' => $title, 'name' => $form_name, 'page' => $page_title, 'options' => $options);
-    $this->drupalPost("admin/user/profile/add/selection", $edit, 'Save field', 0);
+    $this->drupalPost("admin/user/profile/add/selection", $edit, t('Save field'), 0);
     $fid = db_result(db_query('SELECT fid FROM {profile_fields} WHERE title = "%s"', $title));
     $element = rand(0,2);
     $op_tab = explode("\n", $options,3);
@@ -956,7 +956,7 @@ class ProfileModuleTest2 extends DrupalTestCase {
     $delete_fields[] = $fid;
 
     foreach($delete_fields as $delfid) {
-      $this->drupalPost("admin/user/profile/delete/".$delfid, array(), 'Delete', 0 );
+      $this->drupalPost("admin/user/profile/delete/".$delfid, array(), t('Delete'), 0 );
     }
     // delete test user and roles
     if ($user->uid > 0) {

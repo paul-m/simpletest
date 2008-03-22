@@ -32,7 +32,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     $edit['contact_form_information'] = $this->randomName(100);
     $edit['contact_hourly_threshold'] = 3;
     $edit['contact_default_status'] = TRUE;
-    $this->drupalPost('admin/build/contact/settings', $edit, 'Save configuration');
+    $this->drupalPost('admin/build/contact/settings', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
 
     $this->reload_variables();
@@ -121,7 +121,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     // Enable the personal contact form.
     $edit = array();
     $edit['contact_default_status'] = TRUE;
-    $this->drupalPost('admin/build/contact/settings', $edit, 'Save configuration');
+    $this->drupalPost('admin/build/contact/settings', $edit, it('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
 
     // Reload variables.
@@ -140,7 +140,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     $edit = array();
     $edit['subject'] = $this->randomName(16);
     $edit['message'] = $this->randomName(64);
-    $this->drupalPost(NULL, $edit, 'Send e-mail');
+    $this->drupalPost(NULL, $edit, t('Send e-mail'));
     $this->assertText(t('The message has been sent.'), 'Message sent.');
 
     $this->drupalGet('logout');
@@ -150,7 +150,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     // Disable the personal contact form.
     $edit = array();
     $edit['contact_default_status'] = FALSE;
-    $this->drupalPost('admin/build/contact/settings', $edit, 'Save configuration');
+    $this->drupalPost('admin/build/contact/settings', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
 
     // Reload variables.
@@ -181,7 +181,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     $edit['recipients'] = $recipients;
     $edit['reply'] = $reply;
     $edit['selected'] = ($selected ? '1' : '0');
-    $this->drupalPost('admin/build/contact/add', $edit, 'Save');
+    $this->drupalPost('admin/build/contact/add', $edit, t('Save'));
   }
 
   /**
@@ -200,7 +200,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     $edit['subject'] = $subject;
     $edit['cid'] = $cid;
     $edit['message'] = $message;
-    $this->drupalPost('contact', $edit, 'Send e-mail');
+    $this->drupalPost('contact', $edit, t('Send e-mail'));
   }
 
   /**
@@ -210,7 +210,7 @@ class ContactModuleTestCase extends DrupalTestCase {
     $categories = $this->get_categories();
     foreach ($categories as $category) {
       $category_name = db_result(db_query('SELECT category FROM {contact} WHERE cid = %d', array($category)));
-      $this->drupalPost('admin/build/contact/delete/'. $category, array(), 'Delete');
+      $this->drupalPost('admin/build/contact/delete/'. $category, array(), t('Delete'));
       $this->assertWantedRaw(t('Category %category has been deleted.', array('%category' => $category_name)), 'Category deleted sucessfully.');
     }
   }
@@ -248,7 +248,7 @@ class ContactModuleTestCase extends DrupalTestCase {
       $edit[$rid .'['. $name .']'] = $value;
     }
 
-    $this->drupalPost('admin/user/permissions', $edit, 'Save permissions');
+    $this->drupalPost('admin/user/permissions', $edit, t('Save permissions'));
     $this->assertText(t('The changes have been saved.'), ' [permission] Saved changes.');
   }
 

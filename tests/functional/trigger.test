@@ -42,7 +42,7 @@ class ActionsContentTest extends  DrupalTestCase {
 
     // Set action id to "publish post".
     $edit = array('aid' => $hash);
-    $this->drupalPost('admin/build/trigger/node', $edit, 'Assign');
+    $this->drupalPost('admin/build/trigger/node', $edit, t('Assign'));
 
     // Create an unpublished node.
     $node = $this->drupalCreateNode(array('status' => 0));
@@ -55,13 +55,13 @@ class ActionsContentTest extends  DrupalTestCase {
     // Test 2: There should be an error when the action is assigned to the trigger twice.
 
     $edit = array('aid' => $hash);
-    $this->drupalPost('admin/build/trigger/node', $edit, 'Assign');
+    $this->drupalPost('admin/build/trigger/node', $edit, t('Assign'));
     $this->assertWantedRaw(t('The action you chose is already assigned to that trigger.'), t('Check to make sure an error occurs when assigning an action to a trigger twice.'));
 
     // Test 3: The action should be able to be unassigned from a trigger.
 
     // This effectively cleans up as well.
-    $this->drupalPost('admin/build/trigger/unassign/nodeapi/presave/'. $hash, array(), 'Unassign');
+    $this->drupalPost('admin/build/trigger/unassign/nodeapi/presave/'. $hash, array(), t('Unassign'));
     $this->assertWantedRaw(t('Action %action has been unassigned.', array('%action' => 'Publish post')), t('Check to make sure action can be unassigned from trigger.'));
 
     $assigned = db_result(db_query("SELECT COUNT(*) FROM {trigger_assignments} WHERE aid IN ('". implode("','", $content_actions) ."')"));

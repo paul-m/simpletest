@@ -80,7 +80,7 @@ class NodeRevisionsTest extends DrupalTestCase {
 
     $test_user = $this->drupalCreateUserRolePerm(array('revert revisions', 'edit any page content'));
     $this->drupalLoginUser($test_user);
-    $this->drupalPost("node/$node->nid/revisions/$vid/revert", array(), 'Revert');
+    $this->drupalPost("node/$node->nid/revisions/$vid/revert", array(), t('Revert'));
     $newnode = node_load($node->nid);
     $this->assertTrue(($text == $newnode->body), 'Check to make sure reversions occur properly');
 
@@ -95,7 +95,7 @@ class NodeRevisionsTest extends DrupalTestCase {
 
     $test_user = $this->drupalCreateUserRolePerm(array('delete revisions', 'delete any page content'));
     $this->drupalLoginUser($test_user);
-    $this->drupalPost("node/$node->nid/revisions/$vid/delete", array(), 'Delete');
+    $this->drupalPost("node/$node->nid/revisions/$vid/delete", array(), t('Delete'));
     $this->assertTrue(db_result(db_query('SELECT COUNT(vid) FROM {node_revisions} WHERE nid = %d and VID = %d', $node->nid, $vid)) == 0, 'Check to make sure revisions delete properly');    $this->cleanup($node->nid);
 
     $this->cleanup($node->nid);
@@ -282,12 +282,12 @@ class StoryEditTest extends DrupalTestCase {
 	);
 
     //Create the page to edit
-    $this->drupalPost('node/add/story', $edit, 'Save');
+    $this->drupalPost('node/add/story', $edit, t('Save'));
 
     $node = node_load(array('title' => $edit['title']));
     $this->assertNotNull($node, 'Node found in database');
 
-    $this->clickLink('Edit');
+    $this->clickLink(t('Edit'));
     $editurl = url("node/$node->nid/edit", array('absolute' => true));
     $acturl = $this->getURL();
     $this->assertEqual($editurl, $acturl);
@@ -303,7 +303,7 @@ class StoryEditTest extends DrupalTestCase {
 
 
     //edit the content of the page
-    $this->drupalPost("node/$node->nid/edit", $edit, 'Save');
+    $this->drupalPost("node/$node->nid/edit", $edit, t('Save'));
 
     $this->assertWantedText(t($edit['title']), 'Hello, the random title');
     $this->assertWantedText(t($edit['body']), 'test is over, the body\'s still there');
@@ -330,7 +330,7 @@ class StoryPreviewTest extends DrupalTestCase {
       'title'=>'!SimpleTest! title' . $this->randomName(20),
       'body'=>'!SimpleTest! body' . $this->randomName(200),
     );
-    $this->drupalPost('node/add/story', $edit, 'Preview');
+    $this->drupalPost('node/add/story', $edit, t('Preview'));
 
     $this->assertWantedText(t('Preview'), 'Preview text is here');
     $this->assertWantedText(t($edit['title']), 'Hello, the random title');
@@ -366,7 +366,7 @@ class PageCreationTest extends  DrupalTestCase {
     $edit = array();
     $edit['title']    = '!SimpleTest test node! ' . $this->randomName(10);
     $edit['body']     = '!SimpleTest test body! ' . $this->randomName(32) . ' ' . $this->randomName(32);
-    $this->drupalPost('node/add/page', $edit, 'Save');
+    $this->drupalPost('node/add/page', $edit, t('Save'));
 
     $this->assertWantedRaw(t('!post %title has been created.', array ('!post' => 'Page', '%title' => $edit['title'])), 'Page created');
 

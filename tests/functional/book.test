@@ -126,13 +126,13 @@ class BookModuleTestCase extends DrupalTestCase {
     $edit['book[bid]'] = $book_nid;
     
     if ($parent !== NULL) {
-      $this->drupalPost('node/add/book', $edit, 'Change book (update list of parents)');
+      $this->drupalPost('node/add/book', $edit, t('Change book (update list of parents)'));
       
       $edit['book[plid]'] = $parent;
-      $this->drupalPost(NULL, $edit, 'Save');
+      $this->drupalPost(NULL, $edit, t('Save'));
     }
     else
-      $this->drupalPost('node/add/book', $edit, 'Save');
+      $this->drupalPost('node/add/book', $edit, t('Save'));
     
     // check to make sure the book node was created
     $node = node_load(array('title' => $edit['title']));
