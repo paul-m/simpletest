@@ -2,7 +2,7 @@
 // $Id$
 
 class BlockModuleTestCase extends DrupalTestCase {
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Block functionality'),
       'description' => t('Add, edit and delete custom block. Configure and move a module-defined block.'),

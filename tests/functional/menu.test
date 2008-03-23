@@ -4,9 +4,9 @@
 class MenuModuleTestCase extends  DrupalTestCase {
 
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Menu link creation/deletion'),
       'description' => t('Create two links in the Navigation menu, check their data, and delete them using the menu module UI.'),
@@ -84,9 +84,9 @@ class MenuModuleTestCase extends  DrupalTestCase {
 class MenuModuleCustomMenuTest extends MenuModuleTestCase {
 
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Custom menu creation/deletion'),
       'description' => t('Create a custom menu, add a link to it, and delete it using the menu module UI.'),
@@ -135,9 +135,9 @@ class MenuModuleCustomMenuTest extends MenuModuleTestCase {
 
 class MenuModuleEnable extends DrupalTestCase {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Menu enable'),
       'description' => 'Enable / disable a menu item',
@@ -179,9 +179,9 @@ class MenuModuleEnable extends DrupalTestCase {
 
 class MenuModuleReset extends DrupalTestCase {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Menu reset'),
       'description' => 'Edit and reset a menu item',
@@ -240,9 +240,9 @@ class MenuModuleReset extends DrupalTestCase {
 
 class MenuModuleInvalidPath extends DrupalTestCase {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Menu invalid path'),
       'description' => 'Try to create a menu item with an invalid / inaccesible path.',

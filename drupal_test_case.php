@@ -25,8 +25,8 @@ class DrupalTestCase extends UnitTestCase {
 
   function __construct($label = NULL) {
     if (!$label) {
-      if (method_exists($this, 'get_info')) {
-        $info  = $this->get_info();
+      if (method_exists($this, 'getInfo')) {
+        $info  = $this->getInfo();
         $label = $info['name'];
       }
     }
@@ -430,8 +430,8 @@ class DrupalTestCase extends UnitTestCase {
    */
   function run(&$reporter) {
     $arr = array('class' => get_class($this));
-    if (method_exists($this, 'get_info')) {
-      $arr = array_merge($arr, $this->get_info());
+    if (method_exists($this, 'getInfo')) {
+      $arr = array_merge($arr, $this->getInfo());
     }
     $reporter->test_info_stack[] = $arr;
     parent::run($reporter);

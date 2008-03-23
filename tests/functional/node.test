@@ -3,9 +3,9 @@
 
 class NodeRevisionsTest extends DrupalTestCase {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Node revisions tests'),
       'description' => t('Creates a node of type page and then a user tries various revision actions such as viewing, reverting to, and deleting revisions.'),
@@ -112,9 +112,9 @@ class NodeRevisionsTest extends DrupalTestCase {
 
 class NodeTeaserTest extends DrupalTestCase {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Node teaser tests'),
       'description' => t('Calls node_teaser() with different strings and lengths.'),
@@ -263,7 +263,7 @@ class NodeTeaserTest extends DrupalTestCase {
 }
 
 class StoryEditTest extends DrupalTestCase {
-  function get_info() {
+  function getInfo() {
     return array(
       'name'  => 'Story edit test',
       'description'  => t('We want a working edit for storys, uh?'),
@@ -312,7 +312,7 @@ class StoryEditTest extends DrupalTestCase {
 }
 
 class StoryPreviewTest extends DrupalTestCase {
-  function get_info() {
+  function getInfo() {
     return array(
    'name'  => 'Story preview test',
    'description'  => t('We want a working preview for storys, uh?'),
@@ -345,9 +345,9 @@ class StoryPreviewTest extends DrupalTestCase {
 class PageCreationTest extends  DrupalTestCase {
 
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Page node creation'),
       'description' => t('Create a page node and verify its consistency in the database.'),
@@ -378,9 +378,9 @@ class PageCreationTest extends  DrupalTestCase {
 
 class PageViewTest extends DrupalTestCase {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Unauthorized node view'),
       'description' => t('Creates a node of type page and then an unpermissioned user attempts to edit the node, '

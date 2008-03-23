@@ -44,9 +44,9 @@ class PollTests extends DrupalTestCase {
 class PollCreateTest extends PollTests {
 
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Poll create'), 'description' => 'Adds "more choices", previews and creates a poll.', 'group' => 'Poll module tests');
   }
 
@@ -62,9 +62,9 @@ class PollCreateTest extends PollTests {
 
 class PollVoteTest extends PollTests {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Poll vote'), 'description' => 'Vote on a poll', 'group' => 'Poll module tests');
   }
 

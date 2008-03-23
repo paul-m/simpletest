@@ -4,7 +4,7 @@
 class BookModuleTestCase extends DrupalTestCase {
   protected $book;
 
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Book functionality'),
       'description' => t('Create a book, add pages, and test book interface.'),

@@ -3,9 +3,9 @@
 
 class EnableCoreModuleTest extends DrupalTestCase {
   /**
-  * Implementation of get_info() for information
+  * Implementation of getInfo() for information
   */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Enable core modules'), 'description' => 'Enables all core modules by POST - looks for error messages, confirms table creation, etc.', 'group' => 'Modules');
   }
 
@@ -95,9 +95,9 @@ class EnableCoreModuleTest extends DrupalTestCase {
 
 class EnableModuleWithoutDependencyTest extends DrupalTestCase {
   /**
-  * Implementation of get_info() for information
+  * Implementation of getInfo() for information
   */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Enable module without required dependencies'), 'description' => 'Attempts to enable the forum module without enabling dependencies.', 'group' => 'Modules');
   }
 
@@ -130,9 +130,9 @@ class EnableModuleWithoutDependencyTest extends DrupalTestCase {
 
 class DisableUninstallCoreModuleTest extends DrupalTestCase {
   /**
-  * Implementation of get_info() for information
+  * Implementation of getInfo() for information
   */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Disable/uninstall core modules'), 'description' => 'Disables and uninstalls core modules, ensures that that tables are properly deleted, no error messages are shown, etc.', 'group' => 'Modules');
   }
 

@@ -2,7 +2,7 @@
 // $Id$
 
 class FilterModuleTestCase extends DrupalTestCase {
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Filter administration functionality'),
       'description' => t('Thoroughly test the administrative interface of the filter module.'),

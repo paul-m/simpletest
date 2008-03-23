@@ -5,7 +5,7 @@ define('SEARCH_TYPE', '_test_');
 
 class SearchMatchTest extends DrupalTestCase {
 
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Search engine queries'),
       'description' => t('Indexes content and queries it.'),

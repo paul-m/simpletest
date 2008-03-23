@@ -7,9 +7,9 @@ class CommentModuleTestCase extends DrupalTestCase {
   var $node;
 
   /**
-   * Implementation of get_info().
+   * Implementation of getInfo().
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Comment functionality'),
       'description' => t('Thoroughly test comment administration and user interfaces.'),

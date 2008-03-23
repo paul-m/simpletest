@@ -2,7 +2,7 @@
 // $Id$
 
 class PathModuleTestCase extends DrupalTestCase {
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('Path alias functionality'),
       'description' => t('Add, edit, delete, and change alias and verify its consistency in the database.'),

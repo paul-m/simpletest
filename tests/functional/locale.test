@@ -3,9 +3,9 @@
 
 class LocaleModuleTest extends DrupalTestCase {
   /**
-   * Implementation of get_info() for information
+   * Implementation of getInfo() for information
    */
-  function get_info() {
+  function getInfo() {
     return array(
       'name' => t('String translate'),
       'description' => 'Adds a new locale and translates its name',

@@ -3,9 +3,9 @@
 
 class DrupalForumTestCase extends DrupalTestCase {
   /**
-  * Implementation of get_info() for information
+  * Implementation of getInfo() for information
   */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Forum test functions'), 'description' => 'Helps the forum test cases run by providing common functions. Does not need to be checked.', 'group' => 'Forum');
   }
 
@@ -73,9 +73,9 @@ class DrupalForumTestCase extends DrupalTestCase {
 
 class AddForumTest extends DrupalForumTestCase {
   /**
-  * Implementation of get_info() for information
+  * Implementation of getInfo() for information
   */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Add forum'), 'description' => 'Adds a forum and a forum container and verifies that they have been created.', 'group' => 'Forum');
   }
 
@@ -114,9 +114,9 @@ class AddForumTest extends DrupalForumTestCase {
 
 class EditForumTaxonomyTest extends DrupalForumTestCase {
   /**
-  * Implementation of get_info() for information
+  * Implementation of getInfo() for information
   */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Edit forum taxonomy'), 'description' => 'Edits the forum taxonomy.', 'group' => 'Forum');
   }
 
@@ -163,9 +163,9 @@ class EditForumTaxonomyTest extends DrupalForumTestCase {
 
 class AddTopicToForum extends DrupalForumTestCase {
   /**
-  * Implementation of get_info() for information
+  * Implementation of getInfo() for information
   */
-  function get_info() {
+  function getInfo() {
     return array('name' => t('Add/move topics'), 'description' => 'Tests adding and moving topics within forums.', 'group' => 'Forum');
   }
 

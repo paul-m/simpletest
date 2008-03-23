@@ -79,14 +79,14 @@ class DrupalUnitTests extends DrupalTestSuite {
   }
 
   /**
-   * Adds a class to a groups array specified by the get_info of the group
+   * Adds a class to a groups array specified by the getInfo of the group
    * @param array  $groups Group of categorized tests
    * @param string $class  Name of a class
    */
   function _addClassToGroups(&$groups, $class) {
     $test = &new $class();
-    if (method_exists($test, 'get_info')) {
-      $info = $test->get_info();
+    if (method_exists($test, 'getInfo')) {
+      $info = $test->getInfo();
       $groups[$info['group']][] = $test;
     }
   }
