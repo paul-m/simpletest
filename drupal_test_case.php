@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+// $Id$
 
 /**
  * Test case for typical Drupal tests.
@@ -41,7 +41,6 @@ class DrupalTestCase extends UnitTestCase {
    *   node properties, for example 'body' => 'Hello, world!'.
    */
   function drupalCreateNode($settings = array()) {
-
     // Populate defaults array
     $defaults = array(
       'body'      => $this->randomName(32),
@@ -173,7 +172,7 @@ class DrupalTestCase extends UnitTestCase {
    * @return boolean success
    */
   function drupalModuleEnable($name) {
-  	if (module_exists($name)) {
+    if (module_exists($name)) {
       $this->pass(" [module] $name already enabled");
       return TRUE;
     }
@@ -345,7 +344,7 @@ class DrupalTestCase extends UnitTestCase {
 
     return $user;
   }
-  
+
   /*
   * Logs a user out of the internal browser, then check the login page to confirm logout.
   */
@@ -362,7 +361,6 @@ class DrupalTestCase extends UnitTestCase {
    * tearDown implementation, setting back switched modules etc
    */
   function tearDown() {
-
     if ($this->_modules != $this->_originalModules) {
       $form_state['values'] = array('status' => $this->_originalModules, 'op' => t('Save configuration'));
       drupal_execute('system_modules', $form_state);

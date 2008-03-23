@@ -1,4 +1,4 @@
-; $Id $
+; $Id$
 name = "SimpleTest module"
 description = "Provides simpletest classes to developers as well as some standard tests for Drupal"
 package = Simpletest

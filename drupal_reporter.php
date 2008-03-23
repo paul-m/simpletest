@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 /**
  * Minimal drupal displayer. Accumulates output to $_output.
  * Based on HtmlReporter by Marcus Baker
@@ -18,7 +20,7 @@ class DrupalReporter extends SimpleReporter {
   var $content_count = 0;
   var $weight = -10;
   var $test_stack = array();
-  
+
   function DrupalReporter($character_set = 'ISO-8859-1') {
     $this->SimpleReporter();
     drupal_add_css(drupal_get_path('module', 'simpletest') .'/simpletest.css');
@@ -54,14 +56,14 @@ class DrupalReporter extends SimpleReporter {
    * @access public
    **/
   function paintPass($message) {
-  	parent::paintPass($message);
-  	$this->test_stack[] = array(
-  	  'data' => array($this->_htmlEntities($message), 'OK'),
-  	  'class' => 'simpletest-pass',
-  	);
+    parent::paintPass($message);
+    $this->test_stack[] = array(
+      'data' => array($this->_htmlEntities($message), 'OK'),
+      'class' => 'simpletest-pass',
+    );
     //$this->writeContent($this->_htmlEntities($message). ' OK', NULL, 'simpletest-pass');
   }
-    
+
   /**
    * Paints the test failure with a breadcrumbs
    * trail of the nesting test suites below the
@@ -73,13 +75,13 @@ class DrupalReporter extends SimpleReporter {
   function paintFail($message) {
     parent::paintFail($message);
     $this->test_stack[] = array(
-  	  'data' => array($this->_htmlEntities($message), 'FAIL'),
-  	  'class' => 'simpletest-fail',
-  	);
+      'data' => array($this->_htmlEntities($message), 'FAIL'),
+      'class' => 'simpletest-fail',
+    );
     //$this->writeContent($this->_htmlEntities($message). ' FAIL', NULL, 'simpletest-fail');
   }
-  
-   
+
+
   /**
    * Paints a PHP error or exception.
    * @param string $message        Message is ignored.
@@ -88,9 +90,9 @@ class DrupalReporter extends SimpleReporter {
   function paintError($message) {
     parent::paintError($message);
     $this->test_stack[] = array(
-  	  'data' => array($this->_htmlEntities($message), 'EXCEPTION'),
-  	  'class' => 'simpletest-fail',
-  	);
+      'data' => array($this->_htmlEntities($message), 'EXCEPTION'),
+      'class' => 'simpletest-fail',
+    );
     //$this->writeContent($this->_htmlEntities($message). ' EXCEPTION', NULL, 'simpletest-fail');
   }
 
@@ -118,7 +120,7 @@ class DrupalReporter extends SimpleReporter {
       '#title' => $test_name,
       '#weight' => $this->weight++,
     ), $this->form_depth);
-   
+
     if (! isset($this->_size)) {
       $this->_size = $size;
     }
@@ -127,16 +129,16 @@ class DrupalReporter extends SimpleReporter {
       $info = $this->test_info_stack[$c - 1];
       $this->writeContent('<strong>' . $info['name'] . '</strong>: ' . $info['description'], $this->getParentWeight() );
     }
-    
+
     $this->_test_stack[] = $test_name;
   }
-  
+
   function paintCaseStart($test_name) {
     $this->_progress++;
     $this->paintGroupStart($test_name, 1);
   }
 
-  
+
   /**
    * Paints the end of a group test. Will paint the page
    * footer if the stack of tests has unwound.
@@ -155,7 +157,7 @@ class DrupalReporter extends SimpleReporter {
       $parent_weight = $this->getParentWeight() - 0.5;
       $this->writeContent('<strong>' . $this->getPassCount() . '</strong> passes, <strong>' . $this->getFailCount() . '</strong> fails and <strong>' . $this->getExceptionCount() . '</strong> exceptions.', $parent_weight, $class);
       array_pop($this->form_depth);
-    } 
+    }
     else {
       $collapsed = $ok ? TRUE : FALSE;
       if ($this->getTestCaseProgress()) {
@@ -163,16 +165,16 @@ class DrupalReporter extends SimpleReporter {
         $use_grouping = FALSE;
       }
       else {
-      	$use_grouping = TRUE;
+        $use_grouping = TRUE;
       }
       $write = array('#collapsible' => $use_grouping, '#collapsed' => $collapsed);
       $this->writeToLastField($this->form, $write, $this->form_depth);
-	  $this->writeContent('<strong>' . $this->getPassCount() . '</strong> passes, <strong>' . $this->getFailCount() . '</strong> fails and <strong>' . $this->getExceptionCount() . '</strong> exceptions.', $parent_weight, $class);
-	  if (count($this->test_stack) != 0) {
+    $this->writeContent('<strong>' . $this->getPassCount() . '</strong> passes, <strong>' . $this->getFailCount() . '</strong> fails and <strong>' . $this->getExceptionCount() . '</strong> exceptions.', $parent_weight, $class);
+    if (count($this->test_stack) != 0) {
         $this->writeContent(theme('table', array(), $this->test_stack));
         $this->test_stack = array();
       }
-	  array_pop($this->form_depth);
+    array_pop($this->form_depth);
     }
 
     $this->_progress   += array_pop($this->_progress_stack);
@@ -180,7 +182,7 @@ class DrupalReporter extends SimpleReporter {
     $this->_fails      += array_pop($this->_fails_stack);
     $this->_passes     += array_pop($this->_passes_stack);
   }
-  
+
   function paintCaseEnd($test_name) {
     $this->paintGroupEnd($test_name);
   }
@@ -201,62 +203,62 @@ class DrupalReporter extends SimpleReporter {
   function getOutput() {
     return drupal_get_form('unit_tests', $this);
   }
-  
+
   /**
    * Recursive function that writes attr to the deepest array
    */
   function writeToLastField(&$form, $attr, $keys) {
-  	while(count($keys) != 0) {
-  		$value = array_shift($keys);
-		if (isset($form[$value])) {
-		  if (count($keys) == 0) {
-		  	$form[$value] += $attr;
-		  }
-		  else {
-		    $this->writeToLastField($form[$value], $attr, $keys);
-		  }
-		  $keys = array();
-		}
-		else {
-		  $form[$value] = $attr;
-		}
-			
-  	}
+    while(count($keys) != 0) {
+      $value = array_shift($keys);
+      if (isset($form[$value])) {
+        if (count($keys) == 0) {
+          $form[$value] += $attr;
+        }
+        else {
+          $this->writeToLastField($form[$value], $attr, $keys);
+        }
+        $keys = array();
+      }
+      else {
+        $form[$value] = $attr;
+      }
+    }
   }
-  
+
   /**
    * writes $msg into the deepest fieldset
    * @param $msg content to write
    */
   function writeContent($msg, $weight = NULL, $class = 'simpletest') {
-  	if (!$weight) {
-  	  $weight = $this->weight++;
-  	}
-  	$write['content'.$this->content_count++] = array(
-  	  '#value' => '<div class=' . $class .'>' . $msg . '</div>',
-  	  '#weight' => $weight,
-  	);
-  	$this->writeToLastField($this->form, $write, $this->form_depth);
+    if (!$weight) {
+      $weight = $this->weight++;
+    }
+    $write['content'.$this->content_count++] = array(
+      '#value' => '<div class=' . $class .'>' . $msg . '</div>',
+      '#weight' => $weight,
+    );
+    $this->writeToLastField($this->form, $write, $this->form_depth);
   }
-  
+
   /**
    * Retrieves weight of the currently deepest fieldset
    */
   function getParentWeight($form = NULL, $keys = NULL ) {
-  	if (!isset($form)) {
-  	  $form = $this->form;
-  	}
-  	if (!isset($keys)) {
-  	  $keys = $this->form_depth;
-  	}
-  	if(count($keys) != 0) {
-  	  $value = array_shift($keys);
-  	  return $this->getParentWeight($form[$value], $keys);
-  	}
-  	return $form['#weight'];
+    if (!isset($form)) {
+      $form = $this->form;
+    }
+    if (!isset($keys)) {
+      $keys = $this->form_depth;
+    }
+    if(count($keys) != 0) {
+      $value = array_shift($keys);
+      return $this->getParentWeight($form[$value], $keys);
+    }
+    return $form['#weight'];
   }
 }
+
 function unit_tests($args, $reporter) {
-  return $reporter->form['Drupal Unit Tests'];	
+  return $reporter->form['Drupal Unit Tests'];
 }
 ?>

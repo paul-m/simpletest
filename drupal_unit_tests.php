@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 /**
  * Implementes getTestInstances to allow access to the test objects from outside
  */
@@ -19,8 +21,8 @@ class DrupalTestSuite extends TestSuite {
         $this->_test_cases[$i] = &new $class();
       }
     }
-    return $this->_test_cases; 
-  } 
+    return $this->_test_cases;
+  }
 }
 
 class DrupalUnitTests extends DrupalTestSuite {
@@ -43,8 +45,8 @@ class DrupalUnitTests extends DrupalTestSuite {
           $dir = $module_path .'/tests';
           $tests = file_scan_directory($dir, '\.test$');
           $files = array_merge($files, $tests);
-        }   
-      }   
+        }
+      }
       $files = array_keys($files);
 
       $existing_classes = get_declared_classes();

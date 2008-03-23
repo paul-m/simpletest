@@ -1,5 +1,4 @@
 <?php
-
 // $Id$
 
 /**
@@ -21,7 +20,7 @@ else {
     include_once './includes/bootstrap.inc';
   }
   else {
-  	exit("bootstrap.inc could not be loaded\n");
+    exit("bootstrap.inc could not be loaded\n");
   }
 }
 drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
