@@ -12,13 +12,13 @@ class SearchMatchTest extends DrupalTestCase {
       'group' => t('Search'),
     );
   }
-  
+
   function setUp() {
     parent::setUp();
-    
+
     $this->drupalModuleEnable('search');
   }
-  
+
   function test_matching() {
     $this->_cleanup();
     $this->_setup();
@@ -49,7 +49,7 @@ class SearchMatchTest extends DrupalTestCase {
   }
 
 
-  /** 
+  /**
    * Helper method for generating snippets of content.
    *
    * Generated items to test against:
@@ -163,7 +163,7 @@ class SearchMatchTest extends DrupalTestCase {
     $sorted = $scores;
     sort($sorted);
     $this->assertEqual($scores, array_reverse($sorted), "Query order '$query'");
-    
+
     // Check range.
     $this->assertEqual(!count($scores) || (min($scores) > 0.0 && max($scores) <= 1.0001), TRUE, "Query scoring '$query'");
   }

@@ -1,27 +1,28 @@
 <?php
 // $Id$
+
 class XMLRPCValidator1Test extends DrupalTestCase {
   function get_info() {
     return array('name'  => 'XML-RPC validator1',
                  'description'  => t('See !validator-link. note: simpletest_xmlrpc.module must be enabled', array('!validator-link' => l('the xmlrpc validator1 specification', 'http://www.xmlrpc.com/validator1Docs'))),
                  'group' => 'XML-RPC Tests');
   }
-  
+
   function test_run_all_tests() {
     if (!$this->drupalModuleEnable('simpletest_xmlrpc')) {
-      return FALSE; 
+      return FALSE;
     }
     $xml_url = url(NULL, array('absolute' => TRUE)) . 'xmlrpc.php';
     srand();
     mt_srand();
 
 
-    $array_1 = array(array('curly' => mt_rand(-100,100)), 
-                   array('curly' => mt_rand(-100,100)), 
-                   array('larry' => mt_rand(-100,100)), 
-                   array('larry' => mt_rand(-100,100)), 
-                   array('moe' => mt_rand(-100,100)), 
-                   array('moe' => mt_rand(-100,100)), 
+    $array_1 = array(array('curly' => mt_rand(-100,100)),
+                   array('curly' => mt_rand(-100,100)),
+                   array('larry' => mt_rand(-100,100)),
+                   array('larry' => mt_rand(-100,100)),
+                   array('moe' => mt_rand(-100,100)),
+                   array('moe' => mt_rand(-100,100)),
                    array('larry' => mt_rand(-100,100)));
     shuffle($array_1);
     $l_res_1 = simpletest_xmlrpc_arrayOfStructsTest($array_1);
@@ -40,7 +41,7 @@ class XMLRPCValidator1Test extends DrupalTestCase {
     $r_res_3 = xmlrpc($xml_url, 'validator1.easyStructTest', $struct_3);
     $this->assertIdentical($l_res_3, $r_res_3, 'easy struct test: %s');
 
-    
+
     $struct_4 = array('sub1' => array('bar' => 13),
                     'sub2' => 14,
                     'sub3' => array('foo' => 1, 'baz' => 2),
@@ -62,13 +63,13 @@ class XMLRPCValidator1Test extends DrupalTestCase {
     // See http://drupal.org/node/37766 why this currnetly fails
     $this->assertEqual($l_res_5, $r_res_5, 'many types test: %s');
 
-    
+
     $size = mt_rand(100,200);
     $array_6 = array();
     for ($i = 0; $i < $size; $i++) {
       $array_6[] = $this->randomName(mt_rand(8,12));
     }
-    
+
     $l_res_6 = simpletest_xmlrpc_moderateSizeArrayCheck($array_6);
     $r_res_6 = xmlrpc($xml_url, 'validator1.moderateSizeArrayCheck', $array_6);
     $this->assertIdentical($l_res_6, $r_res_6, 'moderate size array check: %s');
@@ -91,12 +92,12 @@ class XMLRPCValidator1Test extends DrupalTestCase {
     $r_res_7 = xmlrpc($xml_url, 'validator1.nestedStructTest', $struct_7);
     $this->assertIdentical($l_res_7, $r_res_7, 'nested struct test: %s');
 
-    
+
     $int_8 = mt_rand(-100,100);
     $l_res_8 = simpletest_xmlrpc_simpleStructReturnTest($int_8);
     $r_res_8 = xmlrpc($xml_url, 'validator1.simpleStructReturnTest', $int_8);
     $this->assertIdentical($l_res_8, $r_res_8, 'nested struct test: %s');
-    
+
     /* Now test multicall */
     $x = array();
     $x[] = array('validator1.arrayOfStructsTest',     $array_1);
@@ -111,6 +112,6 @@ class XMLRPCValidator1Test extends DrupalTestCase {
     $a_l_res = array($l_res_1, $l_res_2, $l_res_3, $l_res_4, $l_res_5, $l_res_6, $l_res_7, $l_res_8);
     $a_r_res = xmlrpc($xml_url, $x);
     $this->assertEqual($a_l_res, $a_r_res, 'multicall equals result');
-  } 
+  }
 }
 ?>

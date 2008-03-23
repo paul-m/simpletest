@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 class FilterModuleTestCase extends DrupalTestCase {
   function get_info() {
     return array(
@@ -58,7 +60,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     $edit['weights[filter/'. $first_filter .']'] = 2;
     $this->drupalPost('admin/settings/filters/'. $filtered .'/order', $edit, t('Save configuration'));
     $this->assertText(t('The filter ordering has been saved.'), 'Order saved successfully.');
-    
+
     $result = db_query('SELECT * FROM {filters} WHERE format = %d ORDER BY weight ASC', $filtered);
     $filters = array();
     while ($filter = db_fetch_object($result)) {
@@ -160,7 +162,7 @@ class FilterModuleTestCase extends DrupalTestCase {
 
   /**
    * Query the database to get the two basic formats.
-   * 
+   *
    * @return Array Array containing filtered and full filter ids.
    */
   function check_filter_formats() {

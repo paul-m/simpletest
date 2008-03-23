@@ -85,7 +85,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
       $this->assertTrue(array_key_exists($language_code, $languages), 'Language was installed successfully.');
 
       if (array_key_exists($language_code, $languages)) {
-      	$this->assertWantedRaw(t('The language %language has been created and can now be used. More information is available on the <a href="@locale-help">help screen</a>.', array('%language' => $languages[$language_code]->name, '@locale-help' => url('admin/help/locale'))));
+        $this->assertWantedRaw(t('The language %language has been created and can now be used. More information is available on the <a href="@locale-help">help screen</a>.', array('%language' => $languages[$language_code]->name, '@locale-help' => url('admin/help/locale'))));
       }
     }
     else {

@@ -4,7 +4,7 @@
 class ActionsContentTest extends  DrupalTestCase {
   var $_cleanup_roles = array();
   var $_cleanup_users = array();
-  
+
   /**
    * Implementation of get_info() for information
    */
@@ -34,7 +34,7 @@ class ActionsContentTest extends  DrupalTestCase {
     if ($not_clean) {
       return;
     }
-    
+
     // Test 1: Assign an action to a trigger, then pull the trigger, and make sure the actions fire. (Wow, those metaphors work out nicely).
 
     $test_user = $this->drupalCreateUser(array('administer actions', 'create page content'));

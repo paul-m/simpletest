@@ -13,13 +13,13 @@ class DrupalAggregatorTestCase extends DrupalTestCase {
 
   /**
    * Create an aggregator feed (simulate form submission on admin/content/aggregator/add/feed)
-   * 
+   *
    * @return $feed - full feed object if possible
-   */  
+   */
   function createFeed() {
     $edit = $this->getFeedEditArray();
     $this->drupalPost('admin/content/aggregator/add/feed', $edit, t('Save'));
-    $feed = db_fetch_object(db_query("SELECT *  FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $edit['title'], $edit['url'])); 
+    $feed = db_fetch_object(db_query("SELECT *  FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $edit['title'], $edit['url']));
     $this->assertTrue(!empty($feed), 'The feed exists');
     return $feed;
   }
@@ -45,10 +45,10 @@ class DrupalAggregatorTestCase extends DrupalTestCase {
    *
    * @param object &$feed - feed object with valid fid
    */
-  function updateFeedItems(&$feed) {    
+  function updateFeedItems(&$feed) {
     // First, let's ensure we could get to the rss xml
     $this->drupalGet('rss.xml');
-    $this->assertResponse(200, "rss.xml is reachable.");   
+    $this->assertResponse(200, "rss.xml is reachable.");
 
     // our tests are based off of rss.xml, so let's find out how many elements should be related
     $feed_count = db_result(db_query_range(db_rewrite_sql('SELECT COUNT(*) FROM {node} n WHERE n.promote = 1 AND n.status = 1'), 0, variable_get('feed_default_items', 10)));
@@ -84,7 +84,7 @@ class DrupalAggregatorTestCase extends DrupalTestCase {
    */
   function getFeedCategories($feed) {
     // add the categories to the feed so we can use them
-    $result = db_query('SELECT cid FROM {aggregator_category_feed} WHERE fid = %d', $feed->fid);      
+    $result = db_query('SELECT cid FROM {aggregator_category_feed} WHERE fid = %d', $feed->fid);
     while ($category = db_fetch_object($result)) {
       $feed->categories[] = $category->cid;
     }
@@ -114,7 +114,7 @@ class AddFeedTestCase extends DrupalAggregatorTestCase {
     $this->drupalGet('aggregator/sources/'.$feed->fid);
     $this->assertResponse(200);
     $this->assertText($feed->title, 'Page title');
-    $this->deleteFeed($feed);  
+    $this->deleteFeed($feed);
   }
 }
 
@@ -140,7 +140,7 @@ class UpdateFeedTestCase extends DrupalAggregatorTestCase {
     $this->drupalGet('aggregator/sources/'.$feed->fid);
     $this->assertResponse(200);
     $this->assertText($edit['title'], 'Page title');
-    $this->deleteFeed($feed);  
+    $this->deleteFeed($feed);
   }
 }
 
@@ -161,7 +161,7 @@ class RemoveFeedTestCase extends DrupalAggregatorTestCase {
     $this->drupalGet('aggregator/sources/'. $feed->fid);
     $this->assertResponse(404);
     $result = db_result(db_query("SELECT count(*) FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $feed->title, $feed->url));
-    $this->assertFalse($result, 'Feed removed from database');    
+    $this->assertFalse($result, 'Feed removed from database');
   }
 }
 
@@ -233,9 +233,9 @@ class CategorizeFeedItemTestCase extends DrupalAggregatorTestCase {
     $this->getFeedCategories($feed);
 
     // for each category of a feed, ensure feed items have that category, too
-    if (!empty($feed->categories) && !empty($feed->items)) {      
+    if (!empty($feed->categories) && !empty($feed->items)) {
       foreach ($feed->categories as $category) {
-        $items_str = implode(', ', $feed->items);    
+        $items_str = implode(', ', $feed->items);
         $categorized_count = db_result(db_query("SELECT COUNT(*) FROM {aggregator_category_item} WHERE iid IN (" . $items_str . ")"));
         $this->assertEqual($feed->item_count, $categorized_count, "Total items in feed equal to the total categorized feed items in database");
       }

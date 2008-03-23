@@ -16,7 +16,7 @@ class MenuModuleTestCase extends  DrupalTestCase {
 
   function setUp() {
     parent::setUp();
-   
+
     $this->drupalModuleEnable('menu');
   }
 
@@ -249,7 +249,7 @@ class MenuModuleInvalidPath extends DrupalTestCase {
       'group' => 'Menu Module Tests',
     );
   }
-  
+
   function setUp() {
     parent::setUp();
 

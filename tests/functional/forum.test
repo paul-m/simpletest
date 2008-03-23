@@ -22,7 +22,7 @@ class DrupalForumTestCase extends DrupalTestCase {
     // Generate a random name/description
     $title = $this->randomName(10);
     $description = $this->randomName(100);
- 
+
     $edit = array(
       'name' => $title,
       'description' => $description,
@@ -48,7 +48,7 @@ class DrupalForumTestCase extends DrupalTestCase {
     // Generate a random name/description
     $title = $this->randomName(10);
     $description = $this->randomName(100);
- 
+
     $edit = array(
       'name' => $title,
       'description' => $description,
@@ -134,7 +134,7 @@ class EditForumTaxonomyTest extends DrupalForumTestCase {
     // Generate a random name/description
     $title = $this->randomName(10);
     $description = $this->randomName(100);
- 
+
     $edit = array(
       'name' => $title,
       'description' => $description,
@@ -228,7 +228,7 @@ class AddTopicToForum extends DrupalForumTestCase {
     // Generate a random subject/body
     $title = $this->randomName(20);
     $description = $this->randomName(200);
- 
+
     $edit = array(
       'title' => $title,
       'body' => $description
@@ -266,7 +266,7 @@ class AddTopicToForum extends DrupalForumTestCase {
     // Generate a random subject/body
     $title = $this->randomName(20);
     $description = $this->randomName(200);
- 
+
     $edit = array(
       'title' => $title,
       'body' => $description
@@ -323,7 +323,7 @@ class AddTopicToForum extends DrupalForumTestCase {
     // Generate a random subject/body
     $title = $this->randomName(20);
     $description = $this->randomName(200);
- 
+
     $edit = array(
       'title' => $title,
       'body' => $description

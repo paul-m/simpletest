@@ -429,7 +429,7 @@ class UploadPictureTests extends DrupalTestCase {
       variable_set('user_pictures', $old_pic_set);
 
       // DELETING UPLOADED PIC
-      file_delete($pic_path);  
+      file_delete($pic_path);
     }
   }
 }

@@ -12,16 +12,16 @@ class LocaleModuleTest extends DrupalTestCase {
       'group' => 'Locale',
     );
   }
-  
+
   function setUp() {
     parent::setUp();
-    
+
     $this->drupalModuleEnable('locale');
   }
 
   function testlocaleModuleTest() {
     global $base_url;
-    
+
     // User to add and remove language.
     $admin_user = $this->drupalCreateUser(array('administer languages', 'access administration pages'));
     // User to translate and delete string.
