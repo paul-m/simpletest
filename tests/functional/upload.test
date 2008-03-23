@@ -191,7 +191,7 @@ class UploadPictureTests extends DrupalTestCase {
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
         $img_path = realpath("modules/tests/pictureTesting.jpg");
-        $info = image_getInfo($img_path);
+        $info = image_get_info($img_path);
 
         // set new variables;
         $test_size = floor(filesize($img_path) / 1000) + 1;
@@ -247,7 +247,7 @@ class UploadPictureTests extends DrupalTestCase {
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
         $img_path = realpath("modules/tests/pictureTesting.jpg");
-        $info = image_getInfo($img_path);
+        $info = image_get_info($img_path);
         // set new variables;
 
         $test_dim = ($info['width'] + 10) . 'x' . ($info['height'] + 10);
@@ -301,7 +301,7 @@ class UploadPictureTests extends DrupalTestCase {
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
         $img_path = realpath("modules/tests/pictureTesting.jpg");
-        $info = image_getInfo($img_path);
+        $info = image_get_info($img_path);
         // set new variables;
         $test_size = floor(filesize($img_path) / 1000) + 1;
         $test_dim = ($info['width'] - 10) . 'x' . ($info['height'] - 10);
@@ -350,7 +350,7 @@ class UploadPictureTests extends DrupalTestCase {
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
         $img_path = realpath("modules/tests/pictureTesting.jpg");
-        $info = image_getInfo($img_path);
+        $info = image_get_info($img_path);
         // invalid size
         // restore one and set another
         $test_dim = ($info['width'] + 10) . 'x' . ($info['height'] + 10);
@@ -396,7 +396,7 @@ class UploadPictureTests extends DrupalTestCase {
       $old_dim = variable_get('user_picture_dimensions', '85x85');
       $old_size = variable_get('user_picture_file_size', '30');
       $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/pictureTesting.jpg");
-      $info = image_getInfo($img_path);
+      $info = image_get_info($img_path);
 
       // valid size & dimensions
       // restore one and set another
@@ -433,5 +433,3 @@ class UploadPictureTests extends DrupalTestCase {
     }
   }
 }
-
-?>
