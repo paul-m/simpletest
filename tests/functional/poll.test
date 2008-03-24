@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class PollTests extends DrupalTestCase {
+class PollTestCase extends DrupalTestCase {
 
   function pollCreate($standalone = TRUE) {
     $this->assertTrue(TRUE, 'Poll create' . $standalone);
@@ -41,7 +41,7 @@ class PollTests extends DrupalTestCase {
 
 }
 
-class PollCreateTest extends PollTests {
+class PollCreateTestCase extends PollTestCase {
 
   /**
    * Implementation of getInfo() for information
@@ -60,7 +60,7 @@ class PollCreateTest extends PollTests {
   }
 }
 
-class PollVoteTest extends PollTests {
+class PollVoteTestCase extends PollTestCase {
   /**
    * Implementation of getInfo() for information
    */

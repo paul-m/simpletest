@@ -5,7 +5,7 @@
  * Class to test the user registration process,
  * - based on initial version by Kuba Zygmunt -
  */
-class UserRegistrationTest extends DrupalTestCase {
+class UserRegistrationTestCase extends DrupalTestCase {
   function getInfo() {
     return array('name' => t('User registration'), 'description' => t('Registers a user, fails login, resets password, successfully logs in with the one time password, changes password, logs out, successfully logs in with the new password, visits profile page.') , 'group' => 'User tests');
   }
@@ -111,7 +111,7 @@ class UserRegistrationTest extends DrupalTestCase {
 /**
  * This class is based on the original Simpletest Module by Moshe Weitzman
  */
-class UserValidationTest extends DrupalTestCase {
+class UserValidationTestCase extends DrupalTestCase {
   function getInfo() {
     return array('name' => 'Username/email validation', 'description' => 'Verify that username/email validity checks behave as designed.' , 'group' => 'User tests');
   }
@@ -156,7 +156,7 @@ class UserValidationTest extends DrupalTestCase {
   }
 }
 
-class UserAccessTest extends DrupalTestCase {
+class UserAccessTestCase extends DrupalTestCase {
   var $_cleanup_masks = array();
 
   function getInfo() {
@@ -225,7 +225,7 @@ class UserAccessTest extends DrupalTestCase {
   }
 }
 
-class UserDeleteTest extends DrupalTestCase {
+class UserDeleteTestCase extends DrupalTestCase {
   function getInfo() {
     return array('name' => t('User delete'), 'description' => t('Registers a user and deletes it.') , 'group' => 'User tests');
   }

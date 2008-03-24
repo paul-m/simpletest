@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class MenuModuleTestCase extends  DrupalTestCase {
+class MenuTestCase extends  DrupalTestCase {
 
   /**
    * Implementation of getInfo() for information
@@ -81,7 +81,7 @@ class MenuModuleTestCase extends  DrupalTestCase {
   }
 }
 
-class MenuModuleCustomMenuTest extends MenuModuleTestCase {
+class CustomMenuTestCase extends MenuTestCase {
 
   /**
    * Implementation of getInfo() for information
@@ -133,7 +133,7 @@ class MenuModuleCustomMenuTest extends MenuModuleTestCase {
 }
 
 
-class MenuModuleEnable extends DrupalTestCase {
+class MenuEnableTestCase extends DrupalTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -177,7 +177,7 @@ class MenuModuleEnable extends DrupalTestCase {
 }
 
 
-class MenuModuleReset extends DrupalTestCase {
+class MenuResetTestCase extends DrupalTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -238,7 +238,7 @@ class MenuModuleReset extends DrupalTestCase {
 }
 
 
-class MenuModuleInvalidPath extends DrupalTestCase {
+class MenuInvalidPathTestCase extends DrupalTestCase {
   /**
    * Implementation of getInfo() for information
    */

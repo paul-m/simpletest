@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class DrupalForumTestCase extends DrupalTestCase {
+class ForumTestCase extends DrupalTestCase {
   /**
   * Implementation of getInfo() for information
   */
@@ -71,7 +71,7 @@ class DrupalForumTestCase extends DrupalTestCase {
   }
 }
 
-class AddForumTest extends DrupalForumTestCase {
+class AddForumTestCase extends ForumTestCase {
   /**
   * Implementation of getInfo() for information
   */
@@ -112,7 +112,7 @@ class AddForumTest extends DrupalForumTestCase {
   }
 }
 
-class EditForumTaxonomyTest extends DrupalForumTestCase {
+class EditForumTaxonomyTestCase extends ForumTestCase {
   /**
   * Implementation of getInfo() for information
   */
@@ -161,7 +161,7 @@ class EditForumTaxonomyTest extends DrupalForumTestCase {
 }
 
 
-class AddTopicToForum extends DrupalForumTestCase {
+class AddTopicToForumTestCase extends ForumTestCase {
   /**
   * Implementation of getInfo() for information
   */

@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class FilterModuleTestCase extends DrupalTestCase {
+class FilterTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
       'name' => t('Filter administration functionality'),

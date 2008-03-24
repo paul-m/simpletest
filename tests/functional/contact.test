@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class ContactModuleTestCase extends DrupalTestCase {
+class ContactTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
       'name' => t('Contact functionality'),

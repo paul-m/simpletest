@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class NodeRevisionsTest extends DrupalTestCase {
+class NodeRevisionsTestCase extends DrupalTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -110,7 +110,7 @@ class NodeRevisionsTest extends DrupalTestCase {
 }
 
 
-class NodeTeaserTest extends DrupalTestCase {
+class NodeTeaserTestCase extends DrupalTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -262,7 +262,7 @@ class NodeTeaserTest extends DrupalTestCase {
   }
 }
 
-class StoryEditTest extends DrupalTestCase {
+class StoryEditTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
       'name'  => 'Story edit test',
@@ -311,7 +311,7 @@ class StoryEditTest extends DrupalTestCase {
 
 }
 
-class StoryPreviewTest extends DrupalTestCase {
+class StoryPreviewTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
    'name'  => 'Story preview test',
@@ -342,7 +342,7 @@ class StoryPreviewTest extends DrupalTestCase {
 
 }
 
-class PageCreationTest extends  DrupalTestCase {
+class PageCreationTestCase extends  DrupalTestCase {
 
   /**
    * Implementation of getInfo() for information
@@ -376,7 +376,7 @@ class PageCreationTest extends  DrupalTestCase {
   }
 }
 
-class PageViewTest extends DrupalTestCase {
+class PageViewTestCase extends DrupalTestCase {
   /**
    * Implementation of getInfo() for information
    */

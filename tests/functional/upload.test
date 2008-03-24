@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class upload_module_test_case extends DrupalTestCase {
+class UploadTestCase extends DrupalTestCase {
   /**
    * Implementation of getInfo().
    */
@@ -117,7 +117,7 @@ class upload_module_test_case extends DrupalTestCase {
   }
 }
 
-class UploadPictureTests extends DrupalTestCase {
+class UploadPictureTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
       'name' => 'Upload user picture',

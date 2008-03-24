@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class DrupalAggregatorTestCase extends DrupalTestCase {
+class AggregatorTestCase extends DrupalTestCase {
   private static $prefix = 'simpletest_aggregator_';
 
   function setUp() {
@@ -96,7 +96,7 @@ class DrupalAggregatorTestCase extends DrupalTestCase {
   }
 }
 
-class AddFeedTestCase extends DrupalAggregatorTestCase {
+class AddFeedTestCase extends AggregatorTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -118,7 +118,7 @@ class AddFeedTestCase extends DrupalAggregatorTestCase {
   }
 }
 
-class UpdateFeedTestCase extends DrupalAggregatorTestCase {
+class UpdateFeedTestCase extends AggregatorTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -144,7 +144,7 @@ class UpdateFeedTestCase extends DrupalAggregatorTestCase {
   }
 }
 
-class RemoveFeedTestCase extends DrupalAggregatorTestCase {
+class RemoveFeedTestCase extends AggregatorTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -165,7 +165,7 @@ class RemoveFeedTestCase extends DrupalAggregatorTestCase {
   }
 }
 
-class UpdateFeedItemTestCase extends DrupalAggregatorTestCase {
+class UpdateFeedItemTestCase extends AggregatorTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -189,7 +189,7 @@ class UpdateFeedItemTestCase extends DrupalAggregatorTestCase {
   }
 }
 
-class RemoveFeedItemTestCase extends DrupalAggregatorTestCase {
+class RemoveFeedItemTestCase extends AggregatorTestCase {
   /**
    * Implementation of getInfo() for information
    */
@@ -212,7 +212,7 @@ class RemoveFeedItemTestCase extends DrupalAggregatorTestCase {
   }
 }
 
-class CategorizeFeedItemTestCase extends DrupalAggregatorTestCase {
+class CategorizeFeedItemTestCase extends AggregatorTestCase {
   /**
    * Implementation of getInfo() for information
    */

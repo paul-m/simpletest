@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class CommentModuleTestCase extends DrupalTestCase {
+class CommentTestCase extends DrupalTestCase {
   var $admin_user;
   var $web_user;
   var $node;

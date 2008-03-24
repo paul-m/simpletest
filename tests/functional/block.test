@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class BlockModuleTestCase extends DrupalTestCase {
+class BlockTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
       'name' => t('Block functionality'),

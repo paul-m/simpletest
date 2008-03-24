@@ -3,7 +3,7 @@
 
 define('SEARCH_TYPE', '_test_');
 
-class SearchMatchTest extends DrupalTestCase {
+class SearchMatchTestCase extends DrupalTestCase {
 
   function getInfo() {
     return array(

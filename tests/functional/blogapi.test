@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class BlogAPIModuleTestCase extends DrupalTestCase {
+class BlogAPITestCase extends DrupalTestCase {
   function getInfo() {
     return array(
       'name' => t('BlogAPI functionality'),

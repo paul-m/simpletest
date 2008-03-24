@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class EnableCoreModuleTest extends DrupalTestCase {
+class EnableCoreModuleTestCase extends DrupalTestCase {
   /**
   * Implementation of getInfo() for information
   */
@@ -93,7 +93,7 @@ class EnableCoreModuleTest extends DrupalTestCase {
   }
 }
 
-class EnableModuleWithoutDependencyTest extends DrupalTestCase {
+class EnableModuleWithoutDependencyTestCase extends DrupalTestCase {
   /**
   * Implementation of getInfo() for information
   */
@@ -128,7 +128,7 @@ class EnableModuleWithoutDependencyTest extends DrupalTestCase {
   }
 }
 
-class DisableUninstallCoreModuleTest extends DrupalTestCase {
+class DisableUninstallCoreModuleTestCase extends DrupalTestCase {
   /**
   * Implementation of getInfo() for information
   */

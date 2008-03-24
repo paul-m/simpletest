@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class BookModuleTestCase extends DrupalTestCase {
+class BookTestCase extends DrupalTestCase {
   protected $book;
 
   function getInfo() {
