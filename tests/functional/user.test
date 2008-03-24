@@ -166,7 +166,7 @@ class UserAccessTest extends DrupalTestCase {
            );
   }
 
-  function _addMask($mask, $type, $status = 0) {
+  function addMask($mask, $type, $status = 0) {
     db_query("INSERT INTO {access} (mask, type, status) VALUES ('%s', '%s', %d)", $mask, $type, $status);
     $aid = db_last_insert_id('access', 'aid');
     $str_status = ($status == 0) ? 'deny' : 'allow';
@@ -185,8 +185,8 @@ class UserAccessTest extends DrupalTestCase {
     /* To avoid conflicts with non allowed account creations */
     $this->drupalVariableSet('user_register', 1);
 
-    $this->_addMask('simpletest_block%', 'user');
-    $this->_addMask('simpletest_block_allow%', 'user', 1);
+    $this->addMask('simpletest_block%', 'user');
+    $this->addMask('simpletest_block_allow%', 'user', 1);
 
     /* first try blocked user */
     $name = $this->randomName(2, 'simpletest_block_');

@@ -18,14 +18,14 @@ class BlogAPIModuleTestCase extends DrupalTestCase {
     $this->drupalModuleEnable('taxonomy');
   }
 
-  function test_blog_API() {
+  function testBlogAPI() {
     // Create admin user and taxononmy for later use.
     $admin_user = $this->drupalCreateUser(array('administer taxonomy'));
     $this->drupalLogin($admin_user);
 
-    $vid = $this->add_vocabulary('simpletest_vocab');
+    $vid = $this->addVocabulary('simpletest_vocab');
 
-    $term = $this->add_term($vid, 'simpletest_term1');
+    $term = $this->addTerm($vid, 'simpletest_term1');
 
     $this->drupalGet('logout');
 
@@ -118,7 +118,7 @@ class BlogAPIModuleTestCase extends DrupalTestCase {
    *
    * @param string $vocab Vocabulary name.
    */
-  function add_vocabulary($vocab) {
+  function addVocabulary($vocab) {
     $edit = array();
     $edit['name'] = $vocab;
     $edit['nodes[blog]'] = TRUE;
@@ -144,7 +144,7 @@ class BlogAPIModuleTestCase extends DrupalTestCase {
    * @param integer $vid Vocabulary id.
    * @param string $term Term name.
    */
-  function add_term($vid, $term) {
+  function addTerm($vid, $term) {
     $edit = array();
     $edit['name'] = $term;
     $this->drupalPost('admin/content/taxonomy/'. $vid .'/add/term', $edit, t('Save'));

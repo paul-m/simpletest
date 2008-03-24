@@ -19,10 +19,10 @@ class SearchMatchTest extends DrupalTestCase {
     $this->drupalModuleEnable('search');
   }
 
-  function test_matching() {
+  function testMatching() {
     $this->_cleanup();
     $this->_setup();
-    $this->_test_queries();
+    $this->_testQueries();
     $this->_cleanup();
   }
 
@@ -33,7 +33,7 @@ class SearchMatchTest extends DrupalTestCase {
     $this->drupalVariableSet('minimum_word_size', 3);
 
     for ($i = 1; $i <= 7; ++$i) {
-      search_index($i, SEARCH_TYPE, $this->_get_text($i));
+      search_index($i, SEARCH_TYPE, $this->getText($i));
     }
     search_update_totals();
   }
@@ -61,14 +61,14 @@ class SearchMatchTest extends DrupalTestCase {
    *   6  enim am minim veniam es cillum
    *   7  am minim veniam es cillum dolore eu
    */
-  function _get_text($n) {
+  function getText($n) {
     $words = explode(' ', "Ipsum dolore sit am. Ut enim am minim veniam. Es cillum dolore eu.");
     return implode(' ', array_slice($words, $n - 1, $n));
   }
 
   /**
    */
-  function _test_queries() {
+  function _testQueries() {
     /*
       Note: OR queries that include short words in OR groups are only accepted
       if the ORed terms are ANDed with at least one long word in the rest of the query.
@@ -122,9 +122,9 @@ class SearchMatchTest extends DrupalTestCase {
     );
     foreach ($queries as $query => $results) {
       $set = do_search($query, SEARCH_TYPE);
-      $this->_test_query_matching($query, $set, $results);
-      $this->_test_query_scores($query, $set, $results);
-      $this->_cleanup_query();
+      $this->_testQueryMatching($query, $set, $results);
+      $this->_testQueryScores($query, $set, $results);
+      $this->cleanupQuery();
     }
   }
 
@@ -133,7 +133,7 @@ class SearchMatchTest extends DrupalTestCase {
    *
    * Verify if a query produces the correct results.
    */
-  function _test_query_matching($query, $set, $results) {
+  function _testQueryMatching($query, $set, $results) {
     // Get result IDs.
     $found = array();
     foreach ($set as $item) {
@@ -151,13 +151,13 @@ class SearchMatchTest extends DrupalTestCase {
    *
    * Verify if a query produces normalized, monotonous scores.
    */
-  function _test_query_scores($query, $set, $results) {
+  function _testQueryScores($query, $set, $results) {
     // Get result scores.
     $scores = array();
     foreach ($set as $item) {
       $scores[] = $item->score;
     }
-    $this->_cleanup_query();
+    $this->cleanupQuery();
 
     // Check order.
     $sorted = $scores;
@@ -174,7 +174,7 @@ class SearchMatchTest extends DrupalTestCase {
    *
    * (Drupal 5.0 and below)
    */
-  function _cleanup_query() {
+  function cleanupQuery() {
     db_query('DROP TABLE IF EXISTS temp_search_sids');
     db_query('DROP TABLE IF EXISTS temp_search_results');
   }

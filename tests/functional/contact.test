@@ -22,7 +22,7 @@ class ContactModuleTestCase extends DrupalTestCase {
   /**
    * Test configuration options and site-wide contact form.
    */
-  function test_site_wide_contact() {
+  function testSiteWideContact() {
     // Create and login administative user.
     $admin_user = $this->drupalCreateUser(array('administer site-wide contact form', 'administer permissions'));
     $this->drupalLogin($admin_user);
@@ -35,35 +35,35 @@ class ContactModuleTestCase extends DrupalTestCase {
     $this->drupalPost('admin/build/contact/settings', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
 
-    $this->reload_variables();
+    $this->reloadVariables();
 
     // Delete old categories to ensure that new categories are used.
-    $this->delete_categories();
+    $this->deleteCategories();
 
     // Add categories.
     // Test invalid recipients.
     $invalid_recipients = array('invalid', 'invalid@', 'invalid@site', 'invalid@site.', '@site.', '@site.com');
     foreach ($invalid_recipients as $invalid_recipient) {
-      $this->add_category($this->randomName(16), $invalid_recipient, '', FALSE);
+      $this->addCategory($this->randomName(16), $invalid_recipient, '', FALSE);
       $this->assertWantedRaw(t('%recipient is an invalid e-mail address.', array('%recipient' => $invalid_recipient)), 'Caught invalid recipient ('. $invalid_recipient .').');
     }
 
     // Create valid categories.
     $recipients = array('simpletest@test.com', 'simpletest2@test.com', 'simpletest3@test.com');
-    $this->add_category($category = $this->randomName(16), implode(',', array($recipients[0])), '', TRUE);
+    $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0])), '', TRUE);
     $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), 'Category successfully added.');
 
-    $this->add_category($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1])), '', FALSE);
+    $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1])), '', FALSE);
     $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), 'Category successfully added.');
 
-    $this->add_category($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1], $recipients[2])), '', FALSE);
+    $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1], $recipients[2])), '', FALSE);
     $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), 'Category successfully added.');
 
     // Clear food table in preparation for flood test and allow other checks to complete.
     $this->assertTrue(db_query('DELETE FROM {flood}'), 'Flood table emptied.');
 
     // Check to see that anonymous user cannot see contact page without permission.
-    $this->set_permission('anonymous user', array('access site-wide contact form' => FALSE));
+    $this->setPermission('anonymous user', array('access site-wide contact form' => FALSE));
     $this->drupalGet('logout');
 
     $this->drupalGet('contact');
@@ -71,7 +71,7 @@ class ContactModuleTestCase extends DrupalTestCase {
 
     // Give anonymous user permission and see that page is viewable.
     $this->drupalLogin($admin_user);
-    $this->set_permission('anonymous user', array('access site-wide contact form' => TRUE));
+    $this->setPermission('anonymous user', array('access site-wide contact form' => TRUE));
     $this->drupalGet('logout');
 
     $this->drupalGet('contact');
@@ -81,25 +81,25 @@ class ContactModuleTestCase extends DrupalTestCase {
     $this->assertText($edit['contact_form_information'], 'Contact information displayed.');
 
     // Submit contact form with invalid values.
-    $categories = $this->get_categories();
-    $this->submit_contact('', $recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
+    $categories = $this->getCategories();
+    $this->submitContact('', $recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
     $this->assertText(t('Your name field is required.'), 'Name required.');
 
-    $this->submit_contact($this->randomName(16), '', $this->randomName(16), $categories[0], $this->randomName(64));
+    $this->submitContact($this->randomName(16), '', $this->randomName(16), $categories[0], $this->randomName(64));
     $this->assertText(t('Your e-mail address field is required.'), 'E-mail required.');
 
-    $this->submit_contact($this->randomName(16), $invalid_recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
+    $this->submitContact($this->randomName(16), $invalid_recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
     $this->assertText(t('You must enter a valid e-mail address.'), 'Valid e-mail required.');
 
-    $this->submit_contact($this->randomName(16), $recipients[0], '', $categories[0], $this->randomName(64));
+    $this->submitContact($this->randomName(16), $recipients[0], '', $categories[0], $this->randomName(64));
     $this->assertText(t('Subject field is required.'), 'Subject required.');
 
-    $this->submit_contact($this->randomName(16), $recipients[0], $this->randomName(16), $categories[0], '');
+    $this->submitContact($this->randomName(16), $recipients[0], $this->randomName(16), $categories[0], '');
     $this->assertText(t('Message field is required.'), 'Message required.');
 
     // Submit contact form with correct values and check flood interval.
     for ($i = 0; $i < $edit['contact_hourly_threshold']; $i++) {
-      $this->submit_contact($this->randomName(16), $recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
+      $this->submitContact($this->randomName(16), $recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
       $this->assertText(t('Your message has been sent.'), 'Message sent.');
     }
     // Submit contact form one over limit.
@@ -108,25 +108,25 @@ class ContactModuleTestCase extends DrupalTestCase {
 
     // Delete created categories.
     $this->drupalLogin($admin_user);
-    $this->delete_categories();
+    $this->deleteCategories();
   }
 
   /**
    * Test personal contact form.
    */
-  function atest_personal_contact() {
+  function testPersonalContact() {
     $admin_user = $this->drupalCreateUser(array('administer site-wide contact form'));
     $this->drupalLogin($admin_user);
 
     // Enable the personal contact form.
     $edit = array();
     $edit['contact_default_status'] = TRUE;
-    $this->drupalPost('admin/build/contact/settings', $edit, it('Save configuration'));
+    $this->drupalPost('admin/build/contact/settings', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
 
     // Reload variables.
     $this->drupalGet('logout');
-    $this->reload_variables();
+    $this->reloadVariables();
 
     // Create web users and attempt to use personal contact forms with default set to true.
     $web_user1 = $this->drupalCreateUser(array());
@@ -155,7 +155,7 @@ class ContactModuleTestCase extends DrupalTestCase {
 
     // Reload variables.
     $this->drupalGet('logout');
-    $this->reload_variables();
+    $this->reloadVariables();
 
     // Create web users and attempt to use personal contact forms with default set to false.
     $web_user3 = $this->drupalCreateUser(array());
@@ -175,7 +175,7 @@ class ContactModuleTestCase extends DrupalTestCase {
    * @param string $reply Auto-reply text.
    * @param boolean $selected Defautly selected.
    */
-  function add_category($category, $recipients, $reply, $selected) {
+  function addCategory($category, $recipients, $reply, $selected) {
     $edit = array();
     $edit['category'] = $category;
     $edit['recipients'] = $recipients;
@@ -193,7 +193,7 @@ class ContactModuleTestCase extends DrupalTestCase {
    * @param integer $cid Category id.
    * @param string $message Message.
    */
-  function submit_contact($name, $mail, $subject, $cid, $message) {
+  function submitContact($name, $mail, $subject, $cid, $message) {
     $edit = array();
     $edit['name'] = $name;
     $edit['mail'] = $mail;
@@ -206,8 +206,8 @@ class ContactModuleTestCase extends DrupalTestCase {
   /**
    * Delete all categories.
    */
-  function delete_categories() {
-    $categories = $this->get_categories();
+  function deleteCategories() {
+    $categories = $this->getCategories();
     foreach ($categories as $category) {
       $category_name = db_result(db_query('SELECT category FROM {contact} WHERE cid = %d', array($category)));
       $this->drupalPost('admin/build/contact/delete/'. $category, array(), t('Delete'));
@@ -220,7 +220,7 @@ class ContactModuleTestCase extends DrupalTestCase {
    *
    * @return array Category ids.
    */
-  function get_categories() {
+  function getCategories() {
     $result = db_query('SELECT cid FROM {contact}');
     $categories = array();
     while ($category = db_result($result)) {
@@ -235,7 +235,7 @@ class ContactModuleTestCase extends DrupalTestCase {
    * @param string $role User role to set permissions for.
    * @param array $permissions Key-value array of permissions to set.
    */
-  function set_permission($role, $permissions) {
+  function setPermission($role, $permissions) {
     // Get role id (rid) for specified role.
     $rid = db_result(db_query("SELECT rid FROM {role} WHERE name = '%s'", array($role)));
     if ($rid === FALSE) {
@@ -255,7 +255,7 @@ class ContactModuleTestCase extends DrupalTestCase {
   /**
    * Reload variables table.
    */
-  function reload_variables() {
+  function reloadVariables() {
     global $conf;
 
     cache_clear_all('variables', 'cache');

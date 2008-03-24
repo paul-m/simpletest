@@ -20,7 +20,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $this->drupalModuleEnable('translation');
   }
 
-  function test_content_translation() {
+  function testContentTranslation() {
     // Setup users.
     $admin_user = $this->drupalCreateUser(array('administer languages', 'administer content types', 'access administration pages'));
     $translator = $this->drupalCreateUser(array('create story content', 'edit own story content', 'translate content'));
@@ -28,8 +28,8 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $this->drupalLogin($admin_user);
 
     // Add languages.
-    $this->add_language('en');
-    $this->add_language('es');
+    $this->addLanguage('en');
+    $this->addLanguage('es');
 
     // Set story content type to use multilingual support with translation.
     $this->drupalPost('admin/content/node-type/story', array('language_content_type' => "2"), t('Save content type'));
@@ -40,11 +40,11 @@ class TranslationModuleTestCase extends DrupalTestCase {
 
     // Create story in English.
     $node_title = 'Test Translation '. $this->randomName();
-    $node = $this->create_story($node_title, 'Node body.', 'en');
+    $node = $this->createStory($node_title, 'Node body.', 'en');
 
     // Submit translation in Spanish.
     $node_trans_title = 'Test Traduccion '. $this->randomName();
-    $node_trans = $this->create_translation($node->nid, $node_trans_title, 'Nodo cuerpo.', 'es');
+    $node_trans = $this->createTranslation($node->nid, $node_trans_title, 'Nodo cuerpo.', 'es');
 
     // Update origninal and mark translation as outdated.
     $edit = array();
@@ -71,7 +71,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
    *
    * @param string $language_code The langauge code the check.
    */
-  function add_language($language_code) {
+  function addLanguage($language_code) {
     // Check to make sure that language has not already been installed.
     $this->drupalGet('admin/settings/language');
 
@@ -104,7 +104,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
    * @param string $body Body of story in specified language.
    * @param string $language Langauge code.
    */
-  function create_story($title, $body, $language) {
+  function createStory($title, $body, $language) {
     $this->drupalVariableSet('node_options_page', array('status', 'promote'));
 
     $edit = array();
@@ -130,7 +130,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
    * @param string $body Body of story in specified language.
    * @param string $language Langauge code.
    */
-  function create_translation($nid, $title, $body, $language) {
+  function createTranslation($nid, $title, $body, $language) {
     $this->drupalGet('node/add/story', array('query' => array('translation' => $nid, 'language' => $language)));
 
     $edit = array();

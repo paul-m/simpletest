@@ -18,7 +18,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     parent::tearDown();
   }
 
-  function test_filter() {
+  function testFilter() {
     $version = VERSION;
     $version_five =  ($version[0] == 5);
     $version_seven = ($version[0] == 7);
@@ -33,7 +33,7 @@ class FilterModuleTestCase extends DrupalTestCase {
 
     $this->drupalLogin($admin_user);
 
-    list($filtered, $full) = $this->check_filter_formats();
+    list($filtered, $full) = $this->checkFilterFormats();
 
     // Change default filter.
     $edit = array();
@@ -79,7 +79,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     $this->drupalPost('admin/settings/filters/add', $edit, t('Save configuration'));
     $this->assertWantedRaw(t('Added input format %format.', array('%format' => $edit['name'])), 'New filter created.');
 
-    $format = $this->get_filter($edit['name']);
+    $format = $this->getFilter($edit['name']);
     $this->assertNotNull($format, 'Format found in database.');
 
     if ($format !== NULL) {
@@ -87,9 +87,9 @@ class FilterModuleTestCase extends DrupalTestCase {
         $this->drupalGet('admin/settings/filters/'. $format->format);
       }
 
-      $this->assert_checkbox('roles\[2\]', 'Role found.');
-      $this->assert_checkbox('filters\[filter\/'. $second_filter .'\]', 'Line break filter found.');
-      $this->assert_checkbox('filters\[filter\/'. $first_filter .'\]', 'Url filter found.');
+      $this->assertCheckbox('roles\[2\]', 'Role found.');
+      $this->assertCheckbox('filters\[filter\/'. $second_filter .'\]', 'Line break filter found.');
+      $this->assertCheckbox('filters\[filter\/'. $first_filter .'\]', 'Url filter found.');
 
       // Delete new filter.
       $this->drupalPost('admin/settings/filters/delete/'. $format->format, array(), t('Delete'));
@@ -115,7 +115,7 @@ class FilterModuleTestCase extends DrupalTestCase {
     $this->drupalLogin($web_user);
 
     $this->drupalGet('node/add/page');
-    $this->assert_format($full, 'Full HTML filter accessible.');
+    $this->assertFormat($full, 'Full HTML filter accessible.');
 
     // Use filtered HTML and see if it removes tags that arn't allowed.
     $body = $this->randomName();
@@ -165,7 +165,7 @@ class FilterModuleTestCase extends DrupalTestCase {
    *
    * @return Array Array containing filtered and full filter ids.
    */
-  function check_filter_formats() {
+  function checkFilterFormats() {
     $result = db_query('SELECT format, name FROM {filter_formats}');
 
     $filtered = -1;
@@ -185,21 +185,21 @@ class FilterModuleTestCase extends DrupalTestCase {
   /**
    * Assert checkbox with specified name is checked on the page.
    */
-  function assert_checkbox($name, $message) {
+  function assertCheckbox($name, $message) {
     $this->assertWantedPattern('/name="'. $name .'"(.*?)checked="checked"/', $this->drupalGetContent(), $message);
   }
 
   /**
    * Assert format with specified id is on the page.
    */
-  function assert_format($id, $message) {
+  function assertFormat($id, $message) {
     $this->assertWantedPattern('/name="format"(.*?)value="'. $id .'"/', $this->drupalGetContent(), $message);
   }
 
   /**
    * Get filter by name.
    */
-  function get_filter($name) {
+  function getFilter($name) {
     return db_fetch_object(db_query("SELECT * FROM {filter_formats} WHERE name = '%s'", $name));
   }
 }
