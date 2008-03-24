@@ -559,6 +559,7 @@ class DrupalTestCase extends UnitTestCase {
    *   nonexistent fields are not posted.
    */
   function drupalPost($path, $edit, $submit, $tamper = FALSE) {
+    $submit_matches = FALSE;
     if (isset($path)) {
       $html = $this->drupalGet($path);
     }
