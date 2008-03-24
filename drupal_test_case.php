@@ -357,10 +357,40 @@ class DrupalTestCase extends UnitTestCase {
       $this->assertField("pass");
   }
 
+  function setUp() {
+    global $db_prefix, $simpletest_ua_handling;
+    if ($simpletest_ua_handling) {
+      $this->db_prefix_original = $db_prefix;
+      $db_prefix = 'simpletest'. mt_rand(1000, 1000000);
+      include_once './includes/install.inc';
+      drupal_install_system();
+      $module_list = drupal_verify_profile('default', 'en');
+      drupal_install_modules($module_list);
+      $task = 'profile';
+      default_profile_tasks($task, '');
+      menu_rebuild();
+      actions_synchronize();
+      _drupal_flush_css_js();
+      variable_set('install_profile', 'default');
+      variable_set('install_task', 'profile-finished');
+    }
+    parent::setUp();
+  }
+
   /**
    * tearDown implementation, setting back switched modules etc
    */
   function tearDown() {
+    global $db_prefix;
+    if (preg_match('/simpletest\d+/', $db_prefix)) {
+      $schema = drupal_get_schema(NULL, TRUE);
+      $ret = array();
+      foreach ($schema as $name => $table) {
+        db_drop_table($ret, $name);
+      }
+      $db_prefix = $this->db_prefix_original;
+      return;
+    }
     if ($this->_modules != $this->_originalModules) {
       $form_state['values'] = array('status' => $this->_originalModules, 'op' => t('Save configuration'));
       drupal_execute('system_modules', $form_state);
@@ -446,7 +476,7 @@ class DrupalTestCase extends UnitTestCase {
    * Also, see the description of $curl_options among the properties.
    */
   protected function curlConnect() {
-    global $base_url;
+    global $base_url, $db_prefix, $simpletest_ua_key;
     if (!isset($this->ch)) {
       $this->ch = curl_init();
       $curl_options = $this->curl_options + array(
@@ -455,6 +485,9 @@ class DrupalTestCase extends UnitTestCase {
         CURLOPT_FOLLOWLOCATION => TRUE,
         CURLOPT_RETURNTRANSFER => TRUE,
       );
+      if (preg_match('/simpletest\d+/', $db_prefix)) {
+        $curl_options[CURLOPT_USERAGENT] = $db_prefix .','. $simpletest_ua_key;
+      }
       if (!isset($curl_options[CURLOPT_USERPWD]) && ($auth = variable_get('simpletest_httpauth_username', ''))) {
         if ($pass = variable_get('simpletest_httpauth_pass', '')) {
           $auth .= ':'. $pass;
