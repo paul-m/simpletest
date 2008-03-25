@@ -361,6 +361,7 @@ class DrupalTestCase extends UnitTestCase {
     global $db_prefix, $simpletest_ua_handling;
     if ($simpletest_ua_handling) {
       $this->db_prefix_original = $db_prefix;
+      $clean_url_original = variable_get('clean_url', 0);
       $db_prefix = 'simpletest'. mt_rand(1000, 1000000);
       include_once './includes/install.inc';
       drupal_install_system();
@@ -373,6 +374,7 @@ class DrupalTestCase extends UnitTestCase {
       _drupal_flush_css_js();
       variable_set('install_profile', 'default');
       variable_set('install_task', 'profile-finished');
+      variable_set('clean_url', $clean_url_original);
     }
     parent::setUp();
   }
