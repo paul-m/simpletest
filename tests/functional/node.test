@@ -262,19 +262,19 @@ class NodeTeaserTestCase extends DrupalTestCase {
   }
 }
 
-class StoryEditTestCase extends DrupalTestCase {
+class PageEditTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
-      'name'  => 'Story edit test',
-      'description'  => t('We want a working edit for storys, uh?'),
+      'name'  => 'Page edit test',
+      'description'  => t('We want a working edit for pages, uh?'),
       'group' => 'Node Tests');
   }
-  function testStoryEdit() {
+  function testPageEdit() {
 
     /* Prepare settings */
-    $this->drupalVariableSet('node_options_story', array('status', 'promote'));
+    $this->drupalVariableSet('node_options_page', array('status', 'promote'));
     /* Prepare a user to do the stuff */
-    $web_user = $this->drupalCreateUser(array('edit own story content', 'create story content'));
+    $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content'));
     $this->drupalLogin($web_user);
     $edit = array(
     'title' => '!SimpleTest! test title' . $this->randomName(20),
@@ -282,7 +282,7 @@ class StoryEditTestCase extends DrupalTestCase {
   );
 
     //Create the page to edit
-    $this->drupalPost('node/add/story', $edit, t('Save'));
+    $this->drupalPost('node/add/page', $edit, t('Save'));
 
     $node = node_load(array('title' => $edit['title']));
     $this->assertNotNull($node, 'Node found in database');
@@ -311,26 +311,26 @@ class StoryEditTestCase extends DrupalTestCase {
 
 }
 
-class StoryPreviewTestCase extends DrupalTestCase {
+class PagePreviewTestCase extends DrupalTestCase {
   function getInfo() {
     return array(
-   'name'  => 'Story preview test',
-   'description'  => t('We want a working preview for storys, uh?'),
+   'name'  => 'Page preview test',
+   'description'  => t('We want a working preview for pages, uh?'),
    'group' => 'Node Tests');
   }
 
-  function testStoryPreview() {
+  function testPagePreview() {
     /* Prepare settings */
-    $this->drupalVariableSet('node_options_story', array('status', 'promote'));
+    $this->drupalVariableSet('node_options_page', array('status', 'promote'));
     /* Prepare a user to do the stuff */
-    $web_user = $this->drupalCreateUser(array('edit own story content', 'create story content'));
+    $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content'));
     $this->drupalLogin($web_user);
 
     $edit = array(
       'title'=>'!SimpleTest! title' . $this->randomName(20),
       'body'=>'!SimpleTest! body' . $this->randomName(200),
     );
-    $this->drupalPost('node/add/story', $edit, t('Preview'));
+    $this->drupalPost('node/add/page', $edit, t('Preview'));
 
     $this->assertWantedText(t('Preview'), 'Preview text is here');
     $this->assertWantedText(t($edit['title']), 'Hello, the random title');
