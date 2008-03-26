@@ -336,25 +336,27 @@ class DrupalTestCase extends UnitTestCase {
     $edit = array('name' => $user->name, 'pass' => $user->pass_raw);
     $this->drupalPost('user', $edit, $submit);
 
-    $this->assertText( $user->name, ' [login] found name: ' . $user->name);
-    $this->assertNoText(t('The username %name has been blocked.', array('%name' => $user->name)), ' [login] not blocked');
-    $this->assertNoText(t('The name %name is a reserved username.', array('%name' => $user->name)), ' [login] not reserved');
+    $pass = $this->assertText( $user->name, ' [login] found name: ' . $user->name);
+    $pass = $pass && $this->assertNoText(t('The username %name has been blocked.', array('%name' => $user->name)), ' [login] not blocked');
+    $pass = $pass && $this->assertNoText(t('The name %name is a reserved username.', array('%name' => $user->name)), ' [login] not reserved');
 
-    $this->_logged_in = TRUE;
+    $this->_logged_in = $pass;
 
     return $user;
   }
 
   /*
-  * Logs a user out of the internal browser, then check the login page to confirm logout.
-  */
+   * Logs a user out of the internal browser, then check the login page to confirm logout.
+   */
   function drupalLogout() {
       //make a request to the logout page
       $this->drupalGet('logout');
       //load the user page, the idea being if you were properly logged out you should be seeing a login screen
       $this->drupalGet('user');
-      $this->assertField("name");
-      $this->assertField("pass");
+      $pass = $this->assertField("name");
+      $pass = $pass && $this->assertField("pass");
+      
+      $this->_logged_in = !$pass;
   }
 
   function setUp() {
