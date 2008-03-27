@@ -349,14 +349,15 @@ class DrupalTestCase extends UnitTestCase {
    * Logs a user out of the internal browser, then check the login page to confirm logout.
    */
   function drupalLogout() {
-      //make a request to the logout page
-      $this->drupalGet('logout');
-      //load the user page, the idea being if you were properly logged out you should be seeing a login screen
-      $this->drupalGet('user');
-      $pass = $this->assertField("name");
-      $pass = $pass && $this->assertField("pass");
-      
-      $this->_logged_in = !$pass;
+    // Make a request to the logout page.
+    $this->drupalGet('logout');
+
+    // Load the user page, the idea being if you were properly logged out you should be seeing a login screen.
+    $this->drupalGet('user');
+    $pass = $this->assertField('name', t('[logout] Username field found.'));
+    $pass = $pass && $this->assertField('pass', t('[logout] Password field found.'));
+
+    $this->_logged_in = !$pass;
   }
 
   function setUp() {
@@ -855,7 +856,7 @@ class DrupalTestCase extends UnitTestCase {
    *    TRUE on pass
    */
   function assertTitle($title, $message) {
-    $this->assertTrue($this->parse() && $this->elements->xpath('//title[text()="'. $title .'"]'), $message);
+    return $this->assertTrue($this->parse() && $this->elements->xpath('//title[text()="'. $title .'"]'), $message);
   }
 
   function assertFieldByXPath($xpath, $value, $message) {
@@ -863,17 +864,17 @@ class DrupalTestCase extends UnitTestCase {
     if ($this->parse()) {
       $fields = $this->elements->xpath($xpath);
     }
-    $this->assertTrue($fields && (!$value || $fields[0]['value'] == $value), $message);
+    return $this->assertTrue($fields && (!$value || $fields[0]['value'] == $value), $message);
   }
 
   function assertFieldByName($name, $value = '', $message = '') {
-    $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] found field by name @name', array('@name' => $name)));
+    return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] found field by name @name', array('@name' => $name)));
   }
   function assertFieldById($id, $value = '', $message = '') {
-    $this->assertFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
+    return $this->assertFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
   }
   function assertField($field, $message = '') {
-    $this->assertFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
+    return $this->assertFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
   }
   function _constructFieldXpath($attribute, $value) {
     return '//textarea[@'. $attribute .'="'. $value .'"]|//input[@'. $attribute .'="'. $value .'"]|//select[@'. $attribute .'="'. $value .'"]';
@@ -881,7 +882,7 @@ class DrupalTestCase extends UnitTestCase {
 
   function assertResponse($code) {
     $curl_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-    $this->assertTrue($curl_code == $code, t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
+    return $this->assertTrue($curl_code == $code, t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
   }
 
 }
