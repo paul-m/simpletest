@@ -321,10 +321,11 @@ class DrupalTestCase extends UnitTestCase {
   /**
    * Logs in a user with the internal browser. If already logged in then logs out first.
    *
-   * @param object user object with pass_raw property!
-   * @param $submit value of submit button on log in form
+   * @param object $user User object.
+   * @return object User that was logged in. Useful if no user was passed in order
+   *   to retreive the created user.
    */
-  function drupalLogin($user = NULL, $submit = 'Log in') {
+  function drupalLogin($user = NULL) {
     if ($this->_logged_in) {
       $this->drupalLogout();
     }
@@ -333,10 +334,13 @@ class DrupalTestCase extends UnitTestCase {
       $user = $this->_drupalCreateRole();
     }
 
-    $edit = array('name' => $user->name, 'pass' => $user->pass_raw);
-    $this->drupalPost('user', $edit, $submit);
+    $edit = array(
+      'name' => $user->name,
+      'pass' => $user->pass_raw
+    );
+    $this->drupalPost('user', $edit, t('Log in'));
 
-    $pass = $this->assertText( $user->name, ' [login] found name: ' . $user->name);
+    $pass = $this->assertText($user->name, ' [login] found name: '. $user->name);
     $pass = $pass && $this->assertNoText(t('The username %name has been blocked.', array('%name' => $user->name)), ' [login] not blocked');
     $pass = $pass && $this->assertNoText(t('The name %name is a reserved username.', array('%name' => $user->name)), ' [login] not reserved');
 
