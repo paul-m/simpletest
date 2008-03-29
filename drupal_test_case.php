@@ -913,9 +913,8 @@ class DrupalTestCase extends UnitTestCase {
     return '//textarea[@'. $attribute .'="'. $value .'"]|//input[@'. $attribute .'="'. $value .'"]|//select[@'. $attribute .'="'. $value .'"]';
   }
 
-  function assertResponse($code) {
+  function assertResponse($code, $message = '') {
     $curl_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-    return $this->assertTrue($curl_code == $code, t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
+    return $this->assertTrue($curl_code == $code, $message ? $message : t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
   }
-
 }
