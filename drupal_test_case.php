@@ -877,15 +877,38 @@ class DrupalTestCase extends UnitTestCase {
     return $this->assertTrue($fields && (!$value || $fields[0]['value'] == $value), $message);
   }
 
+  function assertNoFieldByXPath($xpath, $value, $message) {
+    $fields = array();
+    if ($this->parse()) {
+      $fields = $this->elements->xpath($xpath);
+    }
+    return $this->assertFalse($fields && (!$value || $fields[0]['value'] == $value), $message);
+  }
+
   function assertFieldByName($name, $value = '', $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] found field by name @name', array('@name' => $name)));
   }
-  function assertFieldById($id, $value = '', $message = '') {
-    return $this->assertFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
+
+  function assertNoFieldByName($name, $value = '', $message = '') {
+    return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] did not find field by name @name', array('@name' => $name)));
   }
+
+  function assertFieldById($id, $value = '', $message = '') {
+    return $this->assertNoFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
+  }
+
+  function assertNoFieldById($id, $value = '', $message = '') {
+    return $this->assertNoFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] did not find field by id @id', array('@id' => $id)));
+  }
+
   function assertField($field, $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
   }
+
+  function assertNoField($field, $message = '') {
+    return $this->assertNoFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
+  }
+
   function _constructFieldXpath($attribute, $value) {
     return '//textarea[@'. $attribute .'="'. $value .'"]|//input[@'. $attribute .'="'. $value .'"]|//select[@'. $attribute .'="'. $value .'"]';
   }
