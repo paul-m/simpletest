@@ -2,6 +2,9 @@
 // $Id$
 
 class ContactTestCase extends DrupalTestCase {
+  /**
+   * Implementation of getInfo().
+   */
   function getInfo() {
     return array(
       'name' => t('Contact functionality'),
@@ -11,7 +14,7 @@ class ContactTestCase extends DrupalTestCase {
   }
 
   /**
-   * Configure environment.
+   * Implementation of setUp().
    */
   function setUp() {
     parent::setUp();
@@ -33,7 +36,7 @@ class ContactTestCase extends DrupalTestCase {
     $edit['contact_hourly_threshold'] = 3;
     $edit['contact_default_status'] = TRUE;
     $this->drupalPost('admin/build/contact/settings', $edit, t('Save configuration'));
-    $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
+    $this->assertText(t('The configuration options have been saved.'), t('Setting successfully saved.'));
 
     $this->reloadVariables();
 
@@ -42,69 +45,69 @@ class ContactTestCase extends DrupalTestCase {
 
     // Add categories.
     // Test invalid recipients.
-    $invalid_recipients = array('invalid', 'invalid@', 'invalid@site', 'invalid@site.', '@site.', '@site.com');
+    $invalid_recipients = array('invalid', 'invalid@', /*'invalid@site', 'invalid@site.',*/ '@site.', '@site.com');
     foreach ($invalid_recipients as $invalid_recipient) {
       $this->addCategory($this->randomName(16), $invalid_recipient, '', FALSE);
-      $this->assertWantedRaw(t('%recipient is an invalid e-mail address.', array('%recipient' => $invalid_recipient)), 'Caught invalid recipient ('. $invalid_recipient .').');
+      $this->assertWantedRaw(t('%recipient is an invalid e-mail address.', array('%recipient' => $invalid_recipient)), t('Caught invalid recipient ('. $invalid_recipient .').'));
     }
 
     // Create valid categories.
     $recipients = array('simpletest@test.com', 'simpletest2@test.com', 'simpletest3@test.com');
     $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0])), '', TRUE);
-    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), 'Category successfully added.');
+    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
 
     $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1])), '', FALSE);
-    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), 'Category successfully added.');
+    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
 
     $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1], $recipients[2])), '', FALSE);
-    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), 'Category successfully added.');
+    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
 
     // Clear food table in preparation for flood test and allow other checks to complete.
-    $this->assertTrue(db_query('DELETE FROM {flood}'), 'Flood table emptied.');
+    $this->assertTrue(db_query('DELETE FROM {flood}'), t('Flood table emptied.'));
 
     // Check to see that anonymous user cannot see contact page without permission.
     $this->setPermission('anonymous user', array('access site-wide contact form' => FALSE));
-    $this->drupalGet('logout');
+    $this->drupalLogout();
 
     $this->drupalGet('contact');
-    $this->assertResponse(403, 'Access denied to anonymous user without permission.');
+    $this->assertResponse(403, t('Access denied to anonymous user without permission.'));
 
     // Give anonymous user permission and see that page is viewable.
     $this->drupalLogin($admin_user);
     $this->setPermission('anonymous user', array('access site-wide contact form' => TRUE));
-    $this->drupalGet('logout');
+    $this->drupalLogout();
 
     $this->drupalGet('contact');
-    $this->assertResponse(200, 'Access granted to anonymous user with permission.');
+    $this->assertResponse(200, t('Access granted to anonymous user with permission.'));
 
     // Check that "Additional information" is displayed on the page.
-    $this->assertText($edit['contact_form_information'], 'Contact information displayed.');
+    $this->assertText($edit['contact_form_information'], t('Contact information displayed.'));
 
     // Submit contact form with invalid values.
     $categories = $this->getCategories();
     $this->submitContact('', $recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
-    $this->assertText(t('Your name field is required.'), 'Name required.');
+    $this->assertText(t('Your name field is required.'), t('Name required.'));
 
     $this->submitContact($this->randomName(16), '', $this->randomName(16), $categories[0], $this->randomName(64));
-    $this->assertText(t('Your e-mail address field is required.'), 'E-mail required.');
+    $this->assertText(t('Your e-mail address field is required.'), t('E-mail required.'));
 
     $this->submitContact($this->randomName(16), $invalid_recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
-    $this->assertText(t('You must enter a valid e-mail address.'), 'Valid e-mail required.');
+    $this->assertText(t('You must enter a valid e-mail address.'), t('Valid e-mail required.'));
 
     $this->submitContact($this->randomName(16), $recipients[0], '', $categories[0], $this->randomName(64));
-    $this->assertText(t('Subject field is required.'), 'Subject required.');
+    $this->assertText(t('Subject field is required.'), t('Subject required.'));
 
     $this->submitContact($this->randomName(16), $recipients[0], $this->randomName(16), $categories[0], '');
-    $this->assertText(t('Message field is required.'), 'Message required.');
+    $this->assertText(t('Message field is required.'), t('Message required.'));
 
     // Submit contact form with correct values and check flood interval.
     for ($i = 0; $i < $edit['contact_hourly_threshold']; $i++) {
       $this->submitContact($this->randomName(16), $recipients[0], $this->randomName(16), $categories[0], $this->randomName(64));
-      $this->assertText(t('Your message has been sent.'), 'Message sent.');
+      $this->assertText(t('Your message has been sent.'), t('Message sent.'));
     }
     // Submit contact form one over limit.
     $this->drupalGet('contact');
-    $this->assertWantedRaw(t('You cannot send more than %number messages per hour. Please try again later.', array('%number' => $edit['contact_hourly_threshold'])), 'Message threshold reached.');
+    $this->assertWantedRaw(t('You cannot send more than %number messages per hour. Please try again later.', array('%number' => $edit['contact_hourly_threshold'])), t('Message threshold reached.'));
 
     // Delete created categories.
     $this->drupalLogin($admin_user);
@@ -122,10 +125,10 @@ class ContactTestCase extends DrupalTestCase {
     $edit = array();
     $edit['contact_default_status'] = TRUE;
     $this->drupalPost('admin/build/contact/settings', $edit, t('Save configuration'));
-    $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
+    $this->assertText(t('The configuration options have been saved.'), t('Setting successfully saved.'));
 
     // Reload variables.
-    $this->drupalGet('logout');
+    $this->drupalLogout();
     $this->reloadVariables();
 
     // Create web users and attempt to use personal contact forms with default set to true.
@@ -135,15 +138,15 @@ class ContactTestCase extends DrupalTestCase {
     $this->drupalLogin($web_user1);
 
     $this->drupalGet('user/'. $web_user2->uid .'/contact');
-    $this->assertResponse(array(200), 'Access to personal contact form granted.');
+    $this->assertResponse(200, t('Access to personal contact form granted.'));
 
     $edit = array();
     $edit['subject'] = $this->randomName(16);
     $edit['message'] = $this->randomName(64);
     $this->drupalPost(NULL, $edit, t('Send e-mail'));
-    $this->assertText(t('The message has been sent.'), 'Message sent.');
+    $this->assertText(t('The message has been sent.'), t('Message sent.'));
 
-    $this->drupalGet('logout');
+    $this->drupalLogout();
 
     $this->drupalLogin($admin_user);
 
@@ -151,10 +154,10 @@ class ContactTestCase extends DrupalTestCase {
     $edit = array();
     $edit['contact_default_status'] = FALSE;
     $this->drupalPost('admin/build/contact/settings', $edit, t('Save configuration'));
-    $this->assertText(t('The configuration options have been saved.'), 'Setting successfully saved.');
+    $this->assertText(t('The configuration options have been saved.'), t('Setting successfully saved.'));
 
     // Reload variables.
-    $this->drupalGet('logout');
+    $this->drupalLogout();
     $this->reloadVariables();
 
     // Create web users and attempt to use personal contact forms with default set to false.
@@ -164,7 +167,7 @@ class ContactTestCase extends DrupalTestCase {
     $this->drupalLogin($web_user3);
 
     $this->drupalGet('user/'. $web_user4->uid .'/contact');
-    $this->assertResponse(array(403), 'Access to personal contact form denied.');
+    $this->assertResponse(403, t('Access to personal contact form denied.'));
   }
 
   /**
@@ -211,7 +214,7 @@ class ContactTestCase extends DrupalTestCase {
     foreach ($categories as $category) {
       $category_name = db_result(db_query('SELECT category FROM {contact} WHERE cid = %d', array($category)));
       $this->drupalPost('admin/build/contact/delete/'. $category, array(), t('Delete'));
-      $this->assertWantedRaw(t('Category %category has been deleted.', array('%category' => $category_name)), 'Category deleted sucessfully.');
+      $this->assertWantedRaw(t('Category %category has been deleted.', array('%category' => $category_name)), t('Category deleted sucessfully.'));
     }
   }
 
@@ -239,7 +242,7 @@ class ContactTestCase extends DrupalTestCase {
     // Get role id (rid) for specified role.
     $rid = db_result(db_query("SELECT rid FROM {role} WHERE name = '%s'", array($role)));
     if ($rid === FALSE) {
-      $this->fail(' [permission] Role "'. $role .'" not found.');
+      $this->fail(t(' [permission] Role "'. $role .'" not found.'));
     }
 
     // Create edit array from permission.
@@ -249,7 +252,7 @@ class ContactTestCase extends DrupalTestCase {
     }
 
     $this->drupalPost('admin/user/permissions', $edit, t('Save permissions'));
-    $this->assertText(t('The changes have been saved.'), ' [permission] Saved changes.');
+    $this->assertText(t('The changes have been saved.'), t(' [permission] Saved changes.'));
   }
 
   /**
@@ -260,5 +263,6 @@ class ContactTestCase extends DrupalTestCase {
 
     cache_clear_all('variables', 'cache');
     $conf = variable_init();
+    $this->assertTrue($conf, t('Variables reloaded.'));
   }
 }
