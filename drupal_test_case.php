@@ -394,6 +394,9 @@ class DrupalTestCase extends UnitTestCase {
         db_drop_table($ret, $name);
       }
       $db_prefix = $this->db_prefix_original;
+      $this->_logged_in = FALSE;
+      $this->_modules = $this->_originalModules;
+      $this->curlClose();
       return;
     }
     if ($this->_modules != $this->_originalModules) {
@@ -512,6 +515,13 @@ class DrupalTestCase extends UnitTestCase {
     $this->elements = FALSE;
     $this->assertTrue($this->_content, t(' [browser] !method to !url, response is !length bytes.', array('!method' => isset($curl_options[CURLOPT_POSTFIELDS]) ? 'POST' : 'GET', '!url' => $url, '!length' => strlen($this->_content))));
     return $this->_content;
+  }
+
+  protected function curlClose() {
+    if (isset($this->ch)) {
+      curl_close($this->ch);
+      unset($this->ch);
+    }
   }
 
   protected function parse() {
