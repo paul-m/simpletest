@@ -23,6 +23,11 @@ class DrupalTestCase extends UnitTestCase {
   // DrupalTestCase itself never sets this but always obeys whats set.
   protected $curl_options         = array();
 
+  /**
+   * Retrieve the test information from getInfo().
+   *
+   * @param string $label Name of the test to be used by the SimpleTest library.
+   */
   function __construct($label = NULL) {
     if (!$label) {
       if (method_exists($this, 'getInfo')) {
@@ -39,6 +44,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param settings
    *   An assocative array of settings to change from the defaults, keys are
    *   node properties, for example 'body' => 'Hello, world!'.
+   * @return object Created node object.
    */
   function drupalCreateNode($settings = array()) {
     // Populate defaults array
@@ -84,6 +90,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param settings
    *   An array of settings to change from the defaults.
    *   Example: 'type' => 'foo'.
+   * @return object Created content type.
    */
   function drupalCreateContentType($settings = array()) {
     // find a non-existent random type name.
@@ -123,7 +130,7 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Get a file that can be used in tests.
+   * Get a list files that can be used in tests.
    *
    * @param string $type File type, possible values: 'binary', 'html', 'image', 'javascript', 'php', 'sql', 'text'.
    * @param integer $size File size in bytes to match. Please check the tests/files folder.
@@ -151,25 +158,30 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Generates a random string, to be used as name or whatever
-   * @param integer $number   number of characters
-   * @return random string
+   * Generates a random string.
+   *
+   * @param integer $number Number of characters in length to append to the prefix.
+   * @param string $prefix Prefix to use.
+   * @return string Randomly generated string.
    */
   function randomName($number = 4, $prefix = 'simpletest_') {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
     for ($x = 0; $x < $number; $x++) {
-        $prefix .= $chars{mt_rand(0, strlen($chars)-1)};
-        if ($x == 0) {
-            $chars .= '0123456789';
-        }
+      $prefix .= $chars{mt_rand(0, strlen($chars)-1)};
+      if ($x == 0) {
+        $chars .= '0123456789';
+      }
     }
     return $prefix;
   }
 
   /**
-   * Enables a drupal module
-   * @param string $name name of the module
-   * @return boolean success
+   * Enables a drupal module in the test database. Any module that is not
+   * part of the required core modules needs to be enabled in order to use
+   * it in a test.
+   * 
+   * @param string $name Name of the module to enable.
+   * @return boolean Success.
    */
   function drupalModuleEnable($name) {
     if (module_exists($name)) {
@@ -191,11 +203,12 @@ class DrupalTestCase extends UnitTestCase {
     }
   }
 
-
   /**
-   * Disables a drupal module
-   * @param string $name name of the module
-   * @return boolean success
+   * Disables a drupal module in the test database.
+   * 
+   * @param string $name Name of the module.
+   * @return boolean Success.
+   * @see drupalModuleEnable()
    */
   function drupalModuleDisable($name) {
     if (!module_exists($name)) {
@@ -231,9 +244,11 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Set a drupal variable and keep track of the changes for tearDown()
-   * @param string $name name of the value
-   * @param mixed  $value value
+   * Set a drupal variable in the test environment. Any variable settings that deviate
+   * from the default need to be set in the test.
+   * 
+   * @param string $name Name of the variable to set.
+   * @param mixed $value Value to set.
    */
   function drupalVariableSet($name, $value) {
     /* NULL variables would anyways result in default because of isset */
@@ -248,12 +263,11 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Create a user with a given set of permissions.
+   * Create a user with a given set of permissions. The permissions correspond to the
+   * names given on the privileges page.
    *
-   * @param $permissions
-   *   Array of permission names to assign to user.
-   * @return
-   *   A fully loaded user object with pass_raw property, or FALSE if account
+   * @param array $permissions Array of permission names to assign to user.
+   * @return A fully loaded user object with pass_raw property, or FALSE if account
    *   creation fails.
    */
   function drupalCreateUser($permissions = NULL) {
@@ -289,10 +303,8 @@ class DrupalTestCase extends UnitTestCase {
   /**
    * Internal helper function; Create a role with specified permissions.
    *
-   * @param $permissions
-   *   Array of permission names to assign to role.
-   * @return integer
-   *   Role ID of newly created role, or FALSE if role creation failed.
+   * @param array $permissions Array of permission names to assign to role.
+   * @return integer Role ID of newly created role, or FALSE if role creation failed.
    */
   private function _drupalCreateRole($permissions = NULL) {
     // Generate string version of permissions list.
@@ -319,9 +331,11 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Logs in a user with the internal browser. If already logged in then logs out first.
+   * Logs in a user with the internal browser. If already logged in then logs the current
+   * user out before logging in the specified user. If no user is specified then a new
+   * user will be created and logged in.
    *
-   * @param object $user User object.
+   * @param object $user User object representing the user to login.
    * @return object User that was logged in. Useful if no user was passed in order
    *   to retreive the created user.
    */
@@ -364,6 +378,11 @@ class DrupalTestCase extends UnitTestCase {
     $this->_logged_in = !$pass;
   }
 
+  /**
+   * Generates a random database prefix and runs the install scripts on the prefixed database.
+   * After installation many caches are flushed and the internal browser is setup so that the page
+   * requests will run on the new prefix.
+   */
   function setUp() {
     global $db_prefix, $simpletest_ua_key;
     if ($simpletest_ua_key) {
@@ -387,7 +406,7 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * tearDown implementation, setting back switched modules etc
+   * Delete the tables created by setUp() and reset the database prefix.
    */
   function tearDown() {
     global $db_prefix;
@@ -468,7 +487,7 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Just some info for the reporter
+   * Set necessary reporter info.
    */
   function run(&$reporter) {
     $arr = array('class' => get_class($this));
@@ -510,6 +529,12 @@ class DrupalTestCase extends UnitTestCase {
     }
   }
 
+  /**
+   * Peforms a cURL exec with the specified options after calling curlConnect().
+   *
+   * @param array $curl_options Custom cURL options.
+   * @return string Content returned from the exec.
+   */
   protected function curlExec($curl_options) {
     $this->curlConnect();
     $url = empty($curl_options[CURLOPT_URL]) ? curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL) : $curl_options[CURLOPT_URL];
@@ -521,6 +546,9 @@ class DrupalTestCase extends UnitTestCase {
     return $this->_content;
   }
 
+  /**
+   * Close the cURL handler and unset the handler.
+   */
   protected function curlClose() {
     if (isset($this->ch)) {
       curl_close($this->ch);
@@ -528,6 +556,11 @@ class DrupalTestCase extends UnitTestCase {
     }
   }
 
+  /**
+   * Parse content returned from curlExec using DOM and simplexml.
+   *
+   * @return SimpleXMLElement A SimpleXMLElement or FALSE on failure.
+   */
   protected function parse() {
     if (!$this->elements) {
       // DOM can load HTML soup. But, HTML soup can throw warnings, supress
@@ -546,12 +579,9 @@ class DrupalTestCase extends UnitTestCase {
   /**
    * Retrieves a Drupal path or an absolute path.
    *
-   * @param $path
-   *   string Drupal path or url to load into internal browser
-   * @param array
-   *   $options Options to be forwarded to url().
-   * @return
-   *   The retrieved HTML string, also available as $this->drupalGetContent()
+   * @param $path string Drupal path or url to load into internal browser
+   * @param array $options Options to be forwarded to url().
+   * @return The retrieved HTML string, also available as $this->drupalGetContent()
    */
   function drupalGet($path, $options = array()) {
     $options['absolute'] = TRUE;
@@ -624,6 +654,17 @@ class DrupalTestCase extends UnitTestCase {
     }
   }
 
+  /**
+   * Handle form input related to drupalPost(). Ensure that the specified fields
+   * exist and attempt to create POST data in the correct manor for the particular
+   * field type.
+   *
+   * @param array $post Reference to array of post values.
+   * @param array $edit Reference to array of edit values to be checked against the form.
+   * @param string $submit Form submit button value.
+   * @param array $form Array of form elements.
+   * @return boolean Submit value matches a valid submit input in the form.
+   */
   protected function handleForm(&$post, &$edit, $submit, $form) {
     // Retrieve the form elements.
     $elements = $form->xpath('.//input|.//textarea|.//select');
@@ -718,20 +759,18 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   *    Follows a link by name.
+   * Follows a link by name.
    *
-   *    Will click the first link found with this link text by default, or a
-   *    later one if an index is given. Match is case insensitive with
-   *    normalized space. The label is translated label. There is an assert
-   *    for successful click.
-   *    WARNING: Assertion fails on empty ("") output from the clicked link
+   * Will click the first link found with this link text by default, or a
+   * later one if an index is given. Match is case insensitive with
+   * normalized space. The label is translated label. There is an assert
+   * for successful click.
+   * WARNING: Assertion fails on empty ("") output from the clicked link.
    *
-   *  @param string $label      Text between the anchor tags.
-   *  @param integer $index     Link position counting from zero.
-   *  @param boolean $reporting Assertions or not
-   *    @return boolean/string    Page on success.
-   *
-   *    @access public
+   * @param string $label Text between the anchor tags.
+   * @param integer $index Link position counting from zero.
+   * @param boolean $reporting Assertions or not.
+   * @return boolean/string Page on success.
    */
   function clickLink($label, $index = 0) {
     $url_before = $this->getUrl();
@@ -776,40 +815,41 @@ class DrupalTestCase extends UnitTestCase {
     return $path;
   }
 
+  /**
+   * Get the current url from the cURL handler.
+   *
+   * @return string current url.
+   */
   function getUrl() {
     return curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL);
   }
 
   /**
-   * Gets the current raw HTML.
+   * Gets the current raw HTML of requested page.
    */
   function drupalGetContent() {
     return $this->_content;
   }
 
   /**
-   *    Pass if the raw text IS found on the loaded page, fail otherwise.
+   * Pass if the raw text IS found on the loaded page, fail otherwise. Raw text
+   * refers to the raw HTML that the page generated.
    *
-   *  @param string $raw
-   *    Raw string to look for
-   *  @param string $message
-   *    Message to display.
-   *    @return
-   *    TRUE on pass
+   * @param string $raw Raw string to look for.
+   * @param string $message Message to display.
+   * @return boolean TRUE on pass.
    */
   function assertWantedRaw($raw, $message = "%s") {
     return $this->assertFalse(strpos($this->_content, $raw) === FALSE, $message);
   }
 
   /**
-   *    Pass if the raw text is NOT found on the loaded page, fail otherwise.
+   * Pass if the raw text is NOT found on the loaded page, fail otherwise. Raw text
+   * refers to the raw HTML that the page generated.
    *
-   *  @param string $raw
-   *    Raw string to look for
-   *  @param string $message
-   *    Message to display.
-   *    @return
-   *    TRUE on pass
+   * @param string $raw Raw string to look for.
+   * @param string $message Message to display.
+   * @return boolean TRUE on pass.
    */
   function assertNoUnwantedRaw($raw, $message = "%s") {
     return $this->assertTrue(strpos($this->_content, $raw) === FALSE, $message);
@@ -817,41 +857,66 @@ class DrupalTestCase extends UnitTestCase {
 
 
   /**
-   *    Pass if the raw text IS found on the text version of the page.
+   * Pass if the text IS found on the text version of the page. The text version
+   * is the equivilent of what a user would see when viewing through a web browser.
+   * In other words the HTML has been filtered out of the contents.
    *
-   *  @param string $raw
-   *    Text string to look for
-   *  @param string $message
-   *    Message to display.
-   *    @return
-   *    TRUE on pass
+   * @param string $raw Text string to look for.
+   * @param string $message Message to display.
+   * @return boolean TRUE on pass.
    */
   function assertText($text, $message) {
     return $this->assertTextHelper($text, $message, FALSE);
   }
 
+  /**
+   * Pass if the text IS found on the text version of the page. The text version
+   * is the equivilent of what a user would see when viewing through a web browser.
+   * In other words the HTML has been filtered out of the contents.
+   *
+   * @param string $raw Text string to look for.
+   * @param string $message Message to display.
+   * @return boolean TRUE on pass.
+   */
   function assertWantedText($text, $message) {
     return $this->assertTextHelper($text, $message, FALSE);
   }
 
   /**
-   *  Pass if the raw text is NOT found on the text version of the page.
+   * Pass if the text is NOT found on the text version of the page. The text version
+   * is the equivilent of what a user would see when viewing through a web browser.
+   * In other words the HTML has been filtered out of the contents.
    *
-   *  @param string $raw
-   *    Text string to look for
-   *  @param string $message
-   *    Message to display.
-   *    @return
-   *    TRUE on pass
+   * @param string $raw Text string to look for.
+   * @param string $message Message to display.
+   * @return boolean TRUE on pass.
    */
   function assertNoText($text, $message) {
     return $this->assertTextHelper($text, $message, TRUE);
   }
+
+  /**
+   * Pass if the text is NOT found on the text version of the page. The text version
+   * is the equivilent of what a user would see when viewing through a web browser.
+   * In other words the HTML has been filtered out of the contents.
+   *
+   * @param string $raw Text string to look for.
+   * @param string $message Message to display.
+   * @return boolean TRUE on pass.
+   */
   function assertNoUnwantedText($text, $message) {
     return $this->assertTextHelper($text, $message, TRUE);
   }
 
-
+  /**
+   * Filter out the HTML of the page and assert that the plain text us found. Called by
+   * the plain text assertions.
+   *
+   * @param string $text Text to look for.
+   * @param string $message Message to display.
+   * @param boolean $not_exists The assert to make in relation to the text's existance.
+   * @return boolean Assertion result.
+   */
   protected function assertTextHelper($text, $message, $not_exists) {
     if ($this->plain_text === FALSE) {
       $this->plain_text = filter_xss($this->_content, array());
@@ -860,19 +925,24 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   *  Pass if the page title is the given string.
+   * Pass if the page title is the given string.
    *
-   *  @param $title
-   *    Text string to look for
-   *  @param $message
-   *    Message to display.
-   *  @return
-   *    TRUE on pass
+   * @param $title Text string to look for.
+   * @param $message Message to display.
+   * @return boolean TRUE on pass.
    */
   function assertTitle($title, $message) {
     return $this->assertTrue($this->parse() && $this->elements->xpath('//title[text()="'. $title .'"]'), $message);
   }
 
+  /**
+   * Assert that a field exists in the current page by the given XPath.
+   *
+   * @param string $xpath XPath used to find the field.
+   * @param string $value Value of the field to assert.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertFieldByXPath($xpath, $value, $message) {
     $fields = array();
     if ($this->parse()) {
@@ -881,6 +951,14 @@ class DrupalTestCase extends UnitTestCase {
     return $this->assertTrue($fields && (!$value || $fields[0]['value'] == $value), $message);
   }
 
+  /**
+   * Assert that a field does not exists in the current page by the given XPath.
+   *
+   * @param string $xpath XPath used to find the field.
+   * @param string $value Value of the field to assert.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertNoFieldByXPath($xpath, $value, $message) {
     $fields = array();
     if ($this->parse()) {
@@ -889,34 +967,95 @@ class DrupalTestCase extends UnitTestCase {
     return $this->assertFalse($fields && (!$value || $fields[0]['value'] == $value), $message);
   }
 
+  /**
+   * Assert that a field exists in the current page with the given name and value.
+   *
+   * @param string $name Name of field to assert.
+   * @param string $value Value of the field to assert.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertFieldByName($name, $value = '', $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] found field by name @name', array('@name' => $name)));
   }
 
+  /**
+   * Assert that a field does not exists in the current page with the given name and value.
+   *
+   * @param string $name Name of field to assert.
+   * @param string $value Value of the field to assert.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertNoFieldByName($name, $value = '', $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] did not find field by name @name', array('@name' => $name)));
   }
 
+  /**
+   * Assert that a field exists in the current page with the given id and value.
+   *
+   * @param string $id Id of field to assert.
+   * @param string $value Value of the field to assert.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertFieldById($id, $value = '', $message = '') {
     return $this->assertNoFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
   }
 
+  /**
+   * Assert that a field does not exists in the current page with the given id and value.
+   *
+   * @param string $id Id of field to assert.
+   * @param string $value Value of the field to assert.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertNoFieldById($id, $value = '', $message = '') {
     return $this->assertNoFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] did not find field by id @id', array('@id' => $id)));
   }
 
+  /**
+   * Assert that a field exists in the current page with the given name or id.
+   *
+   * @param string $field Name or id of the field.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertField($field, $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
   }
 
+  /**
+   * Assert that a field does not exists in the current page with the given name or id.
+   *
+   * @param string $field Name or id of the field.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertNoField($field, $message = '') {
     return $this->assertNoFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
   }
 
+  /**
+   * Construct an XPath for the given set of attributes and value.
+   *
+   * @param array $attribute Field attributes.
+   * @param string $value Value of field.
+   * @return string XPath for specified values.
+   */
   function _constructFieldXpath($attribute, $value) {
     return '//textarea[@'. $attribute .'="'. $value .'"]|//input[@'. $attribute .'="'. $value .'"]|//select[@'. $attribute .'="'. $value .'"]';
   }
 
+  /**
+   * Assert the page responds with the specified response code.
+   *
+   * @param integer $code Reponse code. For example 200 is a successful page request. For
+   *   a list of all codes see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html.
+   * @param string $message Message to display.
+   * @return boolean Assertion result. 
+   */
   function assertResponse($code, $message = '') {
     $curl_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
     return $this->assertTrue($curl_code == $code, $message ? $message : t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
