@@ -83,18 +83,17 @@ function simpletest_load() {
  * Menu callback for both running tests and listing possible tests
  */
 function simpletest_entrypoint() {
-  global $simpletest_ua_handling;
+  global $simpletest_ua_key;
   if (!simpletest_load()) {
      // @TODO - Find a better way for this return.  It is currently needed to show error,
      // and returning true leads to page not found
     return '&nbsp;';
   }
-  if (!$simpletest_ua_handling) {
+  if (!$simpletest_ua_key) {
     $output = t('Please add the following code to the bottom of settings.php');
     $output .=
-'<p><code><pre>$GLOBALS["simpletest_ua_handling"] = TRUE;
-$GLOBALS["simpletest_ua_key"] = '. mt_rand(1000, 1000000) .';
-if (preg_match("/(simpletest\d+),(\d+)/", $_SERVER["HTTP_USER_AGENT"], $matches) && $GLOBALS["simpletest_ua_key"] == $matches[2]) {
+'<p><code><pre>$GLOBALS["simpletest_ua_key"] = '. mt_rand(1000, 1000000) .';
+if (preg_match("/^(simpletest\d+),(\d+)/", $_SERVER["HTTP_USER_AGENT"], $matches) && $GLOBALS["simpletest_ua_key"] == $matches[2]) {
   $db_prefix = $matches[1];
 }</pre></code></p>';
     return $output;

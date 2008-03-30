@@ -365,8 +365,8 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   function setUp() {
-    global $db_prefix, $simpletest_ua_handling;
-    if ($simpletest_ua_handling) {
+    global $db_prefix, $simpletest_ua_key;
+    if ($simpletest_ua_key) {
       $this->db_prefix_original = $db_prefix;
       $clean_url_original = variable_get('clean_url', 0);
       $db_prefix = 'simpletest'. mt_rand(1000, 1000000);
