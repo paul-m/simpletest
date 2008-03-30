@@ -265,7 +265,7 @@ class CommentTestCase extends DrupalTestCase {
    */
   function deleteComment($comment) {
     $this->drupalPost('comment/delete/'. $comment->id, array(), t('Delete'));
-    $this->assertWantedText(t('The comment and all its replies have been deleted.'), t('Comment deleted.'));
+    $this->assertText(t('The comment and all its replies have been deleted.'), t('Comment deleted.'));
   }
 
   /**
