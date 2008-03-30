@@ -53,8 +53,8 @@ class CommentTestCase extends DrupalTestCase {
     // Set comments to have subject and preview to required.
     $this->drupalLogout();
     $this->drupalLogin($this->admin_user);
-    $this->setCommentSubject(true);
-    $this->setCommentPreview(true);
+    $this->setCommentSubject(TRUE);
+    $this->setCommentPreview(TRUE);
     $this->drupalLogout();
 
     // Create comment that requires preview.
