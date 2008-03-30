@@ -4,6 +4,9 @@
 class BookTestCase extends DrupalTestCase {
   protected $book;
 
+  /**
+   * Implementation of getInfo().
+   */
   function getInfo() {
     return array(
       'name' => t('Book functionality'),
@@ -12,6 +15,9 @@ class BookTestCase extends DrupalTestCase {
     );
   }
 
+  /**
+   * Implementation of setUp().
+   */
   function setUp() {
     parent::setUp();
 
@@ -22,18 +28,18 @@ class BookTestCase extends DrupalTestCase {
    * Test book funcitonality through node interfaces.
    */
   function testBook() {
-    // create users
+    // Create users.
     $book_author = $this->drupalCreateUser(array('create new books', 'create book content', 'add content to books'));
     $web_user = $this->drupalCreateUser(array('access printer-friendly version'));
 
-    // create new book
+    // Create new book.
     $this->drupalLogin($book_author);
 
     $this->book = $this->createBookNode('new');
     $book = $this->book;
 
     /*
-     * add page hiearchy to book
+     * Add page hiearchy to book.
      * Book
      *  |- Node 0
      *   |- Node 1
@@ -42,15 +48,15 @@ class BookTestCase extends DrupalTestCase {
      *  |- Node 4
      */
     $nodes = array();
-    $nodes[] = $this->createBookNode($book->nid); // Node 0
-    $nodes[] = $this->createBookNode($book->nid, $nodes[0]->book['mlid']); // Node 1
-    $nodes[] = $this->createBookNode($book->nid, $nodes[0]->book['mlid']); // Node 2
-    $nodes[] = $this->createBookNode($book->nid); // Node 3
-    $nodes[] = $this->createBookNode($book->nid); // Node 4
+    $nodes[] = $this->createBookNode($book->nid); // Node 0.
+    $nodes[] = $this->createBookNode($book->nid, $nodes[0]->book['mlid']); // Node 1.
+    $nodes[] = $this->createBookNode($book->nid, $nodes[0]->book['mlid']); // Node 2.
+    $nodes[] = $this->createBookNode($book->nid); // Node 3.
+    $nodes[] = $this->createBookNode($book->nid); // Node 4.
 
-    $this->drupalGet('logout');
+    $this->drupalLogout();
 
-    // check to make sure that book pages display properly
+    // Check to make sure that book pages display properly.
     $this->drupalLogin($web_user);
 
     $this->checkBookNode($book, array($nodes[0], $nodes[3], $nodes[4]), false, false, $nodes[0]);
@@ -74,25 +80,30 @@ class BookTestCase extends DrupalTestCase {
     static $number = 0;
     $this->drupalGet('node/' . $node->nid);
 
-    // check outline structure
-    if ($nodes !== NULL)
-      $this->assertPattern($this->generateOutlinePattern($nodes), 'Node ' . $number . ' outline confirmed.');
-    else
-      $this->assertNotNull(true, 'Node ' . $number . ' doesn\'t have outline.');
+    // Check outline structure.
+    if ($nodes !== NULL) {
+      $this->assertPattern($this->generateOutlinePattern($nodes), $this->drupalGetContent(), t('Node ' . $number . ' outline confirmed.'));
+    }
+    else {
+      $this->pass(t('Node ' . $number . ' doesn\'t have outline.'));
+    }
 
-    // check previous, up, and next links
-    if ($previous)
-      $this->assertWantedRaw(l('‹ ' . $previous->title, 'node/' . $previous->nid, array('attributes' => array('class' => 'page-previous', 'title' => t('Go to previous page')))), 'Prevoius page link found.');
-    if ($up)
-      $this->assertWantedRaw(l('up', 'node/' . $up->nid, array('attributes' => array('class' => 'page-up', 'title' => t('Go to parent page')))), 'Up page link found.');
-    if ($next)
-      $this->assertWantedRaw(l($next->title . ' ›', 'node/' . $next->nid, array('attributes' => array('class' => 'page-next', 'title' => t('Go to next page')))), 'Next page link found.');
+    // Check previous, up, and next links.
+    if ($previous) {
+      $this->assertWantedRaw(l('‹ ' . $previous->title, 'node/' . $previous->nid, array('attributes' => array('class' => 'page-previous', 'title' => t('Go to previous page')))), t('Prevoius page link found.'));
+    }
+    if ($up) {
+      $this->assertWantedRaw(l('up', 'node/' . $up->nid, array('attributes' => array('class' => 'page-up', 'title' => t('Go to parent page')))), t('Up page link found.'));
+    }
+    if ($next) {
+      $this->assertWantedRaw(l($next->title . ' ›', 'node/' . $next->nid, array('attributes' => array('class' => 'page-next', 'title' => t('Go to next page')))), t('Next page link found.'));
+    }
 
-    // check printer friendly version
+    // Check printer friendly version.
     $this->drupalGet('book/export/html/' . $node->nid);
-    $this->assertText($node->title, 'Printer friendly title found.');
+    $this->assertText($node->title, t('Printer friendly title found.'));
     $node->body = str_replace('<!--break-->', '', $node->body);
-    $this->assertWantedRaw(check_markup($node->body, $node->format), 'Printer friendly body found.');
+    $this->assertWantedRaw(check_markup($node->body, $node->format), t('Printer friendly body found.'));
 
     $number++;
   }
@@ -104,8 +115,9 @@ class BookTestCase extends DrupalTestCase {
    */
   function generateOutlinePattern($nodes) {
     $outline = '';
-    foreach ($nodes as $node)
+    foreach ($nodes as $node) {
       $outline .= '(node\/' . $node->nid . ')(.*?)(' . $node->title . ')(.*?)';
+    }
 
     return '/<div id="book-navigation-' . $this->book->nid . '"(.*?)<ul(.*?)' . $outline . '<\/ul>/s';
   }
@@ -117,7 +129,7 @@ class BookTestCase extends DrupalTestCase {
    * @param integer $parent Parent book reference id.
    */
   function createBookNode($book_nid, $parent = NULL) {
-    static $number = 0; // used to ensure that when sorted nodes stay in same order
+    static $number = 0; // Used to ensure that when sorted nodes stay in same order.
     $this->drupalVariableSet('node_options_page', array('status', 'promote'));
 
     $edit = array();
@@ -131,12 +143,13 @@ class BookTestCase extends DrupalTestCase {
       $edit['book[plid]'] = $parent;
       $this->drupalPost(NULL, $edit, t('Save'));
     }
-    else
+    else {
       $this->drupalPost('node/add/book', $edit, t('Save'));
+    }
 
-    // check to make sure the book node was created
+    // Check to make sure the book node was created.
     $node = node_load(array('title' => $edit['title']));
-    $this->assertNotNull(($node === FALSE ? NULL : $node), 'Book node found in database.');
+    $this->assertNotNull(($node === FALSE ? NULL : $node), t('Book node found in database.'));
     $number++;
 
     return $node;
