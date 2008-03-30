@@ -82,7 +82,7 @@ class BookTestCase extends DrupalTestCase {
 
     // Check outline structure.
     if ($nodes !== NULL) {
-      $this->assertPattern($this->generateOutlinePattern($nodes), $this->drupalGetContent(), t('Node ' . $number . ' outline confirmed.'));
+      $this->assertPattern($this->generateOutlinePattern($nodes), t('Node ' . $number . ' outline confirmed.'));
     }
     else {
       $this->pass(t('Node ' . $number . ' doesn\'t have outline.'));

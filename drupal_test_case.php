@@ -179,7 +179,7 @@ class DrupalTestCase extends UnitTestCase {
    * Enables a drupal module in the test database. Any module that is not
    * part of the required core modules needs to be enabled in order to use
    * it in a test.
-   * 
+   *
    * @param string $name Name of the module to enable.
    * @return boolean Success.
    */
@@ -205,7 +205,7 @@ class DrupalTestCase extends UnitTestCase {
 
   /**
    * Disables a drupal module in the test database.
-   * 
+   *
    * @param string $name Name of the module.
    * @return boolean Success.
    * @see drupalModuleEnable()
@@ -246,7 +246,7 @@ class DrupalTestCase extends UnitTestCase {
   /**
    * Set a drupal variable in the test environment. Any variable settings that deviate
    * from the default need to be set in the test.
-   * 
+   *
    * @param string $name Name of the variable to set.
    * @param mixed $value Value to set.
    */
@@ -925,6 +925,28 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
+   * Will trigger a pass if the Perl regex pattern is found in the raw content.
+   *
+   * @param string $pattern Perl regex to look for including the regex delimiters.
+   * @param string $message Message to display.
+   * @return boolean True if pass.
+   */
+  function assertPattern($pattern, $message = '%s') {
+    return $this->assert(new PatternExpectation($pattern), $this->drupalGetContent(), $message);
+  }
+
+  /**
+   * Will trigger a pass if the perl regex pattern is not present in raw content.
+   *
+   * @param string $pattern Perl regex to look for including the regex delimiters.
+   * @param string $message Message to display.
+   * @return boolean True if pass.
+   */
+  function assertNoPattern($pattern, $message = '%s') {
+    return $this->assert(new NoPatternExpectation($pattern), $this->drupalGetContent(), $message);
+  }
+
+  /**
    * Pass if the page title is the given string.
    *
    * @param $title Text string to look for.
@@ -941,7 +963,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $xpath XPath used to find the field.
    * @param string $value Value of the field to assert.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertFieldByXPath($xpath, $value, $message) {
     $fields = array();
@@ -957,7 +979,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $xpath XPath used to find the field.
    * @param string $value Value of the field to assert.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertNoFieldByXPath($xpath, $value, $message) {
     $fields = array();
@@ -973,7 +995,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $name Name of field to assert.
    * @param string $value Value of the field to assert.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertFieldByName($name, $value = '', $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] found field by name @name', array('@name' => $name)));
@@ -985,7 +1007,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $name Name of field to assert.
    * @param string $value Value of the field to assert.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertNoFieldByName($name, $value = '', $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] did not find field by name @name', array('@name' => $name)));
@@ -997,7 +1019,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $id Id of field to assert.
    * @param string $value Value of the field to assert.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertFieldById($id, $value = '', $message = '') {
     return $this->assertNoFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
@@ -1009,7 +1031,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $id Id of field to assert.
    * @param string $value Value of the field to assert.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertNoFieldById($id, $value = '', $message = '') {
     return $this->assertNoFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] did not find field by id @id', array('@id' => $id)));
@@ -1020,7 +1042,7 @@ class DrupalTestCase extends UnitTestCase {
    *
    * @param string $field Name or id of the field.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertField($field, $message = '') {
     return $this->assertFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
@@ -1031,7 +1053,7 @@ class DrupalTestCase extends UnitTestCase {
    *
    * @param string $field Name or id of the field.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertNoField($field, $message = '') {
     return $this->assertNoFieldByXPath($this->_constructFieldXpath('name', $field) .'|'. $this->_constructFieldXpath('id', $field), '', $message);
@@ -1054,7 +1076,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param integer $code Reponse code. For example 200 is a successful page request. For
    *   a list of all codes see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html.
    * @param string $message Message to display.
-   * @return boolean Assertion result. 
+   * @return boolean Assertion result.
    */
   function assertResponse($code, $message = '') {
     $curl_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
