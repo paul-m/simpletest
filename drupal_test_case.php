@@ -1010,7 +1010,7 @@ class DrupalTestCase extends UnitTestCase {
    * @return boolean Assertion result.
    */
   function assertNoFieldByName($name, $value = '', $message = '') {
-    return $this->assertFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] did not find field by name @name', array('@name' => $name)));
+    return $this->assertNoFieldByXPath($this->_constructFieldXpath('name', $name), $value, $message ? $message : t(' [browser] did not find field by name @name', array('@name' => $name)));
   }
 
   /**
@@ -1022,7 +1022,7 @@ class DrupalTestCase extends UnitTestCase {
    * @return boolean Assertion result.
    */
   function assertFieldById($id, $value = '', $message = '') {
-    return $this->assertNoFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
+    return $this->assertFieldByXPath($this->_constructFieldXpath('id', $id), $value, $message ? $message : t(' [browser] found field by id @id', array('@id' => $id)));
   }
 
   /**
