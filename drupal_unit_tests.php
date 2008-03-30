@@ -59,7 +59,7 @@ class DrupalUnitTests extends DrupalTestSuite {
       $classes = $class_list;
     }
     if (count($classes) == 0) {
-      $this->addTestCase(new BadGroupTest($test_file, 'No new test cases'));
+      drupal_set_message('No test cases found.', 'error');
       return;
     }
     $groups = array();
