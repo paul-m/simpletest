@@ -6,6 +6,9 @@ class BlogModuleTestCase extends DrupalTestCase {
   protected $own_user;
   protected $any_user;
 
+  /**
+   * Implementation of getInfo().
+   */
   function getInfo() {
     return array(
       'name' => t('Blog functionality'),
@@ -33,7 +36,7 @@ class BlogModuleTestCase extends DrupalTestCase {
    */
   function testBlog() {
     // Login the admin user.
-    $user = $this->drupalLogin($this->big_user);
+    $this->drupalLogin($this->big_user);
     // Enable the recent blog block.
     $edit = array();
     $edit['blog_0[region]'] = 'right';
@@ -47,14 +50,14 @@ class BlogModuleTestCase extends DrupalTestCase {
     // Create another blog node for the any blog user.
     $node = $this->drupalCreateNode(array('type' => 'blog', 'uid' => $this->any_user->uid));
     // Verify the own blog user only has access to the blog view node.
-    $this->verifyBlogs($this->own_user, $this->any_user, $node, FALSE, 403);
+    $this->verifyBlogs($this->any_user, $node, FALSE, 403);
 
     // Create another blog node for the own blog user.
     $node = $this->drupalCreateNode(array('type' => 'blog', 'uid' => $this->own_user->uid));
     // Login the any blog user.
-    $user = $this->drupalLogin($this->any_user);
+    $this->drupalLogin($this->any_user);
     // Verify the any blog user has access to all the blog nodes.
-    $this->verifyBlogs($this->any_user, $this->own_user, $node, TRUE);
+    $this->verifyBlogs($this->own_user, $node, TRUE);
   }
 
   /**
@@ -69,7 +72,7 @@ class BlogModuleTestCase extends DrupalTestCase {
     // Create blog node.
     $node = $this->drupalCreateNode(array('type' => 'blog', 'uid' => $user->uid));
     // Verify the user has access to all the blog nodes.
-    $this->verifyBlogs($user, $user, $node, $admin);
+    $this->verifyBlogs($user, $node, $admin);
     // Verify the blog links are displayed.
     $this->verifyBlogLinks($user);
   }
@@ -77,13 +80,12 @@ class BlogModuleTestCase extends DrupalTestCase {
   /**
    * Verify the logged in user has the desired access to the various blog nodes.
    *
-   * @param object $user The logged in user.
    * @param object $node_user The user who creates the node.
    * @param object $node Node.
    * @param boolean $admin User has 'access administration pages' privilege.
    * @param integer $response HTTP response code.
    */
-  private function verifyBlogs($user, $node_user, $node, $admin, $response = 200) {
+  private function verifyBlogs($node_user, $node, $admin, $response = 200) {
     $crumb = '›';
     $quote = '&#039;';
 
@@ -99,7 +101,7 @@ class BlogModuleTestCase extends DrupalTestCase {
 //      $this->assertText(t('Home '. $crumb .' Administer '. $crumb .' Help'), t('Breadcrumbs were displayed'));
     }
 
-    // Verify the blog block is displayed.
+    // Verify the blog block was displayed.
     $this->drupalGet('');
     $this->assertResponse(200);
     $this->assertText(t('Recent blog posts'), t('Blog block was displayed'));
@@ -144,28 +146,28 @@ class BlogModuleTestCase extends DrupalTestCase {
     // Confirm blog entries link exists on the user page.
     $this->drupalGet('user/'. $user->uid);
     $this->assertResponse(200);
-    $this->assertText(t('View recent blog entries'), t('View recent blog entries link is displayed'));
+    $this->assertText(t('View recent blog entries'), t('View recent blog entries link was displayed'));
 
     // Confirm the recent blog entries link links to the user's blog page.
     $this->clickLink('View recent blog entries');
-    $this->assertTitle(t("@name's blog | Drupal", array('@name' => $user->name)), t('View recent blog entries link target is correct'));
+    $this->assertTitle(t("@name's blog | Drupal", array('@name' => $user->name)), t('View recent blog entries link target was correct'));
 
-    // Confirm a blog page is displayed.
+    // Confirm a blog page was displayed.
     $this->drupalGet('blog');
     $this->assertResponse(200);
     $this->assertTitle('Blogs | Drupal', t('Blog page was displayed'));
     $this->assertText(t('Home'), t('Breadcrumbs were displayed'));
 
-    // Confirm a blog page is displayed per user.
+    // Confirm a blog page was displayed per user.
     $this->drupalGet('blog/'. $user->uid);
     $this->assertTitle(t("@name's blog | Drupal", array('@name' => $user->name)), t('User blog node was displayed'));
     $this->assertText(t('Home '. $crumb .' Blogs'), t('Breadcrumbs were displayed'));
 
-    // Confirm a blog feed is displayed.
+    // Confirm a blog feed was displayed.
     $this->drupalGet('blog/feed');
     $this->assertTitle(t('Drupal blogs'), t('Blog feed was displayed'));
 
-    // Confirm a blog feed is displayed per user.
+    // Confirm a blog feed was displayed per user.
     $this->drupalGet('blog/'. $user->uid .'/feed');
     $this->assertTitle(t("@name's blog", array('@name' => $user->name)), t('User blog feed was displayed'));
   }
