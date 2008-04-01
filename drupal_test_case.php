@@ -865,7 +865,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $message Message to display.
    * @return boolean TRUE on pass.
    */
-  function assertText($text, $message) {
+  function assertText($text, $message = '') {
     return $this->assertTextHelper($text, $message, FALSE);
   }
 
@@ -878,7 +878,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $message Message to display.
    * @return boolean TRUE on pass.
    */
-  function assertNoText($text, $message) {
+  function assertNoText($text, $message = '') {
     return $this->assertTextHelper($text, $message, TRUE);
   }
 
@@ -894,6 +894,9 @@ class DrupalTestCase extends UnitTestCase {
   protected function assertTextHelper($text, $message, $not_exists) {
     if ($this->plain_text === FALSE) {
       $this->plain_text = filter_xss($this->_content, array());
+    }
+    if (!$message) {
+      $message = '"'. $text .'"'. ($not_exists ? ' not found.' : ' found.');
     }
     return $this->assertTrue($not_exists == (strpos($this->plain_text, $text) === FALSE), $message);
   }
