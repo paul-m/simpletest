@@ -2,6 +2,9 @@
 // $Id$
 
 class FilterTestCase extends DrupalTestCase {
+  /**
+   * Implementation of getInfo().
+   */
   function getInfo() {
     return array(
       'name' => t('Filter administration functionality'),
@@ -10,22 +13,12 @@ class FilterTestCase extends DrupalTestCase {
     );
   }
 
-  function setUp() {
-    parent::setUp();
-  }
-
-  function tearDown() {
-    parent::tearDown();
-  }
-
+  /**
+   * Test filter administration functionality.
+   */
   function testFilter() {
-    $version = VERSION;
-    $version_five =  ($version[0] == 5);
-    $version_seven = ($version[0] == 7);
-
-    // version specific changes
-    $first_filter = 0; // url filter
-    $second_filter = ($version_five ? 2 : 1); // line filter
+    $first_filter = 2; // URL filter.
+    $second_filter = 1; // Line filter.
 
     // Create users.
     $admin_user = $this->drupalCreateUser(array('administer filters'));
@@ -39,27 +32,27 @@ class FilterTestCase extends DrupalTestCase {
     $edit = array();
     $edit['default'] = $full;
     $this->drupalPost('admin/settings/filters', $edit, t('Save changes'));
-    $this->assertText(t('Default format updated.'), 'Default filter updated successfully.');
+    $this->assertText(t('Default format updated.'), t('Default filter updated successfully.'));
 
-    $this->assertNoUnwantedRaw('admin/settings/filters/delete/'. $full, 'Delete link not found.');
+    $this->assertNoUnwantedRaw('admin/settings/filters/delete/'. $full, t('Delete link not found.'));
 
     // Add an additional tag.
     $edit = array();
     $edit['allowed_html_1'] = '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>'.' <quote>'; // Adding <quote> tag.
     $this->drupalPost('admin/settings/filters/'. $filtered .'/configure', $edit, t('Save configuration'));
-    $this->assertText(t('The configuration options have been saved.'), 'Allowed HTML tag added.');
+    $this->assertText(t('The configuration options have been saved.'), t('Allowed HTML tag added.'));
 
-    $this->assertWantedRaw(htmlentities($edit['allowed_html_1']), 'Tag displayed.');
+    $this->assertWantedRaw(htmlentities($edit['allowed_html_1']), t('Tag displayed.'));
 
     $result = db_fetch_object(db_query('SELECT * FROM {cache_filter}'));
-    $this->assertFalse($result, 'Cache cleared.');
+    $this->assertFalse($result, t('Cache cleared.'));
 
     // Reorder filters.
     $edit = array();
     $edit['weights[filter/'. $second_filter .']'] = 1;
     $edit['weights[filter/'. $first_filter .']'] = 2;
     $this->drupalPost('admin/settings/filters/'. $filtered .'/order', $edit, t('Save configuration'));
-    $this->assertText(t('The filter ordering has been saved.'), 'Order saved successfully.');
+    $this->assertText(t('The filter ordering has been saved.'), t('Order saved successfully.'));
 
     $result = db_query('SELECT * FROM {filters} WHERE format = %d ORDER BY weight ASC', $filtered);
     $filters = array();
@@ -68,7 +61,7 @@ class FilterTestCase extends DrupalTestCase {
         $filters[] = $filter;
       }
     }
-    $this->assertTrue(($filters[0]->delta == $second_filter && $filters[1]->delta == $first_filter), 'Order confirmed.');
+    $this->assertTrue(($filters[0]->delta == $second_filter && $filters[1]->delta == $first_filter), t('Order confirmed.'));
 
     // Add filter.
     $edit = array();
@@ -77,45 +70,41 @@ class FilterTestCase extends DrupalTestCase {
     $edit['filters[filter/'. $second_filter .']'] = TRUE;
     $edit['filters[filter/'. $first_filter .']'] = TRUE;
     $this->drupalPost('admin/settings/filters/add', $edit, t('Save configuration'));
-    $this->assertWantedRaw(t('Added input format %format.', array('%format' => $edit['name'])), 'New filter created.');
+    $this->assertWantedRaw(t('Added input format %format.', array('%format' => $edit['name'])), t('New filter created.'));
 
     $format = $this->getFilter($edit['name']);
-    $this->assertNotNull($format, 'Format found in database.');
+    $this->assertNotNull($format, t('Format found in database.'));
 
     if ($format !== NULL) {
-      if ($version_five) {
-        $this->drupalGet('admin/settings/filters/'. $format->format);
-      }
-
-      $this->assertCheckbox('roles\[2\]', 'Role found.');
-      $this->assertCheckbox('filters\[filter\/'. $second_filter .'\]', 'Line break filter found.');
-      $this->assertCheckbox('filters\[filter\/'. $first_filter .'\]', 'Url filter found.');
+      $this->assertFieldByName('roles[2]', '', t('Role found.'));
+      $this->assertFieldByName('filters[filter/'. $second_filter .']', '', t('Line break filter found.'));
+      $this->assertFieldByName('filters[filter/'. $first_filter .']', '', t('Url filter found.'));
 
       // Delete new filter.
       $this->drupalPost('admin/settings/filters/delete/'. $format->format, array(), t('Delete'));
-      $this->assertWantedRaw(t('Deleted input format %format.', array('%format' => $edit['name'])), 'Format successfully deleted.');
+      $this->assertWantedRaw(t('Deleted input format %format.', array('%format' => $edit['name'])), t('Format successfully deleted.'));
     }
 
     // Change default filter back.
     $edit = array();
     $edit['default'] = $filtered;
     $this->drupalPost('admin/settings/filters', $edit, t('Save changes'));
-    $this->assertText(t('Default format updated.'), 'Default filter updated successfully.');
+    $this->assertText(t('Default format updated.'), t('Default filter updated successfully.'));
 
-    $this->assertNoUnwantedRaw('admin/settings/filters/delete/'. $filtered, 'Delete link not found.');
+    $this->assertNoUnwantedRaw('admin/settings/filters/delete/'. $filtered, t('Delete link not found.'));
 
     // Allow authenticated users on full HTML.
     $edit = array();
     $edit['roles[2]'] = TRUE;
     $this->drupalPost('admin/settings/filters/'. $full, $edit, t('Save configuration'));
-    $this->assertText(t('The input format settings have been updated.'), 'Full HTML format successfully updated.');
+    $this->assertText(t('The input format settings have been updated.'), t('Full HTML format successfully updated.'));
 
     // Switch user.
-    $this->drupalGet('logout');
+    $this->drupalLogout();
     $this->drupalLogin($web_user);
 
     $this->drupalGet('node/add/page');
-    $this->assertFormat($full, 'Full HTML filter accessible.');
+    $this->assertFieldByName('format', $full, t('Full HTML filter accessible.'));
 
     // Use filtered HTML and see if it removes tags that arn't allowed.
     $body = $this->randomName();
@@ -126,17 +115,16 @@ class FilterTestCase extends DrupalTestCase {
     $edit['body'] = $body .'<random>'. $extra_text .'</random>';
     $edit['format'] = $filtered;
     $this->drupalPost('node/add/page', $edit, t('Save'));
-    $message = ($version_five ? t('Your %post has been created.', array('%post' => 'Page')) : t('Page %title has been created.', array('%title' => $edit['title'])));
-    $this->assertWantedRaw($message, 'Filtered node created.');
+    $this->assertWantedRaw(t('Page %title has been created.', array('%title' => $edit['title'])), t('Filtered node created.'));
 
     $node = node_load(array('title' => $edit['title']));
-    $this->assertTrue($node, 'Node found in database.');
+    $this->assertTrue($node, t('Node found in database.'));
 
     $this->drupalGet('node/'. $node->nid);
-    $this->assertText($body . $extra_text, 'Filter removed invalid tag.');
+    $this->assertText($body . $extra_text, t('Filter removed invalid tag.'));
 
     // Switch user.
-    $this->drupalGet('logout');
+    $this->drupalLogout();
     $this->drupalLogin($admin_user);
 
     // Clean up.
@@ -144,20 +132,20 @@ class FilterTestCase extends DrupalTestCase {
     $edit = array();
     $edit['allowed_html_1'] = '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>';
     $this->drupalPost('admin/settings/filters/'. $filtered .'/configure', $edit, t('Save configuration'));
-    $this->assertText(t('The configuration options have been saved.'), 'Changes reverted.');
+    $this->assertText(t('The configuration options have been saved.'), t('Changes reverted.'));
 
     // Full HTML
     $edit = array();
     $edit['roles[2]'] = FALSE;
     $this->drupalPost('admin/settings/filters/'. $full, $edit, t('Save configuration'));
-    $this->assertText(t('The input format settings have been updated.'), 'Full HTML format successfully reverted.');
+    $this->assertText(t('The input format settings have been updated.'), t('Full HTML format successfully reverted.'));
 
     // Filter order
     $edit = array();
     $edit['weights[filter/'. $second_filter .']'] = 2;
     $edit['weights[filter/'. $first_filter .']'] = 1;
     $this->drupalPost('admin/settings/filters/'. $filtered .'/order', $edit, t('Save configuration'));
-    $this->assertText(t('The filter ordering has been saved.'), 'Order successfully reverted.');
+    $this->assertText(t('The filter ordering has been saved.'), t('Order successfully reverted.'));
   }
 
   /**
@@ -183,21 +171,10 @@ class FilterTestCase extends DrupalTestCase {
   }
 
   /**
-   * Assert checkbox with specified name is checked on the page.
-   */
-  function assertCheckbox($name, $message) {
-    $this->assertWantedPattern('/name="'. $name .'"(.*?)checked="checked"/', $this->drupalGetContent(), $message);
-  }
-
-  /**
-   * Assert format with specified id is on the page.
-   */
-  function assertFormat($id, $message) {
-    $this->assertWantedPattern('/name="format"(.*?)value="'. $id .'"/', $this->drupalGetContent(), $message);
-  }
-
-  /**
    * Get filter by name.
+   *
+   * @param string $name Name of filter to find.
+   * @return object Filter object.
    */
   function getFilter($name) {
     return db_fetch_object(db_query("SELECT * FROM {filter_formats} WHERE name = '%s'", $name));

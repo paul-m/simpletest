@@ -970,7 +970,18 @@ class DrupalTestCase extends UnitTestCase {
     if ($this->parse()) {
       $fields = $this->elements->xpath($xpath);
     }
-    return $this->assertTrue($fields && (!$value || $fields[0]['value'] == $value), $message);
+
+    // If value specified then check array for match.
+    $found = TRUE;
+    if ($value) {
+      $found = FALSE;
+      foreach ($fields as $field) {
+        if ($field['value'] == $value) {
+          $found = TRUE;
+        }
+      }
+    }
+    return $this->assertTrue($fields && $found, $message);
   }
 
   /**
@@ -986,7 +997,18 @@ class DrupalTestCase extends UnitTestCase {
     if ($this->parse()) {
       $fields = $this->elements->xpath($xpath);
     }
-    return $this->assertFalse($fields && (!$value || $fields[0]['value'] == $value), $message);
+
+    // If value specified then check array for match.
+    $found = TRUE;
+    if ($value) {
+      $found = FALSE;
+      foreach ($fields as $field) {
+        if ($field['value'] == $value) {
+          $found = TRUE;
+        }
+      }
+    }
+    return $this->assertFalse($fields && $found, $message);
   }
 
   /**
