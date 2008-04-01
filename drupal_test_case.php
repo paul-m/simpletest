@@ -839,7 +839,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $message Message to display.
    * @return boolean TRUE on pass.
    */
-  function assertWantedRaw($raw, $message = "%s") {
+  function assertRaw($raw, $message = "%s") {
     return $this->assertFalse(strpos($this->_content, $raw) === FALSE, $message);
   }
 
@@ -851,7 +851,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param string $message Message to display.
    * @return boolean TRUE on pass.
    */
-  function assertNoUnwantedRaw($raw, $message = "%s") {
+  function assertNoRaw($raw, $message = "%s") {
     return $this->assertTrue(strpos($this->_content, $raw) === FALSE, $message);
   }
 
@@ -870,19 +870,6 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Pass if the text IS found on the text version of the page. The text version
-   * is the equivilent of what a user would see when viewing through a web browser.
-   * In other words the HTML has been filtered out of the contents.
-   *
-   * @param string $raw Text string to look for.
-   * @param string $message Message to display.
-   * @return boolean TRUE on pass.
-   */
-  function assertWantedText($text, $message) {
-    return $this->assertTextHelper($text, $message, FALSE);
-  }
-
-  /**
    * Pass if the text is NOT found on the text version of the page. The text version
    * is the equivilent of what a user would see when viewing through a web browser.
    * In other words the HTML has been filtered out of the contents.
@@ -892,19 +879,6 @@ class DrupalTestCase extends UnitTestCase {
    * @return boolean TRUE on pass.
    */
   function assertNoText($text, $message) {
-    return $this->assertTextHelper($text, $message, TRUE);
-  }
-
-  /**
-   * Pass if the text is NOT found on the text version of the page. The text version
-   * is the equivilent of what a user would see when viewing through a web browser.
-   * In other words the HTML has been filtered out of the contents.
-   *
-   * @param string $raw Text string to look for.
-   * @param string $message Message to display.
-   * @return boolean TRUE on pass.
-   */
-  function assertNoUnwantedText($text, $message) {
     return $this->assertTextHelper($text, $message, TRUE);
   }
 

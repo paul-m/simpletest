@@ -292,9 +292,9 @@ class PageEditTestCase extends DrupalTestCase {
     $acturl = $this->getURL();
     $this->assertEqual($editurl, $acturl);
 
-    $this->assertWantedText(t('Edit'), 'Edit text is here');
-    $this->assertWantedText(t($edit['title']), 'Hello, the random title');
-    $this->assertWantedText(t($edit['body']), 'test is over, the body\'s still there');
+    $this->assertText(t('Edit'), 'Edit text is here');
+    $this->assertText(t($edit['title']), 'Hello, the random title');
+    $this->assertText(t($edit['body']), 'test is over, the body\'s still there');
 
     $edit = array(
     'title' => '!SimpleTest! test title' . $this->randomName(20),
@@ -305,8 +305,8 @@ class PageEditTestCase extends DrupalTestCase {
     //edit the content of the page
     $this->drupalPost("node/$node->nid/edit", $edit, t('Save'));
 
-    $this->assertWantedText(t($edit['title']), 'Hello, the random title');
-    $this->assertWantedText(t($edit['body']), 'test is over, the body\'s still there');
+    $this->assertText(t($edit['title']), 'Hello, the random title');
+    $this->assertText(t($edit['body']), 'test is over, the body\'s still there');
   }
 
 }
@@ -332,9 +332,9 @@ class PagePreviewTestCase extends DrupalTestCase {
     );
     $this->drupalPost('node/add/page', $edit, t('Preview'));
 
-    $this->assertWantedText(t('Preview'), 'Preview text is here');
-    $this->assertWantedText(t($edit['title']), 'Hello, the random title');
-    $this->assertWantedText(t($edit['body']), 'test is over, the body\'s still there');
+    $this->assertText(t('Preview'), 'Preview text is here');
+    $this->assertText(t($edit['title']), 'Hello, the random title');
+    $this->assertText(t($edit['body']), 'test is over, the body\'s still there');
 
     $this->assertFieldByName('title', $edit['title'], 'The title is on it\'s place');
 
@@ -368,7 +368,7 @@ class PageCreationTestCase extends  DrupalTestCase {
     $edit['body']     = '!SimpleTest test body! ' . $this->randomName(32) . ' ' . $this->randomName(32);
     $this->drupalPost('node/add/page', $edit, t('Save'));
 
-    $this->assertWantedRaw(t('!post %title has been created.', array ('!post' => 'Page', '%title' => $edit['title'])), 'Page created');
+    $this->assertRaw(t('!post %title has been created.', array ('!post' => 'Page', '%title' => $edit['title'])), 'Page created');
 
     $node = node_load(array('title' => $edit['title']));
     $this->assertNotNull($node, t('Node !title found in database.', array ('!title' => $edit['title'])));

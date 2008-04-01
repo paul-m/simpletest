@@ -61,7 +61,7 @@ class EnableCoreModuleTestCase extends DrupalTestCase {
     }
 
     $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
-    $this->assertWantedRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
+    $this->assertRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
 
     // Now, we check the tables for each module
     // We also refresh the module list and make sure the modules are enabled
@@ -122,7 +122,7 @@ class EnableModuleWithoutDependencyTestCase extends DrupalTestCase {
     );
 
     $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
-    $this->assertWantedRaw(t('Some required modules must be enabled'), t('Make sure the dependency error is shown'));
+    $this->assertRaw(t('Some required modules must be enabled'), t('Make sure the dependency error is shown'));
 
     $this->assertFalse(module_exists('forum'), t('Check to make sure that the module has not somehow become enabled'));
   }
@@ -201,7 +201,7 @@ class DisableUninstallCoreModuleTestCase extends DrupalTestCase {
       }
 
       $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
-      $this->assertWantedRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
+      $this->assertRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
     }
 
     // Now, lets make sure the modules are truly disabled and then try to uninstall them
@@ -217,7 +217,7 @@ class DisableUninstallCoreModuleTestCase extends DrupalTestCase {
     $this->drupalPost('admin/build/modules/uninstall/confirm', $edit, t('Uninstall'));
     // We need to confirm this by clicking again
     $this->drupalPost(NULL, array(), t('Uninstall'));
-    $this->assertWantedRaw(t('The selected modules have been uninstalled.'), 'Check to ensure that the modules have been removed');
+    $this->assertRaw(t('The selected modules have been uninstalled.'), 'Check to ensure that the modules have been removed');
 
     // Now, we check the tables for each module
     foreach ($modules_to_test as $module) {

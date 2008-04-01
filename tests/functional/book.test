@@ -90,20 +90,20 @@ class BookTestCase extends DrupalTestCase {
 
     // Check previous, up, and next links.
     if ($previous) {
-      $this->assertWantedRaw(l('‹ ' . $previous->title, 'node/' . $previous->nid, array('attributes' => array('class' => 'page-previous', 'title' => t('Go to previous page')))), t('Prevoius page link found.'));
+      $this->assertRaw(l('‹ ' . $previous->title, 'node/' . $previous->nid, array('attributes' => array('class' => 'page-previous', 'title' => t('Go to previous page')))), t('Prevoius page link found.'));
     }
     if ($up) {
-      $this->assertWantedRaw(l('up', 'node/' . $up->nid, array('attributes' => array('class' => 'page-up', 'title' => t('Go to parent page')))), t('Up page link found.'));
+      $this->assertRaw(l('up', 'node/' . $up->nid, array('attributes' => array('class' => 'page-up', 'title' => t('Go to parent page')))), t('Up page link found.'));
     }
     if ($next) {
-      $this->assertWantedRaw(l($next->title . ' ›', 'node/' . $next->nid, array('attributes' => array('class' => 'page-next', 'title' => t('Go to next page')))), t('Next page link found.'));
+      $this->assertRaw(l($next->title . ' ›', 'node/' . $next->nid, array('attributes' => array('class' => 'page-next', 'title' => t('Go to next page')))), t('Next page link found.'));
     }
 
     // Check printer friendly version.
     $this->drupalGet('book/export/html/' . $node->nid);
     $this->assertText($node->title, t('Printer friendly title found.'));
     $node->body = str_replace('<!--break-->', '', $node->body);
-    $this->assertWantedRaw(check_markup($node->body, $node->format), t('Printer friendly body found.'));
+    $this->assertRaw(check_markup($node->body, $node->format), t('Printer friendly body found.'));
 
     $number++;
   }

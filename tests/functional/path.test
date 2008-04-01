@@ -65,7 +65,7 @@ class PathModuleTestCase extends DrupalTestCase {
     $this->drupalPost('admin/build/path/add', $edit, t('Create new alias'));
 
     // confirm that the alias didn't make a duplicate
-    $this->assertWantedRaw(t('The alias %alias is already in use in this language.', array('%alias' => $edit['dst'])), 'Attempt to move alias was rejected.');
+    $this->assertRaw(t('The alias %alias is already in use in this language.', array('%alias' => $edit['dst'])), 'Attempt to move alias was rejected.');
 
     // delete alias
     $this->drupalPost('admin/build/path/delete/' . $pid, array(), t('Confirm'));

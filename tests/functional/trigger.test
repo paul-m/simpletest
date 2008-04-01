@@ -56,13 +56,13 @@ class ActionsContentTestCase extends  DrupalTestCase {
 
     $edit = array('aid' => $hash);
     $this->drupalPost('admin/build/trigger/node', $edit, t('Assign'));
-    $this->assertWantedRaw(t('The action you chose is already assigned to that trigger.'), t('Check to make sure an error occurs when assigning an action to a trigger twice.'));
+    $this->assertRaw(t('The action you chose is already assigned to that trigger.'), t('Check to make sure an error occurs when assigning an action to a trigger twice.'));
 
     // Test 3: The action should be able to be unassigned from a trigger.
 
     // This effectively cleans up as well.
     $this->drupalPost('admin/build/trigger/unassign/nodeapi/presave/'. $hash, array(), t('Unassign'));
-    $this->assertWantedRaw(t('Action %action has been unassigned.', array('%action' => 'Publish post')), t('Check to make sure action can be unassigned from trigger.'));
+    $this->assertRaw(t('Action %action has been unassigned.', array('%action' => 'Publish post')), t('Check to make sure action can be unassigned from trigger.'));
 
     $assigned = db_result(db_query("SELECT COUNT(*) FROM {trigger_assignments} WHERE aid IN ('". implode("','", $content_actions) ."')"));
     $this->assertFalse($assigned, t('Check to make sure unassign worked properly at the database level.'));

@@ -48,19 +48,19 @@ class ContactTestCase extends DrupalTestCase {
     $invalid_recipients = array('invalid', 'invalid@', /*'invalid@site', 'invalid@site.',*/ '@site.', '@site.com');
     foreach ($invalid_recipients as $invalid_recipient) {
       $this->addCategory($this->randomName(16), $invalid_recipient, '', FALSE);
-      $this->assertWantedRaw(t('%recipient is an invalid e-mail address.', array('%recipient' => $invalid_recipient)), t('Caught invalid recipient ('. $invalid_recipient .').'));
+      $this->assertRaw(t('%recipient is an invalid e-mail address.', array('%recipient' => $invalid_recipient)), t('Caught invalid recipient ('. $invalid_recipient .').'));
     }
 
     // Create valid categories.
     $recipients = array('simpletest@test.com', 'simpletest2@test.com', 'simpletest3@test.com');
     $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0])), '', TRUE);
-    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
+    $this->assertRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
 
     $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1])), '', FALSE);
-    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
+    $this->assertRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
 
     $this->addCategory($category = $this->randomName(16), implode(',', array($recipients[0], $recipients[1], $recipients[2])), '', FALSE);
-    $this->assertWantedRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
+    $this->assertRaw(t('Category %category has been added.', array('%category' => $category)), t('Category successfully added.'));
 
     // Clear food table in preparation for flood test and allow other checks to complete.
     $this->assertTrue(db_query('DELETE FROM {flood}'), t('Flood table emptied.'));
@@ -107,7 +107,7 @@ class ContactTestCase extends DrupalTestCase {
     }
     // Submit contact form one over limit.
     $this->drupalGet('contact');
-    $this->assertWantedRaw(t('You cannot send more than %number messages per hour. Please try again later.', array('%number' => $edit['contact_hourly_threshold'])), t('Message threshold reached.'));
+    $this->assertRaw(t('You cannot send more than %number messages per hour. Please try again later.', array('%number' => $edit['contact_hourly_threshold'])), t('Message threshold reached.'));
 
     // Delete created categories.
     $this->drupalLogin($admin_user);
@@ -214,7 +214,7 @@ class ContactTestCase extends DrupalTestCase {
     foreach ($categories as $category) {
       $category_name = db_result(db_query('SELECT category FROM {contact} WHERE cid = %d', array($category)));
       $this->drupalPost('admin/build/contact/delete/'. $category, array(), t('Delete'));
-      $this->assertWantedRaw(t('Category %category has been deleted.', array('%category' => $category_name)), t('Category deleted sucessfully.'));
+      $this->assertRaw(t('Category %category has been deleted.', array('%category' => $category_name)), t('Category deleted sucessfully.'));
     }
   }
 

@@ -22,7 +22,7 @@ class AggregatorTestCase extends DrupalTestCase {
   function createFeed() {
     $edit = $this->getFeedEditArray();
     $this->drupalPost('admin/content/aggregator/add/feed', $edit, t('Save'));
-    $this->assertWantedRaw(t('The feed %name has been added.', array('%name' => $edit['title'])), t('The feed !name has been added.', array('!name' => $edit['title'])));
+    $this->assertRaw(t('The feed %name has been added.', array('%name' => $edit['title'])), t('The feed !name has been added.', array('!name' => $edit['title'])));
 
     $feed = db_fetch_object(db_query("SELECT *  FROM {aggregator_feed} WHERE title = '%s' AND url='%s'", $edit['title'], $edit['url']));
     $this->assertTrue(!empty($feed), t('The feed found in database.'));
@@ -36,7 +36,7 @@ class AggregatorTestCase extends DrupalTestCase {
    */
   function deleteFeed($feed) {
     $this->drupalPost('admin/content/aggregator/edit/feed/'. $feed->fid, array(), t('Delete'));
-    $this->assertWantedRaw(t('The feed %title has been deleted.', array('%title' => $feed->title)), t('Feed deleted successfully.'));
+    $this->assertRaw(t('The feed %title has been deleted.', array('%title' => $feed->title)), t('Feed deleted successfully.'));
   }
 
   /**
@@ -90,7 +90,7 @@ class AggregatorTestCase extends DrupalTestCase {
    */
   function removeFeedItems($feed) {
     $this->drupalPost('admin/content/aggregator/remove/' . $feed->fid, array(), t('Remove items'));
-    $this->assertWantedRaw(t('The news items from %title have been removed.', array('%title' => $feed->title)), t('Feed items removed.'));
+    $this->assertRaw(t('The news items from %title have been removed.', array('%title' => $feed->title)), t('Feed items removed.'));
   }
 
   /**
@@ -173,7 +173,7 @@ class UpdateFeedTestCase extends AggregatorTestCase {
     $edit = $this->getFeedEditArray();
     $edit['refresh'] =  1800; // Change refresh value.
     $this->drupalPost('admin/content/aggregator/edit/feed/'. $feed->fid, $edit, t('Save'));
-    $this->assertWantedRaw(t('The feed %name has been updated.', array('%name' => $edit['title'])), t('The feed %name has been updated.', array('%name' => $edit['title'])));
+    $this->assertRaw(t('The feed %name has been updated.', array('%name' => $edit['title'])), t('The feed %name has been updated.', array('%name' => $edit['title'])));
 
     // Check feed data.
     $this->assertEqual($this->getUrl(), url('admin/content/aggregator/', array('absolute' => TRUE)));

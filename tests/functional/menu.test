@@ -225,7 +225,7 @@ class MenuResetTestCase extends DrupalTestCase {
       $this->assertTrue($new_title == $edit['menu[link_title]'], 'Edit succesful');
       $this->assertFalse($item['link_title'] == $new_title, 'Item changed' );
       $reset_path = $path .'/reset';
-      $this->assertWantedRaw($reset_path, 'Reset link found');
+      $this->assertRaw($reset_path, 'Reset link found');
       $this->drupalPost($reset_path, array(), t('Reset'));
       $reset_title = db_result(db_query('SELECT link_title FROM {menu_links} WHERE mlid = %d', $mlid));
       $this->assertFalse($edit['menu[link_title]'] == $reset_title, 'Item reset');
@@ -269,7 +269,7 @@ class MenuInvalidPathTestCase extends DrupalTestCase {
         'menu[link_title]' => 'title',
       );
       $this->drupalPost('admin/build/menu-customize/navigation/add', $edit, t('Save'));
-      $this->assertWantedRaw(t("The path '@path' is either invalid or you do not have access to it.", array('@path' => $invalid_path)), 'Invalid path failed');
+      $this->assertRaw(t("The path '@path' is either invalid or you do not have access to it.", array('@path' => $invalid_path)), 'Invalid path failed');
     }
   }
 }

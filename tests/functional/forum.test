@@ -33,7 +33,7 @@ class ForumTestCase extends DrupalTestCase {
     // Double check that the page says it has created the container
     $this->drupalPost('admin/content/forum/add/container', $edit, t('Save'));
     $type = t('forum container');
-    $this->assertWantedRaw(t('Created new @type %term.', array('%term' => $title, '@type' => $type)), t('New forum container has been created'));
+    $this->assertRaw(t('Created new @type %term.', array('%term' => $title, '@type' => $type)), t('New forum container has been created'));
 
     // Grab the newly created container
     $term = db_fetch_array(db_query("SELECT * FROM {term_data} t WHERE t.vid = %d AND t.name = '%s' AND t.description = '%s'", variable_get('forum_nav_vocabulary', ''), $title, $description));
@@ -59,7 +59,7 @@ class ForumTestCase extends DrupalTestCase {
     // Double check that the page says it has created the forum
     $this->drupalPost('admin/content/forum/add/forum', $edit, t('Save'));
     $type = t('forum');
-    $this->assertWantedRaw(t('Created new @type %term.', array('%term' => $title, '@type' => $type)), t('New forum has been created'));
+    $this->assertRaw(t('Created new @type %term.', array('%term' => $title, '@type' => $type)), t('New forum has been created'));
 
     // Grab the newly created forum
     $term = db_fetch_array(db_query("SELECT * FROM {term_data} t WHERE t.vid = %d AND t.name = '%s' AND t.description = '%s'", variable_get('forum_nav_vocabulary', ''), $title, $description));
@@ -144,7 +144,7 @@ class EditForumTaxonomyTestCase extends ForumTestCase {
 
     // Double check that the page says it has edited the vocabulary
     $this->drupalPost('admin/content/taxonomy/edit/vocabulary/'. $vid, $edit, t('Save'));
-    $this->assertWantedRaw(t('Updated vocabulary %name.', array('%name' => $title)), t('Vocabulary has been edited'));
+    $this->assertRaw(t('Updated vocabulary %name.', array('%name' => $title)), t('Vocabulary has been edited'));
 
     // Grab the newly edited vocabulary
     $cur_settings = db_fetch_array(db_query('SELECT v.* FROM {vocabulary} v WHERE v.vid = %d', $vid));
@@ -194,15 +194,15 @@ class AddTopicToForumTestCase extends ForumTestCase {
     // Double check that the page says it has created the topic
     $this->drupalPost('node/add/forum/'. $forum['tid'], $edit, t('Save'));
     $type = t('Forum topic');
-    $this->assertWantedRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('New forum topic has been created'));
-    $this->assertNoUnwantedRaw(t('The item %term is only a container for forums.', array('%term' => $forum['name'])), t('No error message shown'));
+    $this->assertRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('New forum topic has been created'));
+    $this->assertNoRaw(t('The item %term is only a container for forums.', array('%term' => $forum['name'])), t('No error message shown'));
 
     // Then find the new topic, load it, and make sure the text we chose appears
     $new_topic = node_load(array('title' => $title), null, true);
     $this->drupalGet("node/$new_topic->nid");
 
-    $this->assertWantedRaw($title, t('Looking for subject text'));
-    $this->assertWantedRaw($description, t('Looking for body text'));
+    $this->assertRaw($title, t('Looking for subject text'));
+    $this->assertRaw($description, t('Looking for body text'));
 
     // Delete the topic
     node_delete($new_topic->nid);
@@ -237,8 +237,8 @@ class AddTopicToForumTestCase extends ForumTestCase {
     // Double check that the page says it hasn't created the topic
     $this->drupalPost('node/add/forum/'. $container['tid'], $edit, t('Save'));
     $type = t('Forum topic');
-    $this->assertNoUnwantedRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('No "new forum has been created" message'));
-    $this->assertWantedRaw(t('The item %term is only a container for forums.', array('%term' => $container['name'])), t('Error message shown'));
+    $this->assertNoRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('No "new forum has been created" message'));
+    $this->assertRaw(t('The item %term is only a container for forums.', array('%term' => $container['name'])), t('Error message shown'));
 
     // Then make sure the node does not exist
     $new_topic = node_load(array('title' => $title), null, true);
@@ -275,8 +275,8 @@ class AddTopicToForumTestCase extends ForumTestCase {
     // Double check that the page says it has created the topic
     $this->drupalPost('node/add/forum/'. $forum1['tid'], $edit, t('Save'));
     $type = t('Forum topic');
-    $this->assertWantedRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('New forum topic has been created'));
-    $this->assertNoUnwantedRaw(t('The item %term is only a container for forums.', array('%term' => $forum1['name'])), t('No error message shown'));
+    $this->assertRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('New forum topic has been created'));
+    $this->assertNoRaw(t('The item %term is only a container for forums.', array('%term' => $forum1['name'])), t('No error message shown'));
 
     // Then find the new topic and edit it to move it
     $new_topic = node_load(array('title' => $title), null, true);
@@ -292,9 +292,9 @@ class AddTopicToForumTestCase extends ForumTestCase {
     // Also, double check that the new forum name is there and not the old
     $this->drupalPost('node/'. $new_topic->nid .'/edit', $edit, t('Save'));
     $type = t('Forum topic');
-    $this->assertWantedRaw(t('@type %term has been updated.', array('%term' => $title, '@type' => $type)), t('Topic has been moved'));
-    $this->assertWantedRaw($forum2['name'], t('New forum name is present'));
-    $this->assertNoUnwantedRaw($forum1['name'], t('Old forum name is not present'));
+    $this->assertRaw(t('@type %term has been updated.', array('%term' => $title, '@type' => $type)), t('Topic has been moved'));
+    $this->assertRaw($forum2['name'], t('New forum name is present'));
+    $this->assertNoRaw($forum1['name'], t('Old forum name is not present'));
 
     // Delete the topic
     node_delete($new_topic->nid);
@@ -332,8 +332,8 @@ class AddTopicToForumTestCase extends ForumTestCase {
     // Double check that the page says it has created the topic
     $this->drupalPost('node/add/forum/'. $forum1['tid'], $edit, t('Save'));
     $type = t('Forum topic');
-    $this->assertWantedRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('New forum topic has been created'));
-    $this->assertNoUnwantedRaw(t('The item %term is only a container for forums.', array('%term' => $forum1['name'])), t('No error message shown'));
+    $this->assertRaw(t('@type %term has been created.', array('%term' => $title, '@type' => $type)), t('New forum topic has been created'));
+    $this->assertNoRaw(t('The item %term is only a container for forums.', array('%term' => $forum1['name'])), t('No error message shown'));
 
     // Then find the new topic and edit it to move it
     $new_topic = node_load(array('title' => $title), null, true);
@@ -349,9 +349,9 @@ class AddTopicToForumTestCase extends ForumTestCase {
     // Also, double check that the new forum name is there and not the old
     $this->drupalPost('node/'. $new_topic->nid .'/edit', $edit, t('Save'));
     $type = t('Forum topic');
-    $this->assertWantedRaw(t('@type %term has been updated.', array('%term' => $title, '@type' => $type)), t('Topic has been moved'));
-    $this->assertWantedRaw($forum2['name'], t('New forum name is present'));
-    $this->assertNoUnwantedRaw($forum1['name'], t('Old forum name is not present'));
+    $this->assertRaw(t('@type %term has been updated.', array('%term' => $title, '@type' => $type)), t('Topic has been moved'));
+    $this->assertRaw($forum2['name'], t('New forum name is present'));
+    $this->assertNoRaw($forum1['name'], t('Old forum name is not present'));
 
     // Delete the topic
     node_delete($new_topic->nid);

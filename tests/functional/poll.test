@@ -29,13 +29,13 @@ class PollTestCase extends DrupalTestCase {
       for ($i = 0; $i <= 6; $i++) {
         $bar = theme('poll_bar', $edit['choice['. $i .'][chtext]'], NULL, 0, FALSE, FALSE);
         $this->assertTrue($bar, "bar $i is themed");
-        $this->assertWantedRaw($bar, "bar $i found in preview");
+        $this->assertRaw($bar, "bar $i found in preview");
       }
     }
     $this->drupalPost(NULL, $edit, t('Save'));
     $node = node_load(array('title' => $title));
     $this->nid = $node->nid;
-    $this->assertWantedRaw(t('@type %title has been created.', array('@type' => node_get_types('name', 'poll'), '%title' => $title)), 'Poll has been created.');
+    $this->assertRaw(t('@type %title has been created.', array('@type' => node_get_types('name', 'poll'), '%title' => $title)), 'Poll has been created.');
     $this->assertTrue($this->nid, t('Poll has been found in the database'));
   }
 

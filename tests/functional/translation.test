@@ -33,7 +33,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
 
     // Set story content type to use multilingual support with translation.
     $this->drupalPost('admin/content/node-type/story', array('language_content_type' => "2"), t('Save content type'));
-    $this->assertWantedRaw(t('The content type %type has been updated.', array('%type' => 'Story')), 'Story content type has been updated.');
+    $this->assertRaw(t('The content type %type has been updated.', array('%type' => 'Story')), 'Story content type has been updated.');
 
     $this->drupalGet('logout');
     $this->drupalLogin($translator);
@@ -51,18 +51,18 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $edit['body'] = 'Node body. Additional Text.';
     $edit['translation[retranslate]'] = TRUE;
     $this->drupalPost('node/'. $node->nid .'/edit', $edit, t('Save'));
-    $this->assertWantedRaw(t('Story %title has been updated.', array('%title' => $node_title)), 'Original node updated.');
+    $this->assertRaw(t('Story %title has been updated.', array('%title' => $node_title)), 'Original node updated.');
 
     // Check to make sure that interface shows translation as outdated
     $this->drupalGet('node/'. $node->nid .'/translate');
-    $this->assertWantedRaw('<span class="marker">'. t('outdated') .'</span>', 'Translation marked as outdated.');
+    $this->assertRaw('<span class="marker">'. t('outdated') .'</span>', 'Translation marked as outdated.');
 
     // Update translation and mark as updated.
     $edit = array();
     $edit['body'] = 'Nodo cuerpo. Texto adicional.';
     $edit['translation[status]'] = FALSE;
     $this->drupalPost('node/'. $node_trans->nid .'/edit', $edit, t('Save'));
-    $this->assertWantedRaw(t('Story %title has been updated.', array('%title' => $node_trans_title)), 'Translated node updated.');
+    $this->assertRaw(t('Story %title has been updated.', array('%title' => $node_trans_title)), 'Translated node updated.');
   }
 
   /**
@@ -85,7 +85,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
       $this->assertTrue(array_key_exists($language_code, $languages), 'Language was installed successfully.');
 
       if (array_key_exists($language_code, $languages)) {
-        $this->assertWantedRaw(t('The language %language has been created and can now be used. More information is available on the <a href="@locale-help">help screen</a>.', array('%language' => $languages[$language_code]->name, '@locale-help' => url('admin/help/locale'))));
+        $this->assertRaw(t('The language %language has been created and can now be used. More information is available on the <a href="@locale-help">help screen</a>.', array('%language' => $languages[$language_code]->name, '@locale-help' => url('admin/help/locale'))));
       }
     }
     else {
@@ -93,7 +93,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
       $this->assertTrue(true, 'Language ['. $language_code .'] already installed.');
       $this->drupalPost(NULL, array('enabled['. $language_code .']' => TRUE), t('Save configuration'));
 
-      $this->assertWantedRaw(t('Configuration saved.'), 'Language successfully enabled.');
+      $this->assertRaw(t('Configuration saved.'), 'Language successfully enabled.');
     }
   }
 
@@ -113,7 +113,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     $edit['language'] = $language;
     $this->drupalPost('node/add/story', $edit, t('Save'));
 
-    $this->assertWantedRaw(t('Story %title has been created.', array('%title' => $edit['title'])), 'Story created.');
+    $this->assertRaw(t('Story %title has been created.', array('%title' => $edit['title'])), 'Story created.');
 
     // Check to make sure the node was created.
     $node = node_load(array('title' => $edit['title']));
@@ -139,7 +139,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
 
     $this->drupalPost(NULL, $edit, t('Save'));
 
-    $this->assertWantedRaw(t('Story %title has been created.', array('%title' => $edit['title'])), 'Translation created.');
+    $this->assertRaw(t('Story %title has been created.', array('%title' => $edit['title'])), 'Translation created.');
 
     // Check to make sure that translation was successfull.
     $node = node_load(array('title' => $edit['title']));

@@ -351,7 +351,7 @@ class TaxonomyTestNodeApiTestCase extends DrupalTestCase {
     $this->drupalPost('node/'. $node->nid .'/delete', array(), t('Delete'));
     // checking after delete
     $this->drupalGet("node/".$node->nid);
-    $this->assertNoUnwantedText($termname, "Checking if node exists");
+    $this->assertNoText($termname, "Checking if node exists");
     // checking database fields
     $num_rows = db_result(db_query('SELECT COUNT(*) FROM {term_node} WHERE nid = %d', $node->nid));
     $this->assertEqual($num_rows, 0, 'Checking database field after deletion');

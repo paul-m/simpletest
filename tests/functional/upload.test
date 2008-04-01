@@ -61,7 +61,7 @@ class UploadTestCase extends DrupalTestCase {
       $edit = array();
       $edit['files['. $upload->fid .'][description]'] = $new_name = substr($upload->description, 1);
       $this->drupalPost('node/'. $node->nid .'/edit', $edit, t('Save'));
-      $this->assertWantedRaw(t('Page %title has been updated.', array('%title' => $node->title)), 'File renamed successfully.');
+      $this->assertRaw(t('Page %title has been updated.', array('%title' => $node->title)), 'File renamed successfully.');
 
       $this->assertText($new_name, $new_name .' found on node.');
       $this->assertNoText($upload->description, $upload->description .' not found on node.');
@@ -70,7 +70,7 @@ class UploadTestCase extends DrupalTestCase {
       $edit = array();
       $edit['files['. $upload->fid .'][remove]'] = TRUE;
       $this->drupalPost('node/'. $node->nid .'/edit', $edit, t('Save'));
-      $this->assertWantedRaw(t('Page %title has been updated.', array('%title' => $node->title)), 'File deleted successfully.');
+      $this->assertRaw(t('Page %title has been updated.', array('%title' => $node->title)), 'File deleted successfully.');
 
       $this->assertNoText($new_name, $new_name .' not found on node.');
       $this->drupalGet(file_directory_path() .'/'. $upload->description);
@@ -91,7 +91,7 @@ class UploadTestCase extends DrupalTestCase {
     $edit = array();
     $edit['files[upload]'] = $this->getFilePath($filename);
     $this->drupalPost('node/'. $node->nid .'/edit', $edit, t('Save'));
-    $this->assertWantedRaw(t('Page %title has been updated.', array('%title' => $node->title)), 'File attached successfully.');
+    $this->assertRaw(t('Page %title has been updated.', array('%title' => $node->title)), 'File attached successfully.');
   }
 
   /**
@@ -156,7 +156,7 @@ class UploadPictureTestCase extends DrupalTestCase {
     $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/functional/upload.test");
     $edit = array('files[picture_upload]' => $img_path);
     $this->drupalPost('user/'.$user->uid.'/edit', $edit, t('Save'));
-    $this->assertWantedRaw(t('The selected file %file could not be uploaded. Only JPEG, PNG and GIF images are allowed.', array('%file' => 'upload.test')), 'The uploaded file was not an image.');
+    $this->assertRaw(t('The selected file %file could not be uploaded. Only JPEG, PNG and GIF images are allowed.', array('%file' => 'upload.test')), 'The uploaded file was not an image.');
     variable_set('user_pictures', $old_pic_set);
 
     // do we have to check users roles?
@@ -210,7 +210,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         $picture = file_create_url($pic_path);
 
         // check if image is displayed in user's profile page
-        $this->assertWantedRaw($picture, "Image is displayed in user's profile page");
+        $this->assertRaw($picture, "Image is displayed in user's profile page");
 
         // check if file is located in proper directory
         $this->assertTrue(is_file($pic_path), "File is located in proper directory");
@@ -266,7 +266,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         $picture = file_create_url($pic_path);
 
         // check if image is displayed in user's profile page
-        $this->assertWantedRaw($picture, "Image is displayed in user's profile page");
+        $this->assertRaw($picture, "Image is displayed in user's profile page");
 
         // check if file is located in proper directory
         $this->assertTrue(is_file($pic_path), "File is located in proper directory");
@@ -312,7 +312,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         $edit = array('picture' => $img_path);
         $this->drupalPost('user/'.$user->uid.'/edit', $edit, t('Save'));
         $text = t('The uploaded image is too large; the maximum dimensions are %dimensions pixels.', array('%dimensions' => variable_get('user_picture_dimensions', '85x85')));
-        $this->assertWantedText($text, 'Checking response on invalid image (dimensions).');
+        $this->assertText($text, 'Checking response on invalid image (dimensions).');
 
         // check if file is not uploaded
         $file_dir = variable_get('file_directory_path', 'files');
@@ -361,7 +361,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         $edit = array('picture' => $img_path);
         $this->drupalPost('user/'.$user->uid.'/edit', $edit, t('Save'));
         $text = t('The uploaded image is too large; the maximum file size is %size kB.', array('%size' => variable_get('user_picture_file_size', '30')));
-        $this->assertWantedText($text, 'Checking response on invalid image size.');
+        $this->assertText($text, 'Checking response on invalid image size.');
 
         // check if file is not uploaded
         $file_dir = variable_get('file_directory_path', 'files');

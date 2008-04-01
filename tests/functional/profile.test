@@ -80,9 +80,9 @@ class ProfileTestSingleTestCase extends DrupalTestCase {
     // checking field
     $this->assertField($form_name , t('Found form named @name', array('@name' => $form_name)));
     // checking name
-    $this->assertWantedText($title, "Checking title for ". $title);
+    $this->assertText($title, "Checking title for ". $title);
     // checking explanation
-    $this->assertWantedText($explanation, "Checking explanation for ". $title);
+    $this->assertText($explanation, "Checking explanation for ". $title);
 
     // ok, now let put some data
     unset($edit);
@@ -93,17 +93,17 @@ class ProfileTestSingleTestCase extends DrupalTestCase {
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
-    $this->assertWantedText($edit[$form_name], "Checking ". $edit[$form_name]);
-    $this->assertWantedText($title, "Checking $title");
+    $this->assertText($edit[$form_name], "Checking ". $edit[$form_name]);
+    $this->assertText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
     $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field') , 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertWantedText($new_title, "Checking updated field");
+    $this->assertText($new_title, "Checking updated field");
     // deleting field
     $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
+    $this->assertNoText($new_title, "Checking deleted field $title");
 
     // delete test user and roles
     if ($user->uid > 0) {
@@ -194,9 +194,9 @@ class ProfileTestTextareaTestCase extends DrupalTestCase {
     // checking field
     $this->assertField($form_name, '');
     // checking name
-    $this->assertWantedText($title, "Checking title for ". $title);
+    $this->assertText($title, "Checking title for ". $title);
     // checking explanation
-    $this->assertWantedText($explanation, "Checking explanation for ". $title);
+    $this->assertText($explanation, "Checking explanation for ". $title);
 
     // ok, now let put some data
     unset($edit);
@@ -207,17 +207,17 @@ class ProfileTestTextareaTestCase extends DrupalTestCase {
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
-    $this->assertWantedText($edit[$form_name], "Checking ". $edit[$form_name]);
-    $this->assertWantedText($title, "Checking $title");
+    $this->assertText($edit[$form_name], "Checking ". $edit[$form_name]);
+    $this->assertText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
     $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertWantedText($new_title, "Checking updated field");
+    $this->assertText($new_title, "Checking updated field");
     // deleting field
     $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
+    $this->assertNoText($new_title, "Checking deleted field $title");
 
     // delete test user and roles
     if ($user->uid > 0) {
@@ -308,9 +308,9 @@ class ProfileTestFreelistTestCase extends DrupalTestCase {
     // checking field
     $this->assertField($form_name, '');
     // checking name
-    $this->assertWantedText($title, "Checking title for ". $title);
+    $this->assertText($title, "Checking title for ". $title);
     // checking explanation
-    $this->assertWantedText($explanation, "Checking explanation for ". $title);
+    $this->assertText($explanation, "Checking explanation for ". $title);
 
     // ok, now let put some data
     unset($edit);
@@ -321,17 +321,17 @@ class ProfileTestFreelistTestCase extends DrupalTestCase {
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
-    $this->assertWantedText($edit[$form_name], "Checking ". $edit[$form_name]);
-    $this->assertWantedText($title, "Checking $title");
+    $this->assertText($edit[$form_name], "Checking ". $edit[$form_name]);
+    $this->assertText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
     $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertWantedText($new_title, "Checking updated field");
+    $this->assertText($new_title, "Checking updated field");
     // deleting field
     $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
+    $this->assertNoText($new_title, "Checking deleted field $title");
 
     // delete test user and roles
     if ($user->uid > 0) {
@@ -423,9 +423,9 @@ class ProfileTestCheckboxTestCase extends DrupalTestCase {
     // checking field
     $this->assertField($form_name, false);
     // checking name
-    $this->assertWantedText($title, "Checking title for ". $title);
+    $this->assertText($title, "Checking title for ". $title);
     // checking explanation
-    $this->assertWantedText($explanation, "Checking explanation for ". $title);
+    $this->assertText($explanation, "Checking explanation for ". $title);
 
     // ok, now let put some data
     unset($edit);
@@ -435,17 +435,17 @@ class ProfileTestCheckboxTestCase extends DrupalTestCase {
     $this->drupalPost("user/". $user->uid. "/edit/$my_category", $edit, t('Save'), 0);
     $this->drupalGet("user/". $user->uid);
     // checking profile page
-    $this->assertWantedText($title, "Checking checkbox");
-    $this->assertWantedText($title, "Checking $title");
+    $this->assertText($title, "Checking checkbox");
+    $this->assertText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(10);
     $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertWantedText($new_title, "Checking updated field");
+    $this->assertText($new_title, "Checking updated field");
     // deleting field
     $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
+    $this->assertNoText($new_title, "Checking deleted field $title");
 
     // delete test user and roles
     if ($user->uid > 0) {
@@ -536,9 +536,9 @@ class ProfileTestUrlTestCase extends DrupalTestCase {
     // checking field
     $this->assertField($form_name, '');
     // checking name
-    $this->assertWantedText($title, "Checking title for ". $title);
+    $this->assertText($title, "Checking title for ". $title);
     // checking explanation
-    $this->assertWantedText($explanation, "Checking explanation for ". $title);
+    $this->assertText($explanation, "Checking explanation for ". $title);
 
     // ok, now let put some data
     unset($edit);
@@ -549,17 +549,17 @@ class ProfileTestUrlTestCase extends DrupalTestCase {
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
-    $this->assertWantedText($edit[$form_name], "Checking ". $edit[$form_name]);
-    $this->assertWantedText($title, "Checking $title");
+    $this->assertText($edit[$form_name], "Checking ". $edit[$form_name]);
+    $this->assertText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
     $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertWantedText($new_title, "Checking updated field");
+    $this->assertText($new_title, "Checking updated field");
     // deleting field
     $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
+    $this->assertNoText($new_title, "Checking deleted field $title");
 
     // delete test user and roles
     if ($user->uid > 0) {
@@ -650,9 +650,9 @@ class ProfileTestSelectionTestCase extends DrupalTestCase {
     // checking simple fields
     $this->drupalGet("user/". $user->uid. "/edit/$my_category");
     // checking name
-    $this->assertWantedText($title, "Checking title for ". $title);
+    $this->assertText($title, "Checking title for ". $title);
     // checking explanation
-    $this->assertWantedText($explanation, "Checking explanation for ". $title);
+    $this->assertText($explanation, "Checking explanation for ". $title);
     // can we choose something which doesn't come from the list ?
     //$this->assertFalse($this->setField('edit['.$form_name .']', $this->randomName(10)));
     // or can we choose each of our options
@@ -672,17 +672,17 @@ class ProfileTestSelectionTestCase extends DrupalTestCase {
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
-    $this->assertWantedText($edit[$form_name], "Checking ". $edit[$form_name]);
-    $this->assertWantedText($title, "Checking $title");
+    $this->assertText($edit[$form_name], "Checking ". $edit[$form_name]);
+    $this->assertText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
     $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertWantedText($new_title, "Checking updated field");
+    $this->assertText($new_title, "Checking updated field");
     // deleting field
     $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
+    $this->assertNoText($new_title, "Checking deleted field $title");
 
     // delete test user and roles
     if ($user->uid > 0) {
@@ -775,9 +775,9 @@ class ProfileTestDateTestCase extends DrupalTestCase {
     // checking simple fields
     $this->drupalGet("user/". $user->uid. "/edit/$my_category");
     // checking name
-    $this->assertWantedText($title, "Checking title for ". $title);
+    $this->assertText($title, "Checking title for ". $title);
     // checking explanation
-    $this->assertWantedText($explanation, "Checking explanation for ". $title);
+    $this->assertText($explanation, "Checking explanation for ". $title);
     // checking days/month/years
     //foreach(array('year', 'month', 'day') as $field)
       //$this->assertFalse($this->setField('edit['.$form_name .']['. $field .']', $this->randomName(4)), 'Checking data field ['.$field.']');
@@ -801,17 +801,17 @@ class ProfileTestDateTestCase extends DrupalTestCase {
     $this->drupalGet("user/". $user->uid);
 
     // checking profile page
-    $this->assertWantedText($data, "Checking date $data");
-    $this->assertWantedText($title, "Checking $title");
+    $this->assertText($data, "Checking date $data");
+    $this->assertText($title, "Checking $title");
     // update field
     $new_title = $this->randomName(20);
     $this->drupalPost("admin/user/profile/edit/$fid", array('title' => $new_title), t('Save field'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertWantedText($new_title, "Checking updated field");
+    $this->assertText($new_title, "Checking updated field");
     // deleting field
     $this->drupalPost("admin/user/profile/delete/$fid", array(), t('Delete'), 0);
     $this->drupalGet("admin/user/profile");
-    $this->assertNoUnwantedText($new_title, "Checking deleted field $title");
+    $this->assertNoText($new_title, "Checking deleted field $title");
 
     // delete test user and roles
     if ($user->uid > 0) {
@@ -920,8 +920,8 @@ class ProfileTest2TestCase extends DrupalTestCase {
     // logout
     $this->drupalGet("logout");
     $this->drupalGet("user/register");
-    $this->assertNoUnwantedText($sfield1['title'], 'Field is not visible in registration form');
-    $this->assertWantedText($sfield2['title'], 'Field is visible in registration form');
+    $this->assertNoText($sfield1['title'], 'Field is not visible in registration form');
+    $this->assertText($sfield2['title'], 'Field is visible in registration form');
     // try to register
     $fname = $this->randomName(5, 'simpletest_');
     $fmail = "$fname@drupaltest.example.com";
@@ -929,7 +929,7 @@ class ProfileTest2TestCase extends DrupalTestCase {
                'mail' => $fmail);
     $this->drupalPost('user/register', $edit, t('Create new account'), 0);
     //$key = t('The field %field is required.', array('%field' => $title));
-    //$this->assertWantedText($key, 'Checking error message');
+    //$this->assertText($key, 'Checking error message');
     //log in
     $edit = array('name' => $name, 'pass' => $pass);
     $this->drupalPost('user', $edit, t('Log in'), 0);
@@ -952,7 +952,7 @@ class ProfileTest2TestCase extends DrupalTestCase {
     $title = str_replace("%value", $choice, $page_title);
 
     $this->assertTitle($title. ' | '. variable_get('site_name', 'Drupal'), "Checking title $title");
-    $this->assertWantedText($title, "Checking $title in content");
+    $this->assertText($title, "Checking $title in content");
     $delete_fields[] = $fid;
 
     foreach($delete_fields as $delfid) {

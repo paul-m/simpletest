@@ -110,7 +110,7 @@ class BlogAPITestCase extends DrupalTestCase {
 
     $this->drupalPost('admin/content/taxonomy/edit/vocabulary/'. $vid, array(), t('Delete'));
     $this->drupalPost(NULL, array(), t('Delete'));
-    $this->assertWantedRaw(t('Deleted vocabulary %vocab.', array('%vocab' => 'simpletest_vocab')), 'Removed vocabulary.');
+    $this->assertRaw(t('Deleted vocabulary %vocab.', array('%vocab' => 'simpletest_vocab')), 'Removed vocabulary.');
   }
 
   /**
@@ -123,7 +123,7 @@ class BlogAPITestCase extends DrupalTestCase {
     $edit['name'] = $vocab;
     $edit['nodes[blog]'] = TRUE;
     $this->drupalPost('admin/content/taxonomy/add/vocabulary', $edit, t('Save'));
-    $this->assertWantedRaw(t('Created new vocabulary %vocab.', array('%vocab' => $edit['name'])), 'Taxonomy vocabulary added.');
+    $this->assertRaw(t('Created new vocabulary %vocab.', array('%vocab' => $edit['name'])), 'Taxonomy vocabulary added.');
 
     $vocab_arr = taxonomy_get_vocabularies();
     $vid = NULL;
@@ -148,7 +148,7 @@ class BlogAPITestCase extends DrupalTestCase {
     $edit = array();
     $edit['name'] = $term;
     $this->drupalPost('admin/content/taxonomy/'. $vid .'/add/term', $edit, t('Save'));
-    $this->assertWantedRaw(t('Created new term %term.', array('%term' => $edit['name'])), 'Taxonomy term added.');
+    $this->assertRaw(t('Created new term %term.', array('%term' => $edit['name'])), 'Taxonomy term added.');
 
     $tree = taxonomy_get_tree($vid);
     $tid = NULL;

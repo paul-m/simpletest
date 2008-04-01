@@ -75,7 +75,7 @@ class LocaleTestCase extends DrupalTestCase {
     // found, so this is not a false assert. See how assertNoText succeeds
     // later.
     $this->assertText($name, 'Search found the name');
-    $this->assertWantedRaw($language_indicator, 'Name is untranslated');
+    $this->assertRaw($language_indicator, 'Name is untranslated');
     // It's presumed that this is the only result. Given the random name, it's
     // reasonable.
     $this->clickLink(t('edit'));
@@ -91,7 +91,7 @@ class LocaleTestCase extends DrupalTestCase {
     $this->assertTrue($name != $translation && t($name, array(), $langcode) == $translation, 't() works');
     $this->drupalPost('admin/build/translate/search', $search, t('Search'));
     // The indicator should not be here.
-    $this->assertNoUnwantedRaw($language_indicator, 'String is translated');
+    $this->assertNoRaw($language_indicator, 'String is translated');
     $this->drupalGet('logout');
 
     // Delete the language
@@ -100,7 +100,7 @@ class LocaleTestCase extends DrupalTestCase {
     // This a confirm form, we do not need any fields changed.
     $this->drupalPost($path, array(), t('Delete'));
     // We need raw here because %locale will add HTML.
-    $this->assertWantedRaw(t('The language %locale has been removed.', array('%locale' => $name)), 'The test language has been removed.');
+    $this->assertRaw(t('The language %locale has been removed.', array('%locale' => $name)), 'The test language has been removed.');
     // Reload to remove $name.
     $this->drupalGet($path);
     $this->assertNoText($langcode, 'Language code not found');

@@ -93,8 +93,8 @@ class UserRegistrationTestCase extends DrupalTestCase {
     $this->assertNoText(t('Sorry. Unrecognized username or password.'), 'Logged in (no message for unrecognized username or password)');
     $this->assertNoText(t('User login'), 'Logged in (no user login form present)');
     // I can't find this in Drupal anywhere, but I left it in for now.
-    $this->assertNoUnwantedRaw(t('The username %name has been blocked.', array('%name' => $pname)), 'Not blocked');
-    $this->assertNoUnwantedRaw(t('The name %name is a reserved username.', array('%name' => $pname)), 'Access granted');
+    $this->assertNoRaw(t('The username %name has been blocked.', array('%name' => $pname)), 'Not blocked');
+    $this->assertNoRaw(t('The name %name is a reserved username.', array('%name' => $pname)), 'Access granted');
 
     $this->drupalGet('user');
     $this->assertText($pname, 'user as auth lands on the user profile');
@@ -196,7 +196,7 @@ class UserAccessTestCase extends DrupalTestCase {
 
     $this->drupalPost('user/register', $edit, t('Create new account'));
 
-    $this->assertNoUnWantedText(t('Your password and further instructions have been sent to your e-mail address.'), 'blocked user: Your password and further instructions - not found');
+    $this->assertNoText(t('Your password and further instructions have been sent to your e-mail address.'), 'blocked user: Your password and further instructions - not found');
     $this->assertText(t('The name @name has been denied access.', array('@name' => $name)), 'blocked user: denied access - found');
 
     /* now try allowed user */
@@ -253,10 +253,10 @@ class UserDeleteTestCase extends DrupalTestCase {
     $this->drupalLogin($web_user);
     $this->drupalGet(url('user/'. $uid .'/edit', array('absolute' => TRUE)));
     $this->drupalPost(NULL, array(), t('Delete'));
-    $this->assertWantedRaw(t('Are you sure you want to delete the account %name?', array('%name' => $name)), 'Confirm title');
+    $this->assertRaw(t('Are you sure you want to delete the account %name?', array('%name' => $name)), 'Confirm title');
     $this->assertText(t('All submissions made by this user will be attributed to the anonymous account. This action cannot be undone.'), 'Confirm text');
     $this->drupalPost(NULL, array(), t('Delete'));
-    $this->assertWantedRaw(t('%name has been deleted.', array('%name' => $name)), 'User deleted');
+    $this->assertRaw(t('%name has been deleted.', array('%name' => $name)), 'User deleted');
     $this->assertFalse(user_load($edit), 'User is not found in the database');
   }
 }
