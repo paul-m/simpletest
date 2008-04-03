@@ -110,7 +110,7 @@ class DrupalUnitTests extends DrupalTestSuite {
       $GLOBALS['devel_shutdown'] = FALSE;
     }
 
-    parent::run($reporter);
+    $result = parent::run($reporter);
 
     // Restores modules
     foreach ($this->_cleanupModules as $name => $status) {
@@ -118,6 +118,7 @@ class DrupalUnitTests extends DrupalTestSuite {
     }
     $this->_cleanupModules = array();
 
+    return $result;
   }
 
   /**
