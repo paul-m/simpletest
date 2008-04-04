@@ -80,7 +80,7 @@ function simpletest_get_file_count($directory, $filename) {
   $files = scandir($directory);
   $count = 0;
   foreach ($files as $file) {
-    if (fnmatch($filename .'*', $file)) {
+    if (preg_match('/'. $filename .'.*?/', $file)) {
       $count++;
     }
   }
