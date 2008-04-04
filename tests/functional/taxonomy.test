@@ -254,7 +254,7 @@ class TaxonomyTestNodeApiTestCase extends DrupalTestCase {
     $edit['hierarchy'] = 1;
     $edit['multiple'] = 1;
     $edit['name'] = $name;
-    $edit['nodes'] = array('story' => 'story');
+    $edit['nodes'] = array('article' => 'article');
     taxonomy_save_vocabulary($edit);
     $vid = $edit['vid']; // we need to persist vid after $edit is unset()
 
@@ -278,20 +278,18 @@ class TaxonomyTestNodeApiTestCase extends DrupalTestCase {
     $patternArray['term name 2'] = $termname;
 
     // create test user and login
-    $perm = array('access content', 'create story content', 'edit own story content', 'delete own story content');
+    $perm = array('access content', 'create article content', 'edit own article content', 'delete own article content');
     $account = $this->drupalCreateUser($perm);
     $this->drupalLogin($account);
 
     // why is this printing out the user profile page?
-    // go to node/add/story
-    // try to create story
+    // go to node/add/article
+    // try to create article
     $title = $this->randomName();
     $body = $this->randomName(100);
     $edit = array('title' => $title, 'body' => $body, "taxonomy[$vid][]" => $parent);
 
-    // multiple slect box was failing through drupalPost. Use raw POST instead
-    // Failing because they were being sent/handled wrong (earnest.berry@gmail.com <Souvent22>)
-    $this->drupalPost('node/add/story', $edit, t('Save'));
+    $this->drupalPost('node/add/article', $edit, t('Save'));
 
     $patternArray['body text'] = $body;
     $patternArray['title'] = $title;

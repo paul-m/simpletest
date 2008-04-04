@@ -176,7 +176,7 @@ class UploadPictureTestCase extends DrupalTestCase {
    * results: The image should be uploaded because ImageGDToolkit resizes the picture
    */
   function testWithGDinvalidDimension() {
-    if ($this->_directory_Test)
+    if ($this->_directory_test)
       if (image_get_toolkit()) {
 
         // PREPARE:
@@ -190,7 +190,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
-        $img_path = realpath("modules/tests/pictureTesting.jpg");
+        $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/files/image-2.jpg");
         $info = image_get_info($img_path);
 
         // set new variables;
@@ -200,20 +200,20 @@ class UploadPictureTestCase extends DrupalTestCase {
         variable_set('user_picture_file_size', $test_size);
 
         // TEST:
-        $edit = array('picture' => $img_path);
+        $edit = array('files[picture_upload]' => $img_path);
         $this->drupalPost('user/'.$user->uid.'/edit', $edit, t('Save'));
-        $file_dir = variable_get('file_directory_path', 'files');
         $picture_dir = variable_get('user_picture_path', 'pictures');
-        $pic_path = $file_dir .'/'.$picture_dir .'/picture-'.$user->uid.'.jpg';
+        $picture = $picture_dir .'/picture-'.$user->uid.'.jpg';
 
         // get full url to the user's image
-        $picture = file_create_url($pic_path);
+        $picture_url = file_create_url($picture);
+        $picture_path = file_create_path($picture);
 
         // check if image is displayed in user's profile page
-        $this->assertRaw($picture, "Image is displayed in user's profile page");
+        $this->assertRaw($picture_url, "Image is displayed in user's profile page");
 
         // check if file is located in proper directory
-        $this->assertTrue(is_file($pic_path), "File is located in proper directory");
+        $this->assertTrue(is_file($picture_path), "File is located in proper directory");
 
         // RESTORING:
         variable_set('user_picture_file_size', $old_size);
@@ -233,7 +233,7 @@ class UploadPictureTestCase extends DrupalTestCase {
    */
 
   function testWithGDinvalidSize() {
-    if ($this->_directory_Test)
+    if ($this->_directory_test)
       if (image_get_toolkit()) {
         // PREPARE:
         $old_pic_set = variable_get('user_pictures', 0);
@@ -246,7 +246,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
-        $img_path = realpath("modules/tests/pictureTesting.jpg");
+        $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/files/image-2.jpg");
         $info = image_get_info($img_path);
         // set new variables;
 
@@ -256,20 +256,20 @@ class UploadPictureTestCase extends DrupalTestCase {
         variable_set('user_picture_file_size', $test_size);
 
         // TEST:
-        $edit = array('picture' => $img_path);
+        $edit = array('files[picture_upload]' => $img_path);
         $this->drupalPost('user/'.$user->uid.'/edit', $edit, t('Save'));
-        $file_dir = variable_get('file_directory_path', 'files');
         $picture_dir = variable_get('user_picture_path', 'pictures');
-        $pic_path = $file_dir .'/'.$picture_dir .'/picture-'.$user->uid.'.jpg';
+        $picture = $picture_dir .'/picture-'.$user->uid.'.jpg';
 
         // get full url to the user's image
-        $picture = file_create_url($pic_path);
+        $picture_url = file_create_url($picture);
+        $picture_path = file_create_path($picture);
 
         // check if image is displayed in user's profile page
-        $this->assertRaw($picture, "Image is displayed in user's profile page");
+        $this->assertRaw($picture_url, "Image is displayed in user's profile page");
 
         // check if file is located in proper directory
-        $this->assertTrue(is_file($pic_path), "File is located in proper directory");
+        $this->assertTrue(is_file($picture_path), "File is located in proper directory");
 
         // RESTORING:
         variable_set('user_picture_file_size', $old_size);
@@ -300,7 +300,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
-        $img_path = realpath("modules/tests/pictureTesting.jpg");
+        $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/files/image-2.jpg");
         $info = image_get_info($img_path);
         // set new variables;
         $test_size = floor(filesize($img_path) / 1000) + 1;
@@ -349,7 +349,7 @@ class UploadPictureTestCase extends DrupalTestCase {
         // changing actual setting;
         $old_dim = variable_get('user_picture_dimensions', '85x85');
         $old_size = variable_get('user_picture_file_size', '30');
-        $img_path = realpath("modules/tests/pictureTesting.jpg");
+        $img_path = realpath("modules/tests/image-2.jpg");
         $info = image_get_info($img_path);
         // invalid size
         // restore one and set another
@@ -395,7 +395,7 @@ class UploadPictureTestCase extends DrupalTestCase {
       // changing actual setting;
       $old_dim = variable_get('user_picture_dimensions', '85x85');
       $old_size = variable_get('user_picture_file_size', '30');
-      $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/pictureTesting.jpg");
+      $img_path = realpath(drupal_get_path('module', 'simpletest'). "/tests/files/image-2.jpg");
       $info = image_get_info($img_path);
 
       // valid size & dimensions

@@ -8,14 +8,8 @@ class DrupalTestCase extends UnitTestCase {
   protected $_logged_in = FALSE;
   protected $_content;
   protected $plain_text;
-  protected $_originalModules     = array();
-  protected $_modules             = array();
-  protected $_cleanupVariables    = array();
-  protected $_cleanupUsers        = array();
-  protected $_cleanupRoles        = array();
-  protected $_cleanupNodes        = array();
-  protected $_cleanupContentTypes = array();
   protected $ch;
+  protected $_modules = array();
   // We do not reuse the cookies in further runs, so we do not need a file
   // but we still need cookie handling, so we set the jar to NULL
   protected $cookie_file = NULL;
@@ -80,7 +74,6 @@ class DrupalTestCase extends UnitTestCase {
 
     // small hack to link revisions to our test user
     db_query('UPDATE {node_revisions} SET uid = %d WHERE vid = %d', $node->uid, $node->vid);
-    $this->_cleanupNodes[] = $node->nid;
     return $node;
   }
 
@@ -125,7 +118,6 @@ class DrupalTestCase extends UnitTestCase {
     node_type_save($type);
     node_types_rebuild();
 
-    $this->_cleanupContentTypes[] = $type->type;
     return $type;
   }
 
@@ -255,10 +247,6 @@ class DrupalTestCase extends UnitTestCase {
     $old_value = variable_get($name, NULL);
     if ($value !== $old_value) {
       variable_set($name, $value);
-      /* Use array_key_exists instead of isset so NULL values do not get overwritten */
-      if (!array_key_exists($name, $this->_cleanupVariables)) {
-        $this->_cleanupVariables[$name] = $old_value;
-      }
     }
   }
 
@@ -292,9 +280,6 @@ class DrupalTestCase extends UnitTestCase {
       return FALSE;
     }
 
-    // Add to list of users to remove when testing is completed.
-    $this->_cleanupUsers[] = $account->uid;
-
     // Add the raw password so that we can log in as this user.
     $account->pass_raw = $edit['pass'];
     return $account;
@@ -323,9 +308,9 @@ class DrupalTestCase extends UnitTestCase {
       // Assign permissions to role and mark it for clean-up.
       db_query("INSERT INTO {permission} (rid, perm) VALUES (%d, '%s')", $role->rid, $permission_string);
       $this->assertTrue(db_affected_rows(), ' [role] created permissions: ' . $permission_string);
-      $this->_cleanupRoles[] = $role->rid;
       return $role->rid;
-    } else {
+    }
+    else {
       return FALSE;
     }
   }
@@ -420,69 +405,7 @@ class DrupalTestCase extends UnitTestCase {
       $this->_logged_in = FALSE;
       $this->_modules = $this->_originalModules;
       $this->curlClose();
-      return;
     }
-    if ($this->_modules != $this->_originalModules) {
-      $form_state['values'] = array('status' => $this->_originalModules, 'op' => t('Save configuration'));
-      drupal_execute('system_modules', $form_state);
-
-      //rebuilding all caches
-      drupal_rebuild_theme_registry();
-      node_types_rebuild();
-      menu_rebuild();
-      cache_clear_all('schema', 'cache');
-      module_rebuild_cache();
-
-      $this->_modules = $this->_originalModules;
-    }
-
-    foreach ($this->_cleanupVariables as $name => $value) {
-      if (is_null($value)) {
-        variable_del($name);
-      } else {
-        variable_set($name, $value);
-      }
-    }
-    $this->_cleanupVariables = array();
-
-    //delete nodes
-    foreach ($this->_cleanupNodes as $nid) {
-      node_delete($nid);
-    }
-    $this->_cleanupNodes = array();
-
-    //delete roles
-    while (sizeof($this->_cleanupRoles) > 0) {
-      $rid = array_pop($this->_cleanupRoles);
-      db_query("DELETE FROM {role} WHERE rid = %d",       $rid);
-      db_query("DELETE FROM {permission} WHERE rid = %d", $rid);
-    }
-
-    //delete users and their content
-    while (sizeof($this->_cleanupUsers) > 0) {
-      $uid = array_pop($this->_cleanupUsers);
-      // cleanup nodes this user created
-      $result = db_query("SELECT nid FROM {node} WHERE uid = %d", $uid);
-      while ($node = db_fetch_array($result)) {
-        node_delete($node['nid']);
-      }
-      user_delete(array(), $uid);
-    }
-
-    //delete content types
-    foreach ($this->_cleanupContentTypes as $type) {
-      node_type_delete($type);
-    }
-    $this->_cleanupContentTypes = array();
-
-    //Output drupal warnings and messages into assert messages
-    $drupal_msgs = drupal_get_messages();
-    foreach($drupal_msgs as $type => $msgs) {
-      foreach ($msgs as $msg) {
-        $this->assertTrue(TRUE, "$type: $msg");
-      }
-    }
-
     parent::tearDown();
   }
 
@@ -625,24 +548,36 @@ class DrupalTestCase extends UnitTestCase {
           // We try to set the fields of this form as specified in $edit.
           $edit = $edit_save;
           $post = array();
-          $submit_matches = $this->handleForm($post, $edit, $submit, $form);
+          $upload = array();
+          $submit_matches = $this->handleForm($post, $edit, $upload, $submit, $form);
           $action = isset($form['action']) ? $this->getAbsoluteUrl($form['action']) : $this->getUrl();
         }
         // We post only if we managed to handle every field in edit and the
         // submit button matches;
         if (!$edit && $submit_matches) {
-          $encoded_post = '';
-          foreach ($post as $key => $value) {
-            if (is_array($value)) {
-              foreach ($value as $v) {
-                $encoded_post .= $key .'='. rawurlencode($v) .'&';
+          // This part is not pretty. There is very little I can do.
+          if ($upload) {
+            foreach ($post as &$value) {
+              if (strlen($value) > 0 && $value[0] == '@') {
+                $this->fail(t("Can't upload and post a value starting with @"));
+                return FALSE;
               }
             }
-            else {
-              $encoded_post .= $key .'='. rawurlencode($value) .'&';
+            foreach ($upload as $key => $file) {
+              $post[$key] = '@'. realpath($file);
             }
           }
-          return $this->curlExec(array(CURLOPT_URL => $action, CURLOPT_POSTFIELDS => $encoded_post));
+          else {
+            $post_array = $post;
+            $post = array();
+            foreach ($post_array as $key => $value) {
+              // Whethet this needs to be urlencode or rawurlencode, is not
+              // quite clear, but this seems to be the better choice.
+              $post[] = urlencode($key) .'='. urlencode($value);
+            }
+            $post = implode('&', $post);
+          }
+          return $this->curlExec(array(CURLOPT_URL => $action, CURLOPT_POSTFIELDS => $post));
         }
       }
       // We have not found a form which contained all fields of $edit.
@@ -665,7 +600,7 @@ class DrupalTestCase extends UnitTestCase {
    * @param array $form Array of form elements.
    * @return boolean Submit value matches a valid submit input in the form.
    */
-  protected function handleForm(&$post, &$edit, $submit, $form) {
+  protected function handleForm(&$post, &$edit, &$upload, $submit, $form) {
     // Retrieve the form elements.
     $elements = $form->xpath('.//input|.//textarea|.//select');
     $submit_matches = FALSE;
@@ -676,6 +611,7 @@ class DrupalTestCase extends UnitTestCase {
       // for <select> or <textarea>.
       $type = isset($element['type']) ? (string)$element['type'] : $element->getName();
       $value = isset($element['value']) ? (string)$element['value'] : '';
+      $done = FALSE;
       if (isset($edit[$name])) {
         switch ($type) {
           case 'text':
@@ -705,43 +641,61 @@ class DrupalTestCase extends UnitTestCase {
             break;
           case 'select':
             $new_value = $edit[$name];
+            $index = 0;
+            $key = preg_replace('/\[\]$/', '', $name);
             foreach ($element->option as $option) {
               if (is_array($new_value)) {
                 $option_value= (string)$option['value'];
                 if (in_array($option_value, $new_value)) {
-                  $post[$name][] = $option_value;
+                  $post[$key .'['. $index++ .']'] = $option_value;
+                  $done = TRUE;
                   unset($edit[$name]);
                 }
               }
               elseif ($new_value == $option['value']) {
                 $post[$name] = $new_value;
                 unset($edit[$name]);
+                $done = TRUE;
               }
             }
+            break;
+          case 'file':
+            $upload[$name] = $edit[$name];
+            unset($edit[$name]);
+            break;
         }
       }
-      if (($type == 'submit' || $type == 'image') && $submit == $value) {
-        $post[$name] = $value;
-        $submit_matches = TRUE;
-      }
-      if (!isset($post[$name])) {
+      if (!isset($post[$name]) && !$done) {
         switch ($type) {
           case 'textarea':
             $post[$name] = (string)$element;
             break;
           case 'select':
             $single = empty($element['multiple']);
-            foreach ($element->option as $key => $option) {
+            $first = TRUE;
+            $index = 0;
+            $key = preg_replace('/\[\]$/', '', $name);
+            foreach ($element->option as $option) {
               // For single select, we load the first option, if there is a
               // selected option that will overwrite it later.
-              if ($option['selected'] || (!$key && $single)) {
+              if ($option['selected'] || (!$first && $single)) {
+                $first = FALSE;
                 if ($single) {
                   $post[$name] = (string)$option['value'];
                 }
                 else {
-                  $post[$name][] = (string)$option['value'];
+                  $post[$key .'['. $index++ .']'] = (string)$option['value'];
                 }
               }
+            }
+            break;
+          case 'file':
+            break;
+          case 'submit':
+          case 'image':
+            if ($submit == $value) {
+              $post[$name] = $value;
+              $submit_matches = TRUE;
             }
             break;
           case 'radio':
@@ -1079,6 +1033,7 @@ class DrupalTestCase extends UnitTestCase {
    */
   function assertResponse($code, $message = '') {
     $curl_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-    return $this->assertTrue($curl_code == $code, $message ? $message : t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
+    $match = is_array($code) ? in_array($curl_code, $code) : $curl_code == $code;
+    return $this->assertTrue($match, $message ? $message : t(' [browser] HTTP response expected !code, actual !curl_code', array('!code' => $code, '!curl_code' => $curl_code)));
   }
 }
