@@ -218,12 +218,10 @@ class DBLogModuleTestCase extends DrupalTestCase {
     $this->drupalLogout();
     // Fetch row ids in watchdog that relate to the user.
     $result = db_query('SELECT wid FROM {watchdog} WHERE uid = %d', $user->uid);
-    for ($i = 0; $i < mysqli_num_rows($result); $i++) {
-      $ids[] = db_result($result);
+    while ($row = db_fetch_array($result)) {
+      $ids[] = $row['wid'];
     }
-    if (isset($ids)) {
-      $count_before = count($ids);
-    }
+    $count_before = (isset($ids)) ? count($ids) : 0;
     $this->assertTrue($count_before > 0, t('DBLog contains @count records for @name', array('@count' => $count_before, '@name' => $user->name)));
     // Delete user.
     user_delete(array(), $user->uid);
@@ -233,12 +231,10 @@ class DBLogModuleTestCase extends DrupalTestCase {
     // Fetch row ids in watchdog that previously related to the deleted user.
     $result = db_query('SELECT wid FROM {watchdog} WHERE uid = 0 AND wid IN (%s)', implode(', ', $ids));
     unset($ids);
-    for ($i = 0; $i < mysqli_num_rows($result); $i++) {
-      $ids[] = db_result($result);
+    while ($row = db_fetch_array($result)) {
+      $ids[] = $row['wid'];
     }
-    if (isset($ids)) {
-      $count_after = count($ids);
-    }
+    $count_after = (isset($ids)) ? count($ids) : 0;
     $this->assertTrue($count_after == $count_before, t('DBLog contains @count records for @name that now have uid = 0', array('@count' => $count_before, '@name' => $user->name)));
     unset($ids);
     // Fetch row ids in watchdog that relate to the user.
