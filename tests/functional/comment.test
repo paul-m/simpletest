@@ -21,10 +21,7 @@ class CommentTestCase extends DrupalTestCase {
    * Implementation of setUp().
    */
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('comment');
-
+    parent::setUp('comment');
     // Create users.
     $this->admin_user = $this->drupalCreateUser(array('administer content types', 'administer comments', 'administer permissions'));
     $this->web_user = $this->drupalCreateUser(array('access comments', 'post comments', 'create story content'));

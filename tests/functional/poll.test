@@ -51,8 +51,7 @@ class PollCreateTestCase extends PollTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-    $this->drupalModuleEnable('poll');
+    parent::setUp('poll');
   }
 
   function testPollCreate() {
@@ -69,8 +68,7 @@ class PollVoteTestCase extends PollTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-    $this->drupalModuleEnable('poll');
+    parent::setUp('poll');
   }
 
   function tearDown() {

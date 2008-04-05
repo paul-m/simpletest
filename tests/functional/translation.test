@@ -13,11 +13,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    // Enable modules.
-    $this->drupalModuleEnable('locale');
-    $this->drupalModuleEnable('translation');
+    parent::setUp('locale', 'translation');
   }
 
   function testContentTranslation() {

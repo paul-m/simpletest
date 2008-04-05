@@ -180,19 +180,16 @@ class DrupalTestCase extends UnitTestCase {
       $this->pass(" [module] $name already enabled");
       return TRUE;
     }
-    $this->checkOriginalModules();
-    if (array_search($name, $this->_modules) === FALSE) {
-      $this->_modules[$name] = $name;
-      $form_state['values'] = array('status' => $this->_modules, 'op' => t('Save configuration'));
-      drupal_execute('system_modules', $form_state);
+    $this->_modules[$name] = $name;
+    $form_state['values'] = array('status' => $this->_modules, 'op' => t('Save configuration'));
+    drupal_execute('system_modules', $form_state);
 
-      //rebuilding all caches
-      drupal_rebuild_theme_registry();
-      node_types_rebuild();
-      menu_rebuild();
-      cache_clear_all('schema', 'cache');
-      module_rebuild_cache();
-    }
+    //rebuilding all caches
+    drupal_rebuild_theme_registry();
+    node_types_rebuild();
+    menu_rebuild();
+    cache_clear_all('schema', 'cache');
+    module_rebuild_cache();
   }
 
   /**
@@ -207,32 +204,16 @@ class DrupalTestCase extends UnitTestCase {
       $this->pass(" [module] $name already disabled");
       return TRUE;
     }
-    $this->checkOriginalModules();
-    if (($key = array_search($name, $this->_modules)) !== FALSE) {
-      unset($this->_modules[$key]);
-      $form_state['values'] = array('status' => $this->_modules, 'op' => t('Save configuration'));
-      drupal_execute('system_modules', $form_state);
+    unset($this->_modules[$key]);
+    $form_state['values'] = array('status' => $this->_modules, 'op' => t('Save configuration'));
+    drupal_execute('system_modules', $form_state);
 
-      //rebuilding all caches
-      drupal_rebuild_theme_registry();
-      node_types_rebuild();
-      menu_rebuild();
-      cache_clear_all('schema', 'cache');
-      module_rebuild_cache();
-    }
-  }
-
-  /**
-   * Retrieves and saves current modules list into $_originalModules and $_modules.
-   */
-  function checkOriginalModules() {
-    if (empty($this->_originalModules)) {
-      require_once ('./modules/system/system.admin.inc');
-      $form_state = array();
-      $form = drupal_retrieve_form('system_modules', $form_state);
-      $this->_originalModules = drupal_map_assoc($form['status']['#default_value']);
-      $this->_modules = $this->_originalModules;
-    }
+    //rebuilding all caches
+    drupal_rebuild_theme_registry();
+    node_types_rebuild();
+    menu_rebuild();
+    cache_clear_all('schema', 'cache');
+    module_rebuild_cache();
   }
 
   /**
@@ -367,6 +348,8 @@ class DrupalTestCase extends UnitTestCase {
    * Generates a random database prefix and runs the install scripts on the prefixed database.
    * After installation many caches are flushed and the internal browser is setup so that the page
    * requests will run on the new prefix.
+   * 
+   * @param ... List modules to enable.
    */
   function setUp() {
     global $db_prefix, $simpletest_ua_key;
@@ -376,8 +359,10 @@ class DrupalTestCase extends UnitTestCase {
       $db_prefix = 'simpletest'. mt_rand(1000, 1000000);
       include_once './includes/install.inc';
       drupal_install_system();
-      $module_list = drupal_verify_profile('default', 'en');
-      drupal_install_modules($module_list);
+      $modules = array_unique(array_merge(func_get_args(), drupal_verify_profile('default', 'en')));
+      drupal_install_modules($modules);
+      $this->_modules = drupal_map_assoc($modules);
+      $this->_modules['system'] = 'system';
       $task = 'profile';
       default_profile_tasks($task, '');
       menu_rebuild();
@@ -403,7 +388,6 @@ class DrupalTestCase extends UnitTestCase {
       }
       $db_prefix = $this->db_prefix_original;
       $this->_logged_in = FALSE;
-      $this->_modules = $this->_originalModules;
       $this->curlClose();
     }
     parent::tearDown();

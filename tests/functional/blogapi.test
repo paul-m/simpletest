@@ -11,11 +11,7 @@ class BlogAPITestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('blog');
-    $this->drupalModuleEnable('blogapi');
-    $this->drupalModuleEnable('taxonomy');
+    parent::setUp('blog', 'blogapi', 'taxonomy');
   }
 
   function testBlogAPI() {

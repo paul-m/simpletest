@@ -10,12 +10,7 @@ class ForumTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    // Enable the forum module and its dependencies
-    $this->drupalModuleEnable('taxonomy');
-    $this->drupalModuleEnable('comment');
-    $this->drupalModuleEnable('forum');
+    parent::setUp('taxonomy', 'comment', 'forum');
   }
 
   function createForumContainer() {

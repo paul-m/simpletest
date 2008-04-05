@@ -14,9 +14,7 @@ class UploadTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('upload');
+    parent::setUp('upload');
   }
 
   /**

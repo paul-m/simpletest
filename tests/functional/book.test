@@ -19,9 +19,7 @@ class BookTestCase extends DrupalTestCase {
    * Implementation of setUp().
    */
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('book');
+    parent::setUp('book');
   }
 
   /**

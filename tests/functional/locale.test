@@ -14,9 +14,7 @@ class LocaleTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('locale');
+    parent::setUp('locale');
   }
 
   function testlocaleModuleTest() {

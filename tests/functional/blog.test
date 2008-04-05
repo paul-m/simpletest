@@ -21,10 +21,7 @@ class BlogModuleTestCase extends DrupalTestCase {
    * Enable modules and create users with specific permissions.
    */
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('blog');
-
+    parent::setUp('blog');
     // Create users.
     $this->big_user = $this->drupalCreateUser(array('administer blocks'));
     $this->own_user = $this->drupalCreateUser(array('create blog content', 'edit own blog content', 'delete own blog content'));

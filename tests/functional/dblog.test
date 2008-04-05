@@ -20,12 +20,7 @@ class DBLogModuleTestCase extends DrupalTestCase {
    * Enable modules and create users with specific permissions.
    */
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('dblog'); // Probably already enabled
-    $this->drupalModuleEnable('blog');
-    $this->drupalModuleEnable('poll');
-
+    parent::setUp('dblog', 'blog', 'poll');
     // Create users.
     $this->big_user = $this->drupalCreateUser(array('administer site configuration', 'access administration pages', 'access site reports', 'administer users'));
     $this->any_user = $this->drupalCreateUser(array());

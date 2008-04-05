@@ -64,7 +64,7 @@ function simpletest_load() {
     return simpletest_trigger_error('not available');
   }
 
-  // We currently use only the web tester that DrupalTestCase is built upon
+  require_once(SIMPLE_TEST .'/simpletest.php');
   require_once(SIMPLE_TEST .'/unit_tester.php');
   require_once(SIMPLE_TEST .'/reporter.php');
   require_once('drupal_reporter.php');

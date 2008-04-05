@@ -8,8 +8,7 @@ class AggregatorTestCase extends DrupalTestCase {
    * Implementation of setUp().
    */
   function setUp() {
-    parent::setUp();
-    $this->drupalModuleEnable('aggregator');
+    parent::setUp('aggregator');
     $web_user = $this->drupalCreateUser(array('administer news feeds', 'access news feeds'));
     $this->drupalLogin($web_user);
   }

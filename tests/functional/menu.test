@@ -15,9 +15,8 @@ class MenuTestCase extends  DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
+    parent::setUp('menu');
 
-    $this->drupalModuleEnable('menu');
   }
 
   function testCreateCheckDelete() {
@@ -95,13 +94,7 @@ class CustomMenuTestCase extends MenuTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('menu');
-  }
-
-  function tearDown() {
-    parent::tearDown();
+    parent::setUp('menu');
   }
 
   function testCreateCheckDelete() {
@@ -146,13 +139,7 @@ class MenuEnableTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('menu');
-  }
-
-  function tearDown() {
-    parent::tearDown();
+    parent::setUp('menu');
   }
 
   function testMenuModuleEnable() {
@@ -190,13 +177,7 @@ class MenuResetTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('menu');
-  }
-
-  function tearDown() {
-    parent::tearDown();
+    parent::setUp('menu');
   }
 
   function testMenuModuleReset() {;
@@ -251,13 +232,7 @@ class MenuInvalidPathTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('menu');
-  }
-
-  function tearDown() {
-    parent::tearDown();
+    parent::setUp('menu');
   }
 
   function testMenuModuleInvalidPath() {

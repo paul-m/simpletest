@@ -14,10 +14,7 @@ class PathModuleTestCase extends DrupalTestCase {
    * Create user, setup permissions, log user in, and create a node.
    */
   function setUp() {
-    parent::setUp();
-
-   $this->drupalModuleEnable('path');
-
+    parent::setUp('path');
     // create and login user
     $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content', 'administer url aliases', 'create url aliases'));
     $this->drupalLogin($web_user);

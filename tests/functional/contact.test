@@ -17,9 +17,7 @@ class ContactTestCase extends DrupalTestCase {
    * Implementation of setUp().
    */
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('contact');
+    parent::setUp('contact');
   }
 
   /**

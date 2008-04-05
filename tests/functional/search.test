@@ -14,9 +14,7 @@ class SearchMatchTestCase extends DrupalTestCase {
   }
 
   function setUp() {
-    parent::setUp();
-
-    $this->drupalModuleEnable('search');
+    parent::setUp('search');
   }
 
   function testMatching() {
