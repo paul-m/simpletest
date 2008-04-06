@@ -118,39 +118,6 @@ function simpletest_running_output($output = NULL) {
 }
 
 /**
- * FAPI form submit for simpletest_overview_form
- *
- * @param $form
- * @param $form_state
- */
-function simpletest_overview_form_submit($form, &$form_state) {
-  $form_state['redirect'] = FALSE;
-  $output = '';
-  switch ($form_state['values']['running_options']) {
-    case 'all_tests':
-      $output = simpletest_run_tests();
-      break;
-    case 'selected_tests':
-      $tests_list = array();
-      foreach ($form_state['values'] as $item => $value) {
-        if ($value === 1 && strpos($item, 'selectall') === FALSE) {
-          $tests_list[] = $item;
-        }
-      }
-      if (count($tests_list) > 0 ) {
-        $output = simpletest_run_tests($tests_list);
-        break;
-      }
-      // Fall through
-    default:
-      simpletest_trigger_error('no tests selected');
-  }
-
-  simpletest_running_output($output);
-  return FALSE;
-}
-
-/**
  * Form callback;  make the form to run tests
  */
 function simpletest_overview_form() {
@@ -187,7 +154,13 @@ function simpletest_overview_form() {
     );
   }
 
-  $submit['running_options'] = array(
+  $output['run'] = array(
+    '#type' => 'fieldset',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#title' => 'Run tests',
+  );
+  $output['run']['running_options'] = array(
     '#type' => 'radios',
     '#default_value' => 'selected_tests',
     '#options' => array(
@@ -195,18 +168,77 @@ function simpletest_overview_form() {
       'selected_tests' => t('Run selected tests'),
     ),
   );
-  $submit['op'] = array(
+  $output['run']['op'] = array(
     '#type' => 'submit',
     '#value' => t('Begin'),
+    '#submit' => array('simpletest_run_selected_tests')
   );
 
-  $output[] = $submit + array(
+  $output['reset'] = array(
     '#type' => 'fieldset',
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
-    '#title' => 'Run tests',
+    '#title' => 'Clean Database',
+    '#description' => 'Remove tables with the prefix "simpletest" that are left over from tests that crashed.'
+  );
+  $output['reset']['op'] = array(
+    '#type' => 'submit',
+    '#value' => t('Clean Database'),
+    '#submit' => array('simpletest_clean_database')
   );
   return $output;
+}
+
+/**
+ * Run selected tests.
+ */
+function simpletest_run_selected_tests($form, &$form_state) {
+  $form_state['redirect'] = FALSE;
+  $output = '';
+  switch ($form_state['values']['running_options']) {
+    case 'all_tests':
+      $output = simpletest_run_tests();
+      break;
+    case 'selected_tests':
+      $tests_list = array();
+      foreach ($form_state['values'] as $item => $value) {
+        if ($value === 1 && strpos($item, 'selectall') === FALSE) {
+          $tests_list[] = $item;
+        }
+      }
+      if (count($tests_list) > 0 ) {
+        $output = simpletest_run_tests($tests_list);
+        break;
+      }
+      // Fall through
+    default:
+      simpletest_trigger_error('no tests selected');
+  }
+
+  simpletest_running_output($output);
+  return FALSE;
+}
+
+/**
+ * Removed prefixed talbes from the database that are left over from crashed tests.
+ */
+function simpletest_clean_database() {
+  global $db_url;
+  $url = parse_url($db_url);
+  $database = substr($url['path'], 1);
+  $result = db_query("SELECT table_name FROM information_schema.TABLES WHERE table_schema = '". $database ."' AND table_name LIKE 'simpletest%'");
+
+  $ret = array();
+  while ($table = db_result($result)) {
+    db_drop_table($ret, $table);
+  }
+
+  if (count($ret) > 0) {
+    drupal_set_message(t('Removed '. count($ret) .' left over tables.'));
+  }
+  else {
+    drupal_set_message(t('No left over tables removed.'));
+  }
 }
 
 /**
