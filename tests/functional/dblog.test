@@ -89,13 +89,6 @@ class DBLogModuleTestCase extends DrupalTestCase {
     // Verify dblog row count equals row limit.
     $count = db_result(db_query('SELECT COUNT(wid) FROM {watchdog}'));
     $this->assertTrue($count == $row_limit, t('Dblog row count of @count equals row limit of @limit', array('@count' => $count, '@limit' => $row_limit)));
-
-    // Manually cleanup the watchdog table.
-    $max = db_result(db_query('SELECT MAX(wid) FROM {watchdog}'));
-    db_query('DELETE FROM {watchdog} WHERE wid <= %d', $max - $row_limit); // Change query condition to '<='
-    // Verify dblog row count equals row limit.
-    $count = db_result(db_query('SELECT COUNT(wid) FROM {watchdog}'));
-    $this->assertTrue($count == $row_limit, t('Dblog row count of @count equals row limit of @limit', array('@count' => $count, '@limit' => $row_limit)));
   }
 
   /**
@@ -234,8 +227,8 @@ class DBLogModuleTestCase extends DrupalTestCase {
     unset($ids);
     // Fetch row ids in watchdog that relate to the user.
     $result = db_query('SELECT wid FROM {watchdog} WHERE uid = %d', $user->uid);
-    for ($i = 0; $i < mysqli_num_rows($result); $i++) {
-      $ids[] = db_result($result);
+    while ($row = db_fetch_array($result)) {
+      $ids[] = $row['wid'];
     }
     $this->assertTrue(!isset($ids), t('DBLog contains no records for @name', array('@name' => $user->name)));
 
@@ -310,7 +303,7 @@ class DBLogModuleTestCase extends DrupalTestCase {
     $this->drupalGet('admin/reports/access-denied');
     $this->assertResponse(200);
     // Access denied.
-    $this->assertText(t('admin/reports/dblog'), t('DBLog event was recorded: [page not found]'));
+    $this->assertText(t('admin/reports/dblog'), t('DBLog event was recorded: [access denied]'));
 
     // View dblog page-not-found report node.
     $this->drupalGet('admin/reports/page-not-found');
