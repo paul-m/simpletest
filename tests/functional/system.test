@@ -1,234 +1,131 @@
 <?php
 // $Id$
 
-class EnableCoreModuleTestCase extends DrupalTestCase {
+class EnableDisableCoreModuleTestCase extends DrupalTestCase {
   /**
-  * Implementation of getInfo() for information
-  */
+   * Implementation of getInfo().
+   */
   function getInfo() {
-    return array('name' => t('Enable core modules'), 'description' => 'Enables all core modules by POST - looks for error messages, confirms table creation, etc.', 'group' => 'Modules');
+    return array(
+      'name' => t('Module list functionality'),
+      'description' => t('Enable/disable core module and confirm table creation/deletion. Enable module without dependecy enabled.'),
+      'group' => t('System Tests')
+    );
   }
 
-  function testEnableCoreModules () {
-    // Get a list of the modules to enable
-    $modules_to_enable = array (
-      'aggregator',
-      'blog',
-      'blogapi',
-      'book',
-      'color',
-      'comment',
-      'contact',
-      'dblog',
-      'forum',
-      'help',
-      'locale',
-      'menu',
-      'openid',
-      'path',
-      'php',
-      'ping',
-      'poll',
-      'profile',
-      'search',
-      'statistics',
-      'syslog',
-      'taxonomy',
-      'throttle',
-      'tracker',
-      'translation',
-      'trigger',
-      'update',
-      'upload',
-    );
+  /**
+   * Implementation of setUp().
+   */
+  function setUp() {
+    parent::setUp();
 
-    // Get a list of the currently enabled modules
-    $enabled_modules = module_list(true, false);
+    $admin_user = $this->drupalCreateUser(array('access administration pages', 'administer site configuration'));
+    $this->drupalLogin($admin_user);
+  }
 
-    $web_user = $this->drupalCreateUser(array (
-      'access administration pages',
-      'administer site configuration',
-    ));
-    $this->drupalLogin($web_user);
+  /**
+   * Enable a module, check the database for related tables, disable module,
+   * check for related tables, unistall module, check for related tables.
+   */
+  function testEnableDisable() {
+    $admin_user = $this->drupalCreateUser(array('access administration pages', 'administer site configuration'));
+    $this->drupalLogin($admin_user);
+
+    // Enable aggregator, and check tables.
+    $this->assertModules(array('aggregator'), FALSE);
+    $this->assertTableCount('aggregator', FALSE);
 
     $edit = array();
-    // We temporarily disable any modules we're testing so that we can re-enable them for testing
-    foreach ($modules_to_enable as $module) {
-      if (module_exists($module))
-        $this->drupalModuleDisable($module);
+    $edit['status[aggregator]'] = 'aggregator';
+    $this->drupalPost('admin/build/modules', $edit, t('Save configuration'));
+    $this->assertText(t('The configuration options have been saved.'), t('Modules status has been updated.'));
 
-      $edit['status['. $module .']'] = $module;
-    }
+    $this->assertModules(array('aggregator'), TRUE);
+    $this->assertTableCount('aggregator', TRUE);
 
-    $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
-    $this->assertRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
+    // Disable aggregator, check tables, uninstall aggregator, check tables.
+    $edit = array();
+    $edit['status[aggregator]'] = FALSE;
+    $this->drupalPost('admin/build/modules', $edit, t('Save configuration'));
+    $this->assertText(t('The configuration options have been saved.'), t('Modules status has been updated.'));
 
-    // Now, we check the tables for each module
-    // We also refresh the module list and make sure the modules are enabled
-    module_list(true, false);
-    foreach ($modules_to_enable as $module) {
-      $cur_schema = drupal_get_schema_unprocessed($module);
+    $this->assertModules(array('aggregator'), FALSE);
+    $this->assertTableCount('aggregator', TRUE);
 
-      $tables = is_array($cur_schema) ? array_keys($cur_schema) : array();
-      foreach ($tables as $table)
-        $this->assertTrue(db_table_exists($table), t('Make sure that the database table for the module exists'));
+    $edit = array();
+    $edit['uninstall[aggregator]'] = 'aggregator';
+    $this->drupalPost('admin/build/modules/uninstall', $edit, t('Uninstall'));
 
-      $this->assertTrue(module_exists($module), t('Check to see that the module is actually enabled'));
-    }
+    $this->drupalPost(NULL, NULL, t('Uninstall'));
+    $this->assertText(t('The selected modules have been uninstalled.'), t('Modules status has been updated.'));
 
-    // Disable/uninstall all the modules that have been installed by this process
-    // We first need to refresh the module list
-    include_once './includes/install.inc';
-
-    foreach ($modules_to_enable as $module) {
-      // We uninstall the modules that weren't already enabled
-      if (!in_array($module, $enabled_modules)) {
-        module_disable(array($module));
-        drupal_uninstall_module($module);
-      }
-    }
-
-    drupal_clear_css_cache();
-    drupal_clear_js_cache();
+    $this->assertModules(array('aggregator'), FALSE);
+    $this->assertTableCount('aggregator', FALSE);
   }
-}
 
-class EnableModuleWithoutDependencyTestCase extends DrupalTestCase {
   /**
-  * Implementation of getInfo() for information
-  */
-  function getInfo() {
-    return array('name' => t('Enable module without required dependencies'), 'description' => 'Attempts to enable the forum module without enabling dependencies.', 'group' => 'Modules');
-  }
-
+   * Attempt to enable translation module without locale enabled.
+   */
   function testEnableWithoutDependency () {
-    // Disable all modules for this test
-    $current_modules = module_list(true, false);
-    foreach ($current_modules as $module) {
-      // We don't disable core modules
-      if (!in_array($module, drupal_required_modules()))
-        $this->drupalModuleDisable($module);
-    }
+    $admin_user = $this->drupalCreateUser(array('access administration pages', 'administer site configuration'));
+    $this->drupalLogin($admin_user);
 
-    // Attempt to enable forum module, which should fail because comment and taxonomy are not enabled
-    $web_user = $this->drupalCreateUser(array (
-      'access administration pages',
-      'administer site configuration',
-    ));
-    $this->drupalLogin($web_user);
-
-    $edit = array (
-      'status[forum]' => 'forum',
-    );
-
-    $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
-    $this->assertRaw(t('Some required modules must be enabled'), t('Make sure the dependency error is shown'));
-
-    $this->assertFalse(module_exists('forum'), t('Check to make sure that the module has not somehow become enabled'));
-  }
-}
-
-class DisableUninstallCoreModuleTestCase extends DrupalTestCase {
-  /**
-  * Implementation of getInfo() for information
-  */
-  function getInfo() {
-    return array('name' => t('Disable/uninstall core modules'), 'description' => 'Disables and uninstalls core modules, ensures that that tables are properly deleted, no error messages are shown, etc.', 'group' => 'Modules');
-  }
-
-  function testDisableUninstallCoreModules () {
-    // Get a list of the modules to test
-    $modules_to_test = array (
-      'aggregator',
-      'blog',
-      'blogapi',
-      'book',
-      'color',
-      'comment',
-      'contact',
-      'dblog',
-      'forum',
-      'help',
-      'locale',
-      'menu',
-      'openid',
-      'path',
-      'php',
-      'ping',
-      'poll',
-      'profile',
-      'search',
-      'statistics',
-      'syslog',
-      'taxonomy',
-      'throttle',
-      'tracker',
-      'translation',
-      'trigger',
-      'update',
-      'upload',
-    );
-
-    // Get a list of the currently enabled modules
-    $enabled_modules = module_list(true, false);
-
-    // We don't want to test any modules that are already enabled, since that would involve a loss of data
-    foreach ($enabled_modules as $module) {
-      if (in_array($module, $modules_to_test))
-        unset($modules_to_test[array_search($module, $modules_to_test)]);
-    }
-
-    // Enable all the modules that are not already enabled
-    include_once './includes/install.inc';
-    module_enable($modules_to_test);
-    drupal_install_modules($modules_to_test);
-
-    $web_user = $this->drupalCreateUser(array (
-      'access administration pages',
-      'administer site configuration',
-    ));
-    $this->drupalLogin($web_user);
-
-    // Disable/uninstall the given modules: we keep every other module enabled
-    // We do this loop because for each level of dependency, we need one more request
-    while (count(array_diff(module_list(true, false), $enabled_modules)) > 0) {
-      $edit = array();
-      foreach ($modules_to_test as $module) {
-        $edit['status['. $module .']'] = 0;
-      }
-      foreach ($enabled_modules as $module) {
-        $edit['status['. $module .']'] = $module;
-      }
-
-      $this->drupalPost('admin/build/modules/list/confirm', $edit, t('Save configuration'));
-      $this->assertRaw(t('The configuration options have been saved.'), t('Ensure that the module status has been updated'));
-    }
-
-    // Now, lets make sure the modules are truly disabled and then try to uninstall them
-    module_list(true, false);
+    // Attempt to enable content translation without locale enabled.
     $edit = array();
-    foreach ($modules_to_test as $module) {
-      $this->assertFalse(module_exists($module), t('Make sure the module has been disabled'));
+    $edit['status[translation]'] = 'translation';
+    $this->drupalPost('admin/build/modules', $edit, t('Save configuration'));
+    $this->assertText(t('Some required modules must be enabled'), t('Dependecy required.'));
 
-      if (module_hook($module, 'uninstall'))
-        $edit['uninstall['. $module .']'] = $module;
+    $this->assertModules(array('translation', 'locale'), FALSE);
+
+    // Assert that the locale tables weren't enabled.
+    $this->assertTableCount('languages', FALSE);
+    $this->assertTableCount('locale', FALSE);
+
+    $this->drupalPost(NULL, NULL, t('Continue'));
+    $this->assertText(t('The configuration options have been saved.'), t('Modules status has been updated.'));
+
+    $this->assertModules(array('translation', 'locale'), TRUE);
+
+    // Assert that the locale tables were enabled.
+    $this->assertTableCount('languages', TRUE);
+    $this->assertTableCount('locale', TRUE);
+  }
+
+  /**
+   * Assert tables that begin with the specified base table name.
+   *
+   * @param string $base_table Begginning of table name to look for.
+   * @param boolean $count Assert tables that match specified base table.
+   * @return boolean Tables with specified base table.
+   */
+  function assertTableCount($base_table, $count) {
+    global $db_url, $db_prefix;
+    $url = parse_url($db_url);
+    $database = substr($url['path'], 1);
+    $result = db_query("SELECT COUNT(table_name) FROM information_schema.tables WHERE table_schema = '". $database ."' AND table_name LIKE '". $db_prefix . $base_table ."%'");
+
+    if ($count) {
+      return $this->assertTrue(db_result($result) == $count, t('Tables matching "@base_table" found.', array('@base_table' => $base_table)));
     }
+    return $this->assertTrue(db_result($result) == $count, t('Tables matching "@base_table" not found.', array('@base_table' => $base_table)));
+  }
 
-    $this->drupalPost('admin/build/modules/uninstall/confirm', $edit, t('Uninstall'));
-    // We need to confirm this by clicking again
-    $this->drupalPost(NULL, array(), t('Uninstall'));
-    $this->assertRaw(t('The selected modules have been uninstalled.'), 'Check to ensure that the modules have been removed');
-
-    // Now, we check the tables for each module
-    foreach ($modules_to_test as $module) {
-      $cur_schema = drupal_get_schema_unprocessed($module);
-
-      $tables = is_array($cur_schema) ? array_keys($cur_schema) : array();
-      foreach ($tables as $table)
-        $this->assertFalse(db_table_exists($table), t('Ensure that the database table has been properly removed'));
+  /**
+   * Assert the list of modules are enabled or disabled.
+   *
+   * @param array $modules Modules to check.
+   * @param boolean $enabled Module state.
+   */
+  function assertModules(array $modules, $enabled) {
+    module_list(TRUE, FALSE);
+    foreach ($modules as $module) {
+      if ($enabled) {
+        $this->assertTrue(module_exists($module) == $enabled, t('Module "@module" is enabled.', array('@module' => $module)));
+      }
+      else {
+        $this->assertTrue(module_exists($module) == $enabled, t('Module "@module" not enabled.', array('@module' => $module)));
+      }
     }
-
-    drupal_clear_css_cache();
-    drupal_clear_js_cache();
   }
 }
