@@ -100,15 +100,12 @@ class EnableDisableCoreModuleTestCase extends DrupalTestCase {
    * @return boolean Tables with specified base table.
    */
   function assertTableCount($base_table, $count) {
-    global $db_url, $db_prefix;
-    $url = parse_url($db_url);
-    $database = substr($url['path'], 1);
-    $result = db_query("SELECT COUNT(table_name) FROM information_schema.tables WHERE table_schema = '". $database ."' AND table_name LIKE '". $db_prefix . $base_table ."%'");
+    $match_count = simpletest_get_like_tables($base_table, TRUE);
 
     if ($count) {
-      return $this->assertTrue(db_result($result) == $count, t('Tables matching "@base_table" found.', array('@base_table' => $base_table)));
+      return $this->assertTrue($match_count, t('Tables matching "@base_table" found.', array('@base_table' => $base_table)));
     }
-    return $this->assertTrue(db_result($result) == $count, t('Tables matching "@base_table" not found.', array('@base_table' => $base_table)));
+    return $this->assertFalse($match_count, t('Tables matching "@base_table" not found.', array('@base_table' => $base_table)));
   }
 
   /**

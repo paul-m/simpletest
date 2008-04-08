@@ -223,13 +223,10 @@ function simpletest_run_selected_tests($form, &$form_state) {
  * Removed prefixed talbes from the database that are left over from crashed tests.
  */
 function simpletest_clean_database() {
-  global $db_url;
-  $url = parse_url($db_url);
-  $database = substr($url['path'], 1);
-  $result = db_query("SELECT table_name FROM information_schema.TABLES WHERE table_schema = '". $database ."' AND table_name LIKE 'simpletest%'");
+  $tables = simpletest_get_like_tables();
 
   $ret = array();
-  while ($table = db_result($result)) {
+  foreach ($tables as $table) {
     db_drop_table($ret, $table);
   }
 
@@ -239,6 +236,30 @@ function simpletest_clean_database() {
   else {
     drupal_set_message(t('No left over tables removed.'));
   }
+}
+
+/**
+ * Find all tables that are like the specified base table name.
+ *
+ * @param string $base_table Base table name.
+ * @param boolean $count Return the table count instead of list of tables.
+ * @return mixed Array of matching tables or count of tables.
+ */
+function simpletest_get_like_tables($base_table = 'simpletest', $count = FALSE) {
+  global $db_url, $db_prefix;
+  $url = parse_url($db_url);
+  $database = substr($url['path'], 1);
+  $select = $count ? 'COUNT(table_name)' : 'table_name';
+  $result = db_query("SELECT $select FROM information_schema.tables WHERE table_schema = '$database' AND table_name LIKE '$db_prefix$base_table%'");
+  
+  if ($count) {
+    return db_result($result);
+  }
+  $tables = array();
+  while ($table = db_result($result)) {
+    $tables[] = $table;
+  }
+  return $tables;
 }
 
 /**
