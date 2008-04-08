@@ -21,14 +21,14 @@ function simpletest_help($path, $arg) {
  */
 function simpletest_menu() {
   $items['admin/build/simpletest'] = array(
-    'title' => 'Simpletest',
+    'title' => 'SimpleTest',
     'page callback' => 'simpletest_entrypoint',
     'description' => 'Run tests against Drupal core and your active modules. These tests help assure that your site code is working as designed.',
     'access arguments' => array('administer unit tests'),
   );
   $items['admin/settings/simpletest'] = array(
-    'title' => 'Simpletest settings',
-    'description' => 'Configure unit testing framework.',
+    'title' => 'SimpleTest',
+    'description' => 'Configure SimpleTest framework.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('simpletest_settings'),
     'access arguments' => array('access administration pages'),
