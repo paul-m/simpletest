@@ -3,6 +3,34 @@
 /* Addon for the simpletest module */
 #simpletest {
 }
+/* Test Table */
+th.simpletest_run
+{
+	width: 50px;
+}
+th.simpletest_test
+{
+	width: 160px;
+}
+
+table#simpletest-form-table td div.form-item,
+td.select-all
+{
+	text-align: center;
+}
+table#simpletest-form-table tr td
+{
+	background-color: white !important;
+}
+table#simpletest-form-table tr.simpletest-group td
+{
+	background-color: #EDF5FA !important;
+}
+img.simpletest-menu-collapse
+{
+	cursor: pointer;
+}
+
 div.simpletest-pass {
   background: #b6ffb6;
 }

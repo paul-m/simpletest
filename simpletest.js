@@ -1,34 +1,59 @@
 // $Id$
-/**
- * Creates a select all checkbox before in every test group fieldset
- */
-$(document).ready(function() {
-  $('.select_all').each(function() {
-    var legend = $('> legend', this);
-    var cbs =  $('fieldset :checkbox', this);
-    var collapsed = 1;
-    var selectAllChecked = 1;
-    var cbInitialValue = "";
 
-    for (i=0; i < cbs.length; i++) {
-      if (!cbs[i].checked) {
+$(document).ready(function() {
+	// Adds expand-collapse functionality.
+	$('img.simpletest-menu-collapse').click(function(){
+		if($(this).data('collapsed') == 1){
+			$(this).data('collapsed', 0);
+			this.src = '/misc/menu-expanded.png';
+		}else{
+			$(this).data('collapsed',1);
+			this.src = '/misc/menu-collapsed.png';
+		}
+		// Toggle all of the trs.
+		$("tr."+this.id.replace(/\-menu\-collapse/,'')+"-test").toggle();
+	});
+
+  $('.select-all').each(function() {
+  	var checkbox = $('<input type="checkbox" id="'+ this.id +'" />');
+    $('#'+ this.id).html(checkbox);
+
+    var checkboxes = $('.'+ this.id +'-test');
+    var selectAllChecked = 1;
+    var collapsed = 1;
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (!checkboxes[i].checked) {
         selectAllChecked = 0;
       }
       else {
         collapsed = 0;
       }
     }
-    if (!collapsed && !selectAllChecked) 
-      $('fieldset', this).removeClass('collapsed');
-
-    var item = $('<div class="form-item"></div>').html('<label class="option"><input type="checkbox" id="'+legend.html()+'-selectall" /> Select all tests in this group</label>'+'<div class="description">Select all tests in group '+ legend.html() +'</div>');
     
-    // finds all checkboxes in group fieldset and selects them or deselects
-    item.find(':checkbox').attr('checked', selectAllChecked).click(function() {
-      $(this).parents('fieldset:first').find('fieldset :checkbox').attr('checked', this.checked);
+    // Finds all checkboxes for particular test group and sets them to the "check all" state.
+    checkbox.attr('checked', selectAllChecked).click(function() {
+      var rows = $('.'+ this.id +'-test');
+      for (var i = 0; i < rows.length; i++) {
+        $(rows[i]).find(':checkbox').attr('checked', this.checked);
+      }
     }).end();
-    
-    // add select all checkbox
-    legend.after(item);
   });
+  
+  // Set the initial state of the expand-collapse. 
+	$('img.simpletest-menu-collapse').each(function(){
+		// Only set the state if it has not been set previously.
+		if($(this).data('collapsed') == undefined){
+			$(this).data('collapsed',1);
+			// See if any of the child checkboxes are checked and expand the menu if they are.
+			var doCheck = false;
+			$("tr."+this.id.replace(/\-menu\-collapse/,'')+"-test").find("input").each(function(){
+				if(this.checked){
+					doCheck = true;
+				}
+			})
+			if(doCheck){
+				$(this).click()
+			}
+		}
+	});
 });
