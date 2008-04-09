@@ -662,7 +662,7 @@ class DrupalTestCase extends UnitTestCase {
             foreach ($element->option as $option) {
               // For single select, we load the first option, if there is a
               // selected option that will overwrite it later.
-              if ($option['selected'] || (!$first && $single)) {
+              if ($option['selected'] || ($first && $single)) {
                 $first = FALSE;
                 if ($single) {
                   $post[$name] = (string)$option['value'];
