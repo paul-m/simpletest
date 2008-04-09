@@ -4,7 +4,9 @@
 define('SEARCH_TYPE', '_test_');
 
 class SearchMatchTestCase extends DrupalTestCase {
-
+  /**
+   * Implementation of getInfo().
+   */
   function getInfo() {
     return array(
       'name' => t('Search engine queries'),
@@ -13,15 +15,19 @@ class SearchMatchTestCase extends DrupalTestCase {
     );
   }
 
+  /**
+   * Implementation setUp().
+   */
   function setUp() {
     parent::setUp('search');
   }
 
+  /**
+   * Test search indexing.
+   */
   function testMatching() {
-    $this->_cleanup();
     $this->_setup();
     $this->_testQueries();
-    $this->_cleanup();
   }
 
   /**
@@ -35,17 +41,6 @@ class SearchMatchTestCase extends DrupalTestCase {
     }
     search_update_totals();
   }
-
-  /**
-   * Clean up the indexed test content.
-   */
-  function _cleanup() {
-    for ($i = 1; $i < 7; ++$i) {
-      search_wipe($i, SEARCH_TYPE);
-    }
-    search_update_totals();
-  }
-
 
   /**
    * Helper method for generating snippets of content.
@@ -65,6 +60,7 @@ class SearchMatchTestCase extends DrupalTestCase {
   }
 
   /**
+   * Run predefine queries looking for indexed terms.
    */
   function _testQueries() {
     /*
@@ -116,13 +112,12 @@ class SearchMatchTestCase extends DrupalTestCase {
       '"am minim veniam" -"cillum dolore"' => array(5, 6),
       '"am minim veniam" -"dolore cillum"' => array(5, 6, 7),
       'xxxxx "minim am veniam es" OR dolore' => array(),
-      'xx "minim am veniam es" OR dolore' => array(),
+      'xx "minim am veniam es" OR dolore' => array()
     );
     foreach ($queries as $query => $results) {
       $set = do_search($query, SEARCH_TYPE);
       $this->_testQueryMatching($query, $set, $results);
       $this->_testQueryScores($query, $set, $results);
-      $this->cleanupQuery();
     }
   }
 
@@ -155,7 +150,6 @@ class SearchMatchTestCase extends DrupalTestCase {
     foreach ($set as $item) {
       $scores[] = $item->score;
     }
-    $this->cleanupQuery();
 
     // Check order.
     $sorted = $scores;
@@ -165,16 +159,4 @@ class SearchMatchTestCase extends DrupalTestCase {
     // Check range.
     $this->assertEqual(!count($scores) || (min($scores) > 0.0 && max($scores) <= 1.0001), TRUE, "Query scoring '$query'");
   }
-
-  /**
-   * Remove the temporary tables created in a query, since multiple queries per page
-   * are not supported.
-   *
-   * (Drupal 5.0 and below)
-   */
-  function cleanupQuery() {
-    db_query('DROP TABLE IF EXISTS temp_search_sids');
-    db_query('DROP TABLE IF EXISTS temp_search_results');
-  }
-
 }
