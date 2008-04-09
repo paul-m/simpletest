@@ -14,7 +14,7 @@ class BlockTestCase extends DrupalTestCase {
   }
 
   /**
-   * Create user, setup permissions and login user.
+   * Implementation of setUp().
    */
   function setUp() {
     parent::setUp();
