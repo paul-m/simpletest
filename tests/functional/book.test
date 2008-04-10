@@ -128,7 +128,6 @@ class BookTestCase extends DrupalTestCase {
    */
   function createBookNode($book_nid, $parent = NULL) {
     static $number = 0; // Used to ensure that when sorted nodes stay in same order.
-    variable_set('node_options_page', array('status', 'promote'));
 
     $edit = array();
     $edit['title'] = $number . ' - SimpleTest test node ' . $this->randomName(10);
