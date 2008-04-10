@@ -111,7 +111,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
    * @param string $language Langauge code.
    */
   function createPage($title, $body, $language) {
-    $this->drupalVariableSet('node_options_page', array('status', 'promote'));
+    variable_set('node_options_page', array('status', 'promote'));
 
     $edit = array();
     $edit['title'] = $title;

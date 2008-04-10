@@ -12,7 +12,7 @@ class UserRegistrationTestCase extends DrupalTestCase {
 
   function testUserRegistration() {
     /* We first allow every user to login instantly. */
-    $this->drupalVariableSet('user_register', 1);
+    variable_set('user_register', 1);
 
     /* make sure the profile module is disabled to avoid conflicts */
     $this->drupalModuleDisable('profile');
@@ -183,7 +183,7 @@ class UserAccessTestCase extends DrupalTestCase {
 
   function testAccess() {
     /* To avoid conflicts with non allowed account creations */
-    $this->drupalVariableSet('user_register', 1);
+    variable_set('user_register', 1);
 
     $this->addMask('simpletest_block%', 'user');
     $this->addMask('simpletest_block_allow%', 'user', 1);
@@ -236,7 +236,7 @@ class UserDeleteTestCase extends DrupalTestCase {
 
   function testUserRegistration() {
     /* We first allow every user to login instantly. */
-    $this->drupalVariableSet('user_register', 1);
+    variable_set('user_register', 1);
 
     /* make sure the profile module is disabled to avoid conflicts */
     $this->drupalModuleDisable('profile');

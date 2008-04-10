@@ -272,7 +272,7 @@ class PageEditTestCase extends DrupalTestCase {
   function testPageEdit() {
 
     /* Prepare settings */
-    $this->drupalVariableSet('node_options_page', array('status', 'promote'));
+    variable_set('node_options_page', array('status', 'promote'));
     /* Prepare a user to do the stuff */
     $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content'));
     $this->drupalLogin($web_user);
@@ -321,7 +321,7 @@ class PagePreviewTestCase extends DrupalTestCase {
 
   function testPagePreview() {
     /* Prepare settings */
-    $this->drupalVariableSet('node_options_page', array('status', 'promote'));
+    variable_set('node_options_page', array('status', 'promote'));
     /* Prepare a user to do the stuff */
     $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content'));
     $this->drupalLogin($web_user);
@@ -357,7 +357,7 @@ class PageCreationTestCase extends  DrupalTestCase {
 
   function testPageCreation() {
     /* Prepare settings */
-    $this->drupalVariableSet('node_options_page', array('status', 'promote'));
+    variable_set('node_options_page', array('status', 'promote'));
 
     /* Prepare a user to do the stuff */
     $web_user = $this->drupalCreateUser(array('edit own page content', 'create page content'));

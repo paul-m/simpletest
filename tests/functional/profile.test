@@ -503,7 +503,7 @@ class ProfileTestUrlTestCase extends DrupalTestCase {
   }
 
   function testProfileSingle() {
-    $this->drupalVariableSet('user_register',1);
+    variable_set('user_register',1);
     $this->drupalModuleEnable('profile');
     // create test user
     $edit['name'] = 'Profile '. $this->randomName(5);

@@ -217,21 +217,6 @@ class DrupalTestCase extends UnitTestCase {
   }
 
   /**
-   * Set a drupal variable in the test environment. Any variable settings that deviate
-   * from the default need to be set in the test.
-   *
-   * @param string $name Name of the variable to set.
-   * @param mixed $value Value to set.
-   */
-  function drupalVariableSet($name, $value) {
-    /* NULL variables would anyways result in default because of isset */
-    $old_value = variable_get($name, NULL);
-    if ($value !== $old_value) {
-      variable_set($name, $value);
-    }
-  }
-
-  /**
    * Create a user with a given set of permissions. The permissions correspond to the
    * names given on the privileges page.
    *

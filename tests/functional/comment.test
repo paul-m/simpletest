@@ -309,7 +309,7 @@ class CommentTestCase extends DrupalTestCase {
    * @param string $message Status message to display.
    */
   function setCommentSettings($name, $value, $message) {
-    $this->drupalVariableSet($name .'_story', $value);
+    variable_set($name .'_story', $value);
     $this->assertTrue(TRUE, t($message)); // Display status message.
   }
 

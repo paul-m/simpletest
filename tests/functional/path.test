@@ -125,7 +125,7 @@ class PathModuleTestCase extends DrupalTestCase {
   }
 
   function createNode() {
-    $this->drupalVariableSet('node_options_page', array('status', 'promote'));
+    variable_set('node_options_page', array('status', 'promote'));
 
     $edit = array();
     $edit['title'] = '!SimpleTest test node! ' . $this->randomName(10);
