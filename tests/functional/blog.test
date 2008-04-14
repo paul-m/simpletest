@@ -36,7 +36,7 @@ class BlogModuleTestCase extends DrupalTestCase {
     $this->drupalLogin($this->big_user);
     // Enable the recent blog block.
     $edit = array();
-    $edit['blog_0[region]'] = 'right';
+    $edit['blog_recent[region]'] = 'right';
     $this->drupalPost('admin/build/block', $edit, t('Save blocks'));
     $this->assertResponse(200);
 
