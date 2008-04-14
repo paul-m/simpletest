@@ -67,7 +67,7 @@ class BlockTestCase extends DrupalTestCase {
     // Select the Navigation block to be configured and moved.
     $block = array();
     $block['module'] = 'user';
-    $block['delta'] = 1;
+    $block['delta'] = 'navigation';
     $block['title'] = $this->randomName(8);
 
     // Set block title to confirm that interface works and override any custom titles.
