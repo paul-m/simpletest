@@ -194,13 +194,13 @@ function simpletest_overview_form() {
     '#type' => 'fieldset',
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
-    '#title' => 'Clean Database',
-    '#description' => 'Remove tables with the prefix "simpletest" that are left over from tests that crashed.'
+    '#title' => 'Clean Environment',
+    '#description' => 'Remove tables with the prefix "simpletest" and temporary directories that are left over from tests that crashed.'
   );
   $output['reset']['op'] = array(
     '#type' => 'submit',
-    '#value' => t('Clean Database'),
-    '#submit' => array('simpletest_clean_database')
+    '#value' => t('Clean Environment'),
+    '#submit' => array('simpletest_clean_environment')
   );
   return $output;
 }
@@ -302,6 +302,14 @@ function simpletest_run_selected_tests($form, &$form_state) {
 }
 
 /**
+ * Remove all temporary database tables and directories.
+ */
+function simpletest_clean_environment() {
+  simpletest_clean_database();
+  simpletest_clean_temporary_directories();
+}
+
+/**
  * Removed prefixed talbes from the database that are left over from crashed tests.
  */
 function simpletest_clean_database() {
@@ -313,10 +321,10 @@ function simpletest_clean_database() {
   }
 
   if (count($ret) > 0) {
-    drupal_set_message(t('Removed '. count($ret) .' left over tables.'));
+    drupal_set_message(t('Removed @count left over tables.', array('@count' => count($ret))));
   }
   else {
-    drupal_set_message(t('No left over tables removed.'));
+    drupal_set_message(t('No left over tables to remove.'));
   }
 }
 
@@ -333,7 +341,7 @@ function simpletest_get_like_tables($base_table = 'simpletest', $count = FALSE) 
   $database = substr($url['path'], 1);
   $select = $count ? 'COUNT(table_name)' : 'table_name';
   $result = db_query("SELECT $select FROM information_schema.tables WHERE table_schema = '$database' AND table_name LIKE '$db_prefix$base_table%'");
-  
+
   if ($count) {
     return db_result($result);
   }
@@ -342,6 +350,49 @@ function simpletest_get_like_tables($base_table = 'simpletest', $count = FALSE) 
     $tables[] = $table;
   }
   return $tables;
+}
+
+/**
+ * Find all left over temporary directories and remove them.
+ */
+function simpletest_clean_temporary_directories() {
+  $files = scandir(file_directory_path());
+  $count = 0;
+  foreach ($files as $file) {
+    $path = file_directory_path() .'/'. $file;
+    if (is_dir($path) && preg_match('/^simpletest\d+/', $file)) {
+      simpletest_clean_temporary_directory($path);
+      $count++;
+    }
+  }
+
+  if ($count > 0) {
+    drupal_set_message(t('Removed @count temporary directories.', array('@count' => $count)));
+  }
+  else {
+    drupal_set_message(t('No temporary directories to remove.'));
+  }
+}
+
+/**
+ * Remove all files from specified firectory and then remove directory.
+ *
+ * @param string $path Directory path.
+ */
+function simpletest_clean_temporary_directory($path) {
+  $files = scandir($path);
+  foreach ($files as $file) {
+    if ($file != '.' && $file != '..') {
+      $file_path = "$path/$file";
+      if (is_dir($file_path)) {
+        simpletest_clean_temporary_directory($file_path);
+      }
+      else {
+        file_delete($file_path);
+      }
+    }
+  }
+  rmdir($path);
 }
 
 /**
