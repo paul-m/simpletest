@@ -55,6 +55,8 @@ class DBLogModuleTestCase extends DrupalTestCase {
     $edit['dblog_row_limit'] = $row_limit;
     $this->drupalPost('admin/settings/logging/dblog', $edit, t('Save configuration'));
     $this->assertResponse(200);
+    // Reload variable cache (since the global $conf array was changed in another "process" when the settings page above was posted).
+    $this->reloadVariables();
     // Check row limit variable.
     $current_limit = variable_get('dblog_row_limit', 1000);
     $this->assertTrue($current_limit == $row_limit, t('[Cache] Row limit variable of @count equals row limit of @limit', array('@count' => $current_limit, '@limit' => $row_limit)));
@@ -69,26 +71,19 @@ class DBLogModuleTestCase extends DrupalTestCase {
    * @param integer $count Log row limit.
    */
   private function verifyCron($row_limit) {
-    // Check row limit variable.
-    $current_limit = variable_get('dblog_row_limit', 1000);
-    $this->assertTrue($current_limit == $row_limit, t('[Cache] Row limit variable of @count equals row limit of @limit', array('@count' => $current_limit, '@limit' => $row_limit)));
-
     // Generate additional log entries.
     $this->generateLogEntries($row_limit + 10);
     // Verify dblog row count exceeds row limit.
     $count = db_result(db_query('SELECT COUNT(wid) FROM {watchdog}'));
     $this->assertTrue($count > $row_limit, t('Dblog row count of @count exceeds row limit of @limit', array('@count' => $count, '@limit' => $row_limit)));
 
-    // Check row limit variable.
-    variable_set('dblog_row_limit', $row_limit);
-    $current_limit = variable_get('dblog_row_limit', 1000);
-    $this->assertTrue($current_limit == $row_limit, t('[Cache] Row limit variable of @count equals row limit of @limit', array('@count' => $current_limit, '@limit' => $row_limit)));
-
     // Run cron job.
-    dblog_cron();
-    // Verify dblog row count equals row limit.
+    $this->drupalGet('admin/reports/status/run-cron');
+    $this->assertResponse(200);
+    $this->assertText(t('Cron ran successfully'), t('Cron ran successfully'));
+    // Verify dblog row count equals row limit plus one because cron adds a record after it runs.
     $count = db_result(db_query('SELECT COUNT(wid) FROM {watchdog}'));
-    $this->assertTrue($count == $row_limit, t('Dblog row count of @count equals row limit of @limit', array('@count' => $count, '@limit' => $row_limit)));
+    $this->assertTrue($count == $row_limit + 1, t('Dblog row count of @count equals row limit of @limit plus one', array('@count' => $count, '@limit' => $row_limit)));
   }
 
   /**
@@ -360,5 +355,16 @@ class DBLogModuleTestCase extends DrupalTestCase {
       break;
     }
     return $content;
+  }
+
+  /**
+   * Reload variables table.
+   */
+  private function reloadVariables() {
+    global $conf;
+
+    cache_clear_all('variables', 'cache');
+    $conf = variable_init();
+    $this->assertTrue($conf, t('Variables reloaded'));
   }
 }
