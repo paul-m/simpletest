@@ -12,7 +12,7 @@ class HelpModuleTestCase extends DrupalTestCase {
     return array(
       'name' => t('Help functionality'),
       'description' => t('Verify help display and user access to help based on persmissions.'),
-      'group' => t('Help Tests'),
+      'group' => t('Help'),
     );
   }
 

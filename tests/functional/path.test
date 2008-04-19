@@ -6,7 +6,7 @@ class PathModuleTestCase extends DrupalTestCase {
     return array(
       'name' => t('Path alias functionality'),
       'description' => t('Add, edit, delete, and change alias and verify its consistency in the database.'),
-      'group' => t('Path Tests'),
+      'group' => t('Path'),
     );
   }
 

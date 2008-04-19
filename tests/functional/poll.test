@@ -47,7 +47,7 @@ class PollCreateTestCase extends PollTestCase {
    * Implementation of getInfo() for information
    */
   function getInfo() {
-    return array('name' => t('Poll create'), 'description' => 'Adds "more choices", previews and creates a poll.', 'group' => 'Poll module tests');
+    return array('name' => t('Poll create'), 'description' => 'Adds "more choices", previews and creates a poll.', 'group' => t('Poll'));
   }
 
   function setUp() {
@@ -64,7 +64,7 @@ class PollVoteTestCase extends PollTestCase {
    * Implementation of getInfo() for information
    */
   function getInfo() {
-    return array('name' => t('Poll vote'), 'description' => 'Vote on a poll', 'group' => 'Poll module tests');
+    return array('name' => t('Poll vote'), 'description' => 'Vote on a poll', 'group' => t('Poll'));
   }
 
   function setUp() {

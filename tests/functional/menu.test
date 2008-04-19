@@ -14,7 +14,7 @@ class MenuTestCase extends DrupalTestCase {
     return array(
       'name' => t('Menu item creation/deletion'),
       'description' => t('Add a custom menu, add menu items to the custom menu and Navigation menu, check their data, and delete them using the menu module UI.'),
-      'group' => 'Menu Tests',
+      'group' => t('Menu')
     );
   }
 

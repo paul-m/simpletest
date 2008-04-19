@@ -12,7 +12,7 @@ class DBLogModuleTestCase extends DrupalTestCase {
     return array(
       'name' => t('DBLog functionality'),
       'description' => t('Generate events and verify dblog entries; verify user access to log reports based on persmissions.'),
-      'group' => t('DBLog Tests'),
+      'group' => t('DBLog'),
     );
   }
 

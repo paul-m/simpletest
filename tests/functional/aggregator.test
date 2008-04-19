@@ -126,7 +126,7 @@ class AddFeedTestCase extends AggregatorTestCase {
     return array(
       'name' => t('Add feed functionality'),
       'description' => t('Add feed test.'),
-      'group' => t('Aggregator Tests')
+      'group' => t('Aggregator')
     );
   }
 
@@ -158,7 +158,7 @@ class UpdateFeedTestCase extends AggregatorTestCase {
     return array(
       'name' => t('Update feed functionality'),
       'description' => t('Update feed test.'),
-      'group' => t('Aggregator Tests')
+      'group' => t('Aggregator')
     );
   }
 
@@ -197,7 +197,7 @@ class RemoveFeedTestCase extends AggregatorTestCase {
     return array(
       'name' => t('Remove feed functionality'),
       'description' => t('Remove feed test.'),
-      'group' => t('Aggregator Tests')
+      'group' => t('Aggregator')
     );
   }
 
@@ -228,7 +228,7 @@ class UpdateFeedItemTestCase extends AggregatorTestCase {
     return array(
       'name' => t('Update feed item functionality'),
       'description' => t('Update feed items from a feed.'),
-      'group' => t('Aggregator Tests')
+      'group' => t('Aggregator')
     );
   }
 
@@ -256,7 +256,7 @@ class RemoveFeedItemTestCase extends AggregatorTestCase {
     return array(
       'name' => t('Remove feed item functionality'),
       'description' => t('Remove feed items from a feed.'),
-      'group' => t('Aggregator Tests')
+      'group' => t('Aggregator')
     );
   }
 
@@ -285,7 +285,7 @@ class CategorizeFeedItemTestCase extends AggregatorTestCase {
     return array(
       'name' => t('Categorize feed item functionality'),
       'description' => t('Test feed item categorization.'),
-      'group' => t('Aggregator Tests')
+      'group' => t('Aggregator')
     );
   }
 

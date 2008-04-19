@@ -13,7 +13,7 @@ class BlogModuleTestCase extends DrupalTestCase {
     return array(
       'name' => t('Blog functionality'),
       'description' => t('Create, view, edit, delete, and change blog entries and verify its consistency in the database.'),
-      'group' => t('Blog Tests'),
+      'group' => t('Blog'),
     );
   }
 

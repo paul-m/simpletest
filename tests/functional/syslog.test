@@ -9,7 +9,7 @@ class SyslogTestCase extends DrupalTestCase {
     return array(
       'name' => t('Syslog functionality'),
       'description' => t('Test syslog settings.'),
-      'group' => t('Syslog Tests')
+      'group' => t('Syslog')
     );
   }
 

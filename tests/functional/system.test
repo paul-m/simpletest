@@ -9,7 +9,7 @@ class EnableDisableCoreModuleTestCase extends DrupalTestCase {
     return array(
       'name' => t('Module list functionality'),
       'description' => t('Enable/disable core module and confirm table creation/deletion. Enable module without dependecy enabled.'),
-      'group' => t('System Tests')
+      'group' => t('System')
     );
   }
 

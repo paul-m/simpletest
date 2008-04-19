@@ -11,7 +11,7 @@ class TranslationModuleTestCase extends DrupalTestCase {
     return array(
       'name' => t('Translation functionality'),
       'description' => t('Create a page with translation, modify the page outdating translation, and update translation.'),
-      'group' => t('Translation Tests')
+      'group' => t('Translation')
     );
   }
 

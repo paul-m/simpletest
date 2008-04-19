@@ -18,7 +18,7 @@ class ForumModuleTestCase extends DrupalTestCase {
     return array(
       'name' => t('Forum functionality'),
       'description' => t('Create, view, edit, delete, and change forum entries and verify its consistency in the database.'),
-      'group' => t('Forum Tests'),
+      'group' => t('Forum'),
     );
   }
 

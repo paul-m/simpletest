@@ -9,7 +9,7 @@ class ContactTestCase extends DrupalTestCase {
     return array(
       'name' => t('Contact functionality'),
       'description' => t('Test site-wide contact form and personal contact form functionality.'),
-      'group' => t('Contact Tests'),
+      'group' => t('Contact'),
     );
   }
 

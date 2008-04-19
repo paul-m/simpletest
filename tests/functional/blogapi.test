@@ -9,7 +9,7 @@ class BlogAPITestCase extends DrupalTestCase {
     return array(
       'name' => t('BlogAPI functionality'),
       'description' => t('Create, edit, and delete post; upload file; and set/get categories.'),
-      'group' => t('BlogAPI Tests'),
+      'group' => t('BlogAPI'),
     );
   }
 

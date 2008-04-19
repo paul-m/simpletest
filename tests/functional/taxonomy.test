@@ -9,7 +9,7 @@ class TaxonomyVocabularyFunctionsTestCase extends DrupalTestCase {
     return array(
       'name' => t('Vocabulary functions'),
       'description' => t('Create/Edit/Delete vocabulary and assert that all fields were properly saved.'),
-      'group' => t('Taxonomy Tests')
+      'group' => t('Taxonomy')
     );
   }
 
@@ -90,7 +90,7 @@ class TaxonomyTermFunctionsTestCase extends DrupalTestCase {
     return array(
       'name' => t('Term functions'),
       'description' => t('Testing save/update/delete terms.'),
-      'group' => t('Taxonomy Tests')
+      'group' => t('Taxonomy')
     );
   }
 
@@ -264,7 +264,7 @@ class TaxonomyTestNodeApiTestCase extends DrupalTestCase {
     return array(
       'name' => t('Taxonomy nodeapi'),
       'description' => t('Save & edit a node and assert that taxonomy terms are saved/loaded properly.'),
-      'group' => t('Taxonomy Tests')
+      'group' => t('Taxonomy')
     );
   }
 

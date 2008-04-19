@@ -11,7 +11,7 @@ class BookTestCase extends DrupalTestCase {
     return array(
       'name' => t('Book functionality'),
       'description' => t('Create a book, add pages, and test book interface.'),
-      'group' => t('Book Tests'),
+      'group' => t('Book'),
     );
   }
 

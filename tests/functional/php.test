@@ -9,7 +9,7 @@ class PHPTestCase extends DrupalTestCase {
     return array(
       'name' => t('PHP filter functionality'),
       'description' => t('Make sure that PHP filter evaluates PHP code when enabled and that users who don\'t have access to filter can\'t see it'),
-      'group' => t('PHP Tests'),
+      'group' => t('PHP'),
     );
   }
 

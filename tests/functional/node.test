@@ -7,9 +7,9 @@ class NodeRevisionsTestCase extends DrupalTestCase {
    */
   function getInfo() {
     return array(
-      'name' => t('Node revisions tests'),
+      'name' => t('Node revisions'),
       'description' => t('Creates a node of type page and then a user tries various revision actions such as viewing, reverting to, and deleting revisions.'),
-      'group' => 'Node Tests',
+      'group' => t('Node')
     );
   }
 
@@ -116,9 +116,9 @@ class NodeTeaserTestCase extends DrupalTestCase {
    */
   function getInfo() {
     return array(
-      'name' => t('Node teaser tests'),
+      'name' => t('Node teaser'),
       'description' => t('Calls node_teaser() with different strings and lengths.'),
-      'group' => 'Node Tests',
+      'group' => t('Node')
     );
   }
 
@@ -267,7 +267,7 @@ class PageEditTestCase extends DrupalTestCase {
     return array(
       'name'  => 'Page edit test',
       'description'  => t('We want a working edit for pages, uh?'),
-      'group' => 'Node Tests');
+      'group' => t('Node'));
   }
   function testPageEdit() {
 
@@ -316,7 +316,7 @@ class PagePreviewTestCase extends DrupalTestCase {
     return array(
    'name'  => 'Page preview test',
    'description'  => t('We want a working preview for pages, uh?'),
-   'group' => 'Node Tests');
+   'group' => t('Node'));
   }
 
   function testPagePreview() {
@@ -351,7 +351,7 @@ class PageCreationTestCase extends  DrupalTestCase {
     return array(
       'name' => t('Page node creation'),
       'description' => t('Create a page node and verify its consistency in the database.'),
-      'group' => 'Node Tests',
+      'group' => t('Node'),
     );
   }
 
@@ -386,7 +386,7 @@ class PageViewTestCase extends DrupalTestCase {
       'description' => t('Creates a node of type page and then an unpermissioned user attempts to edit the node, '
         . 'before tries with an anonymous user. Asserts failure.'
         . '</ br>WARNING: This is based on default registered user permuissions (no administer nodes).')
-      , 'group' => 'Node Tests',
+      , 'group' => t('Node'),
   );
   }
 

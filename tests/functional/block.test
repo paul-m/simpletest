@@ -9,7 +9,7 @@ class BlockTestCase extends DrupalTestCase {
     return array(
       'name' => t('Block functionality'),
       'description' => t('Add, edit and delete custom block. Configure and move a module-defined block.'),
-      'group' => t('Block Tests'),
+      'group' => t('Block'),
     );
   }
 
