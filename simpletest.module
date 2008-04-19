@@ -103,7 +103,7 @@ function simpletest_load() {
   }
 
   $path = drupal_get_path('module', 'simpletest') .'/';
-  require_once($path .'drupal_test_case.php');
+  require_once($path .'drupal_web_test_case.php');
   require_once($path .'drupal_unit_test_case.php');
   require_once($path .'drupal_unit_tests.php');
   return true;

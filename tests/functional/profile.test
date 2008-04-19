@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class ProfileTestSingleTestCase extends DrupalTestCase {
+class ProfileTestSingleTestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test Single field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => t('Profile'));
@@ -119,7 +119,7 @@ class ProfileTestSingleTestCase extends DrupalTestCase {
 
 }
 
-class ProfileTestTextareaTestCase extends DrupalTestCase {
+class ProfileTestTextareaTestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test Textarea field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => t('Profile'));
@@ -233,7 +233,7 @@ class ProfileTestTextareaTestCase extends DrupalTestCase {
 }
 
 
-class ProfileTestFreelistTestCase extends DrupalTestCase {
+class ProfileTestFreelistTestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test Freelist field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => t('Profile'));
@@ -348,7 +348,7 @@ class ProfileTestFreelistTestCase extends DrupalTestCase {
 }
 
 
-class ProfileTestCheckboxTestCase extends DrupalTestCase {
+class ProfileTestCheckboxTestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test Checkbox field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => t('Profile'));
@@ -460,7 +460,7 @@ class ProfileTestCheckboxTestCase extends DrupalTestCase {
    }
 }
 
-class ProfileTestUrlTestCase extends DrupalTestCase {
+class ProfileTestUrlTestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test Url field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => t('Profile'));
@@ -575,7 +575,7 @@ class ProfileTestUrlTestCase extends DrupalTestCase {
     }
 }
 
-class ProfileTestSelectionTestCase extends DrupalTestCase {
+class ProfileTestSelectionTestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test Selection field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => t('Profile'));
@@ -700,7 +700,7 @@ class ProfileTestSelectionTestCase extends DrupalTestCase {
 }
 
 
-class ProfileTestDateTestCase extends DrupalTestCase {
+class ProfileTestDateTestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test Date field', 'description' => "Testing profile module with add/edit/delete new fields into profile page" , 'group' => t('Profile'));
@@ -829,7 +829,7 @@ class ProfileTestDateTestCase extends DrupalTestCase {
 }
 
 
-class ProfileTest2TestCase extends DrupalTestCase {
+class ProfileTest2TestCase extends DrupalWebTestCase {
   function getInfo() {
     $modules = (module_list());
     return array('name' => 'Test other fields', 'description' => "Testing weight, title page, required" , 'group' => t('Profile'));

@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class LocaleTestCase extends DrupalTestCase {
+class LocaleTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo() for information
    */

@@ -78,7 +78,7 @@ class DrupalUnitTests extends DrupalTestSuite {
     }
     $groups = array();
     foreach ($classes as $class) {
-      if (!is_subclass_of($class, 'DrupalTestCase') && !is_subclass_of($class, 'DrupalUnitTestCase')) {
+      if (!is_subclass_of($class, 'DrupalWebTestCase') && !is_subclass_of($class, 'DrupalUnitTestCase')) {
         continue;
       }
       $this->_addClassToGroups($groups, $class);

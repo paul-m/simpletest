@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class PollTestCase extends DrupalTestCase {
+class PollTestCase extends DrupalWebTestCase {
 
   function pollCreate($standalone = TRUE) {
     $this->assertTrue(TRUE, 'Poll create' . $standalone);

@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class PathModuleTestCase extends DrupalTestCase {
+class PathModuleTestCase extends DrupalWebTestCase {
   function getInfo() {
     return array(
       'name' => t('Path alias functionality'),

@@ -5,7 +5,6 @@
  * Test case Drupal unit tests.
  */
 class DrupalUnitTestCase extends UnitTestCase {
-  protected $mock_overrides;
   protected $created_temp_environment = FALSE;
   protected $db_prefix_original;
   protected $original_file_directory;
@@ -20,27 +19,9 @@ class DrupalUnitTestCase extends UnitTestCase {
       if (method_exists($this, 'getInfo')) {
         $info  = $this->getInfo();
         $label = $info['name'];
-        $this->mock_overrides = $info['mock_overrides'];
       }
     }
     parent::__construct($label);
-  }
-
-  /**
-   * Enforce all mock overrides.
-   *
-   * @param string $method Method that just started.
-   */
-  public function before($method) {
-    $test_function = str_replace('test_', '', $method);
-    if (array_key_exists($test_function, $this->mock_overrides)) {
-      $overrides = $this->mock_overrides[$test_function];
-      foreach ($overrides as $override) {
-//        print $override . "\n";
-        // TODO once runkit is working override functions.
-      }
-    }
-    parent::before($method);
   }
 
   /**
@@ -112,22 +93,5 @@ class DrupalUnitTestCase extends UnitTestCase {
       $db_prefix = $this->db_prefix_original;
     }
     parent::tearDown();
-  }
-
-  /**
-   * Revert mock overrides.
-   *
-   * @param string $method Test method just ending.
-   */
-  public function after($method) {
-    $test_function = str_replace('test_', '', $method);
-    if (array_key_exists($test_function, $this->mock_overrides)) {
-      $overrides = $this->mock_overrides[$test_function];
-      foreach ($overrides as $override) {
-//        print $override . "\n";
-        // TODO once runkit is working reset overriden functions and replace mocks.
-      }
-    }
-    parent::before($method);
   }
 }

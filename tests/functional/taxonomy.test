@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class TaxonomyVocabularyFunctionsTestCase extends DrupalTestCase {
+class TaxonomyVocabularyFunctionsTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */
@@ -82,7 +82,7 @@ class TaxonomyVocabularyFunctionsTestCase extends DrupalTestCase {
 }
 
 
-class TaxonomyTermFunctionsTestCase extends DrupalTestCase {
+class TaxonomyTermFunctionsTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */
@@ -256,7 +256,7 @@ class TaxonomyTermFunctionsTestCase extends DrupalTestCase {
 
 }
 
-class TaxonomyTestNodeApiTestCase extends DrupalTestCase {
+class TaxonomyTestNodeApiTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */

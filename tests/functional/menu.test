@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class MenuTestCase extends DrupalTestCase {
+class MenuTestCase extends DrupalWebTestCase {
   protected $big_user;
   protected $std_user;
   protected $menu;

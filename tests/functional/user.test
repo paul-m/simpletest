@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class UserRegistrationTestCase extends DrupalTestCase {
+class UserRegistrationTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */
@@ -102,7 +102,7 @@ class UserRegistrationTestCase extends DrupalTestCase {
 }
 
 
-class UserValidationTestCase extends DrupalTestCase {
+class UserValidationTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */
@@ -160,7 +160,7 @@ class UserValidationTestCase extends DrupalTestCase {
 }
 
 
-class UserDeleteTestCase extends DrupalTestCase {
+class UserDeleteTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */

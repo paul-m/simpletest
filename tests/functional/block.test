@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class BlockTestCase extends DrupalTestCase {
+class BlockTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */

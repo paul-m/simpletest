@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class AggregatorTestCase extends DrupalTestCase {
+class AggregatorTestCase extends DrupalWebTestCase {
   private static $prefix = 'simpletest_aggregator_';
 
   /**

@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class SyslogTestCase extends DrupalTestCase {
+class SyslogTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */

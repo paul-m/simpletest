@@ -3,7 +3,7 @@
 
 define('SEARCH_TYPE', '_test_');
 
-class SearchMatchTestCase extends DrupalTestCase {
+class SearchMatchTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */

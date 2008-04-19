@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class ForumModuleTestCase extends DrupalTestCase {
+class ForumModuleTestCase extends DrupalWebTestCase {
   protected $big_user;
   protected $own_user;
   protected $any_user;

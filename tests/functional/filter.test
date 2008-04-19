@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class FilterTestCase extends DrupalTestCase {
+class FilterTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */
