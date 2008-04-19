@@ -26,6 +26,24 @@ function simpletest_menu() {
     'description' => 'Run tests against Drupal core and your active modules. These tests help assure that your site code is working as designed.',
     'access arguments' => array('administer unit tests'),
   );
+  $items['admin/build/simpletest/all'] = array(
+    'title' => 'All',
+    'page callback' => 'simpletest_entrypoint',
+    'access arguments' => array('administer unit tests'),
+    'type' => MENU_DEFAULT_LOCAL_TASK
+  );
+  $items['admin/build/simpletest/functional'] = array(
+    'title' => 'Functional',
+    'page callback' => 'simpletest_entrypoint',
+    'access arguments' => array('administer unit tests'),
+    'type' => MENU_LOCAL_TASK
+  );
+  $items['admin/build/simpletest/unit'] = array(
+    'title' => 'Unit',
+    'page callback' => 'simpletest_entrypoint',
+    'access arguments' => array('administer unit tests'),
+    'type' => MENU_LOCAL_TASK
+  );
   $items['admin/settings/simpletest'] = array(
     'title' => 'SimpleTest',
     'description' => 'Configure SimpleTest framework.',
@@ -86,6 +104,7 @@ function simpletest_load() {
 
   $path = drupal_get_path('module', 'simpletest') .'/';
   require_once($path .'drupal_test_case.php');
+  require_once($path .'drupal_unit_test_case.php');
   require_once($path .'drupal_unit_tests.php');
   return true;
 }
@@ -253,7 +272,9 @@ function theme_simpletest_overview_form($form) {
   }
   // Output test groups.
   $output = '';
-  $output .= theme('table', $header, $rows, array('id' => 'simpletest-form-table'));
+  if (count($rows)) {
+    $output .= theme('table', $header, $rows, array('id' => 'simpletest-form-table'));
+  }
 
   // Output the rest of the form, excluded test groups which have been removed.
   $output .= drupal_render($form);

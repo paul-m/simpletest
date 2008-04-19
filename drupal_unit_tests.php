@@ -41,10 +41,24 @@ class DrupalUnitTests extends DrupalTestSuite {
       $files = array();
       foreach (module_list() as $module) {
         $module_path = drupal_get_path('module', $module);
-        if (file_exists($module_path .'/tests/')) {
-          $dir = $module_path .'/tests';
-          $tests = file_scan_directory($dir, '\.test$');
-          $files = array_merge($files, $tests);
+        if (file_exists($module_path . '/tests/')) {
+          // Check for functional/unit separation.
+          $functional = strpos($_GET['q'], 'functional') !== FALSE;
+          $unit = strpos($_GET['q'], 'unit') !== FALSE;
+          if (!$functional && !$unit) {
+            $dir = $module_path . '/tests';
+          }
+          else if ($functional && file_exists($module_path .'/tests/functional')) {
+            $dir = $module_path . '/tests/functional';
+          }
+          else if ($unit && file_exists($module_path .'/tests/unit')) {
+            $dir = $module_path . '/tests/unit';
+          }
+
+          if (isset($dir)) {
+            $tests = file_scan_directory($dir, '\.test$');
+            $files = array_merge($files, $tests);
+          }
         }
       }
       $files = array_keys($files);
