@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-class EnableDisableCoreModuleTestCase extends DrupalWebTestCase {
+class EnableDisableCoreTestCase extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */
