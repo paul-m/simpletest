@@ -98,10 +98,6 @@ function simpletest_load() {
   require_once(SIMPLE_TEST .'/reporter.php');
   require_once('drupal_reporter.php');
 
-  if (version_compare(SimpleTest::getVersion(), '1.0.1beta2') < 0) {
-    return simpletest_trigger_error('stale version');
-  }
-
   $path = drupal_get_path('module', 'simpletest') .'/';
   require_once($path .'drupal_web_test_case.php');
   require_once($path .'drupal_unit_test_case.php');
@@ -521,11 +517,6 @@ function simpletest_trigger_error($type) {
     case 'not available':
       $output = t('The simpletest framework cannot be found in the current installation. Please note that simpletest.module needs Simpletest framework to be installed. ');
       $output .= t('Please download it from !simpletest_link and place it into the same directory as simpletest.module: %simpletest_directory', array('!simpletest_link' => l('Simpletest on SourceForge', 'https://sourceforge.net/project/showfiles.php?group_id=76550'), '%simpletest_directory' => SIMPLE_TEST));
-      drupal_set_message($output, 'error');
-      break;
-    case 'stale version':
-      $output = t('Due to a lot of refactoring done on simpletest library side. Simpletest module is not compatible with Simpletest versions lower than 1.0.1 beta2. ');
-      $output .= t('Please download the latest version from !simpletest_link and place it into the same directory as simpletest.module: %simpletest_directory', array('!simpletest_link' => l('Simpletest on SourceForge', 'https://sourceforge.net/project/showfiles.php?group_id=76550'), '%simpletest_directory' => SIMPLE_TEST));
       drupal_set_message($output, 'error');
       break;
     case 'no tests selected':
