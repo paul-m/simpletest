@@ -867,7 +867,7 @@ class DrupalWebTestCase extends UnitTestCase {
    * @return boolean True if pass.
    */
   function assertPattern($pattern, $message = '%s') {
-    return $this->assert(new PatternExpectation($pattern), $this->drupalGetContent(), $message);
+    return $this->assertTrue(preg_match($pattern, $this->drupalGetContent()), $message);
   }
 
   /**
@@ -878,7 +878,7 @@ class DrupalWebTestCase extends UnitTestCase {
    * @return boolean True if pass.
    */
   function assertNoPattern($pattern, $message = '%s') {
-    return $this->assert(new NoPatternExpectation($pattern), $this->drupalGetContent(), $message);
+    return $this->assertFalse(preg_match($pattern, $this->drupalGetContent()), $message);
   }
 
   /**
