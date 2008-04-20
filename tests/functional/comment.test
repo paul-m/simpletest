@@ -140,7 +140,7 @@ class CommentTestCase extends DrupalWebTestCase {
     $this->assertFalse($this->commentExists($anonymous_comment3), t('Anonymous comment with contact info (required) not found.'));
 
     // Post comment with contact info (required).
-    $anonymous_comment3 = $this->postComment($this->node, $this->randomName(), $this->randomName(), TRUE, array('mail' => 'tester@simpletest.org'));
+    $anonymous_comment3 = $this->postComment($this->node, $this->randomName(), $this->randomName(), FALSE, array('mail' => 'tester@simpletest.org'));
     $this->assertTrue($this->commentExists($anonymous_comment3), t('Anonymous comment with contact info (required) found.'));
 
     // Unpublish comment.
@@ -210,7 +210,6 @@ class CommentTestCase extends DrupalWebTestCase {
     if ($contact !== NULL && is_array($contact)) {
       $edit += $contact;
     }
-
     if ($node !== NULL) {
       $this->drupalGet('comment/reply/'. $node->nid);
     }
@@ -218,7 +217,7 @@ class CommentTestCase extends DrupalWebTestCase {
       $this->assertNoFieldByName('op', t('Save'), t('Save button not found.')); // Preview required so no save button should be found.
       $this->drupalPost(NULL, $edit, t('Preview'));
     }
-    $this->drupalPost(NULL, array(), t('Save'));
+    $this->drupalPost(NULL, $edit, t('Save'));
 
     $match = array();
     // Get comment ID
