@@ -1,5 +1,0 @@
-; $Id$
-name = "SimpleTest"
-description = "Provides SimpleTest classes to developers as well as some standard tests for Drupal core."
-package = Simpletest
-core = 7.x
