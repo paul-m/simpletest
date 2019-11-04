@@ -1,0 +1,7 @@
+name: Testing
+type: module
+description: 'Provides a framework for unit and functional testing.'
+package: Testing
+core: 8.x
+core_version_requirement: ^8 || ^9
+configure: simpletest.settings
