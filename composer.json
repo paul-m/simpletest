@@ -1,0 +1,7 @@
+{
+    "name": "mile23/simpletest",
+    "description": "Experimental fork of Drupal simpletest",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
