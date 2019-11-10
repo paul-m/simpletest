@@ -50,7 +50,7 @@ class SimpletestPhpunitRunCommandTest extends TestCase {
   public static function setUpBeforeClass() {
     parent::setUpBeforeClass();
     // Figure out our app root.
-    self::$root = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+    self::$root = DRUPAL_ROOT;
     // Include the files we need for tests. The stub test we will run is
     // SimpletestPhpunitRunCommandTestWillDie which is located in
     // simpletest_phpunit_run_command_test.php.
