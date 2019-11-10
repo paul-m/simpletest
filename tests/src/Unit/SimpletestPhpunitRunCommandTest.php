@@ -50,14 +50,17 @@ class SimpletestPhpunitRunCommandTest extends TestCase {
   public static function setUpBeforeClass() {
     parent::setUpBeforeClass();
     // Figure out our app root.
-    self::$root = DRUPAL_ROOT;
+    // @todo Assumes the module is in modules/contrib/simpletest. There is not a
+    //       good way to populate self::$root (or DRUPAL_ROOT) while this is a
+    //       \PHPUnit\Framework\TestCase subclass.
+    self::$root = realpath(__DIR__ . '/../../../../../../');
     // Include the files we need for tests. The stub test we will run is
     // SimpletestPhpunitRunCommandTestWillDie which is located in
     // simpletest_phpunit_run_command_test.php.
-    include_once self::$root . '/core/modules/simpletest/tests/fixtures/simpletest_phpunit_run_command_test.php';
+    include_once __DIR__ . '/../../../tests/fixtures/simpletest_phpunit_run_command_test.php';
     // Since we're testing simpletest_run_phpunit_tests(), we need to include
     // simpletest.module.
-    include_once self::$root . '/core/modules/simpletest/simpletest.module';
+    include_once __DIR__ . '/../../../simpletest.module';
   }
 
   /**
